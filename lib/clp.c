@@ -914,7 +914,8 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     /* Reset getopt_long().
      * TODO: Create getopt_long_r() for MT goodness.
      */
-    optind = 0;
+    optreset = 1;
+    optind = 1;
 
     while (1) {
         int curind = optind;
