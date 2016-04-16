@@ -1,0 +1,25 @@
+./prog -l 0
+./prog -l 1
+./prog -l 2
+./prog -l -1
+./prog -l -2
+./prog -l -3
+./prog -l 0 -l 1 -l 2
+./prog -l -1 -l -2 -l -3
+./prog -l $(echo '2^63 - 1' | bc)
+./prog -l -$(echo '2^63 - 1' | bc)
+./prog -l $(echo '2^64 - 1' | bc)
+./prog -l -$(echo '2^64 - 1' | bc)
+
+./prog -L 0
+./prog -L 1
+./prog -L 2
+./prog -L -1
+./prog -L -2
+./prog -L -3
+./prog -L 0 -L 1 -L 2
+./prog -L -1 -L -2 -L -3
+./prog -l $(echo '2^63 - 1' | bc)
+./prog -l -$(echo '2^63 - 1' | bc)
+./prog -L $(echo '2^64 - 1' | bc)
+./prog -L -$(echo '2^64 - 1' | bc)

@@ -1,0 +1,40 @@
++ ./prog
+progname is prog
+verbosity is 0
+argc=1 optind=1
++ ./prog -h
+prog: invalid option -h
++ ./prog -hv
+prog: invalid option -hv
++ ./prog -V
+prog: invalid option -V
++ ./prog -n
+prog: invalid option -n
++ ./prog -v
+prog: invalid option -v
++ ./prog -vvv
+prog: invalid option -vvv
++ ./prog -C -
+prog: invalid option -C
++ ./prog -C main.h
+prog: invalid option -C
++ ./prog -C file-that-does-not-exist
+prog: invalid option -C
++ ./prog a
+progname is prog
+verbosity is 0
+argc=2 optind=1
+posparams: 0 a
++ ./prog a b
+progname is prog
+verbosity is 0
+argc=3 optind=1
+posparams: 0 a
+posparams: 1 b
++ ./prog a b c
+progname is prog
+verbosity is 0
+argc=4 optind=1
+posparams: 0 a
+posparams: 1 b
+posparams: 2 c

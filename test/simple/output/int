@@ -1,0 +1,72 @@
++ ./prog -i 1073741824
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 1073741824 1
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
++ ./prog -i -1073741824
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is -1073741824 1
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
++ ./prog -i 2147483648
+prog: unable to convert '-i 2147483648': Result too large
++ ./prog -i -2147483648
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is -2147483648 1
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
++ ./prog -i 4294967295
+prog: unable to convert '-i 4294967295': Result too large
++ ./prog -i -4294967295
+prog: unable to convert '-i -4294967295': Result too large
++ ./prog -I 1073741824
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 1073741824 1
+mylong is 0 0
+myulong is 0 0
++ ./prog -I -1073741824
+prog: unable to convert '-I -1073741824': Result too large
++ ./prog -I 2147483648
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 2147483648 1
+mylong is 0 0
+myulong is 0 0
++ ./prog -I -2147483648
+prog: unable to convert '-I -2147483648': Result too large
++ ./prog -I 4294967295
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 4294967295 1
+mylong is 0 0
+myulong is 0 0
++ ./prog -I -4294967295
+prog: unable to convert '-I -4294967295': Result too large

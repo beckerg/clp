@@ -1,0 +1,57 @@
++ ./prog -x
+progname is prog
+verbosity is 0 0
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+x was given
++ ./prog -y
+progname is prog
+verbosity is 0 0
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+y was given
++ ./prog -z
+progname is prog
+verbosity is 0 0
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+z was given
++ ./prog -x -y
+prog: option -x excludes -y, use -h for help
++ ./prog -x -z
+prog: option -x excludes -z, use -h for help
++ ./prog -y -x
+prog: option -y excludes -x, use -h for help
++ ./prog -y -z
+prog: option -y excludes -z, use -h for help
++ ./prog -z -x
+prog: option -z excludes -x, use -h for help
++ ./prog -z -y
+prog: option -z excludes -y, use -h for help
++ ./prog -xy
+prog: option -x excludes -y, use -h for help
++ ./prog -xz
+prog: option -x excludes -z, use -h for help
++ ./prog -yx
+prog: option -y excludes -x, use -h for help
++ ./prog -yz
+prog: option -y excludes -z, use -h for help
++ ./prog -zx
+prog: option -z excludes -x, use -h for help
++ ./prog -zy
+prog: option -z excludes -y, use -h for help

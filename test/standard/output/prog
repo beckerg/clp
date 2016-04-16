@@ -1,0 +1,95 @@
++ ./prog
+progname is prog
+verbosity is 0 0
+argc=1 optind=1
+dryrun is 0 0
+conf is 0x0 0
++ ./prog -h
+usage: prog [-vn] [-C cf]
+usage: prog -h [-v]
+usage: prog -V
+-C cf  specify a configuration file
+-h     print this help list
+-n     trace execution but do not change anything
+-v     increase verbosity
+-V     print version
+
+progname is prog
+verbosity is 0 0
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
++ ./prog -hv
+usage: prog [-vn] [-C cf]
+usage: prog -h [-v]
+usage: prog -V
+-C cf  specify a configuration file
+-h     print this help list
+-n     trace execution but do not change anything
+-v     increase verbosity
+-V     print version
+
+progname is prog
+verbosity is 1 1
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
++ ./prog -V
+wersion...
+progname is prog
+verbosity is 0 0
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
++ ./prog -n
+progname is prog
+verbosity is 0 0
+argc=2 optind=2
+dryrun is 1 1
+conf is 0x0 0
++ ./prog -v
+progname is prog
+verbosity is 1 1
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
++ ./prog -vvv
+progname is prog
+verbosity is 3 1
+argc=2 optind=2
+dryrun is 0 0
+conf is 0x0 0
++ ./prog -C -
+prog: unable to convert '-C -': No such file or directory
++ ./prog -C main.h
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x800bcd1a0 1
++ ./prog -C file-that-does-not-exist
+prog: unable to convert '-C file-that-does-not-exist': No such file or directory
++ ./prog a
+progname is prog
+verbosity is 0 0
+argc=2 optind=1
+posparams: 0 a
+dryrun is 0 0
+conf is 0x0 0
++ ./prog a b
+progname is prog
+verbosity is 0 0
+argc=3 optind=1
+posparams: 0 a
+posparams: 1 b
+dryrun is 0 0
+conf is 0x0 0
++ ./prog a b c
+progname is prog
+verbosity is 0 0
+argc=4 optind=1
+posparams: 0 a
+posparams: 1 b
+posparams: 2 c
+dryrun is 0 0
+conf is 0x0 0

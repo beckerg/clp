@@ -1,0 +1,15 @@
+./prog -x
+./prog -y
+./prog -z
+./prog -x -y
+./prog -x -z
+./prog -y -x
+./prog -y -z
+./prog -z -x
+./prog -z -y
+./prog -xy
+./prog -xz
+./prog -yx
+./prog -yz
+./prog -zx
+./prog -zy
