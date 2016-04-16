@@ -1,4 +1,3 @@
-
 # Copyright (c) 2011,2015,2016 Greg Becker.  All rights reserved.
 #
 # $Id: GNUmakefile 378 2016-01-18 14:24:15Z greg $
@@ -35,7 +34,7 @@ CSCOPE_DIRS	?= . ${VPATH} /usr/src/lib /usr/src/sys/kern /usr/src/sys/sys
 #
 .DELETE_ON_ERROR:
 
-.PHONY:	all clean clobber cscope tags etags debug
+.PHONY:	all check clean clobber cscope debug etags tags
 
 
 all: ${LIBBASE}.h lib${LIBBASE}.a
@@ -45,6 +44,8 @@ clean:
 
 distclean clobber: clean
 	rm -f cscope.files cscope*.out TAGS
+
+check:
 
 cscope: cscope.out
 
@@ -66,7 +67,6 @@ TAGS: cscope.files
 # Use gmake's link rule to produce the target.
 #
 lib${LIBBASE}.a: ${OBJ}
-#	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 	${AR} cru lib${FPA}${LIBBASE}.a `lorder ${OBJ} | tsort`
 	${RANLIB} lib${FPA}${LIBBASE}.a
 
