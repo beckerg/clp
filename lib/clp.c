@@ -43,7 +43,7 @@
 
 #include "clp.h"
 
-#define CLP_DEBUG
+//#define CLP_DEBUG
 
 
 __attribute__((weak)) char *progname;
@@ -872,33 +872,35 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
 
     /* Generate the optstring and the long options table from the options vector.
      */
-    for (o = clp->optionv; o->optopt > 0; ++o) {
-        if (isprint(o->optopt)) {
-            *pc++ = o->optopt;
+    if (clp->optionv) {
+        for (o = clp->optionv; o->optopt > 0; ++o) {
+            if (isprint(o->optopt)) {
+                *pc++ = o->optopt;
 
-            if (o->argname) {
-                *pc++ = ':';
+                if (o->argname) {
+                    *pc++ = ':';
+                }
+            }
+
+            if (o->longopt) {
+                longopt->name = o->longopt;
+                longopt->has_arg = no_argument;
+                longopt->val = o->optopt;
+
+                if (o->argname) {
+                    longopt->has_arg = required_argument;
+                }
+
+                ++longopt;
             }
         }
 
-        if (o->longopt) {
-            longopt->name = o->longopt;
-            longopt->has_arg = no_argument;
-            longopt->val = o->optopt;
-
-            if (o->argname) {
-                longopt->has_arg = required_argument;
+        /* Call each option's before() procedure before option processing.
+         */
+        for (o = clp->optionv; o->optopt > 0; ++o) {
+            if (o->before) {
+                o->before(o);
             }
-
-            ++longopt;
-        }
-    }
-
-    /* Call each option's before() procedure before option processing.
-     */
-    for (o = clp->optionv; o->optopt > 0; ++o) {
-        if (o->before) {
-            o->before(o);
         }
     }
 
@@ -1010,9 +1012,11 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     /* Call each given option's after() procedure after all options have
      * been processed.
      */
-    for (o = clp->optionv; o->optopt > 0; ++o) {
-        if (o->given && o->after) {
-            o->after(o);
+    if (clp->optionv) {
+        for (o = clp->optionv; o->optopt > 0; ++o) {
+            if (o->given && o->after) {
+                o->after(o);
+            }
         }
     }
 
