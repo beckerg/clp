@@ -6,8 +6,6 @@
 #include "main.h"
 #include "clp.h"
 
-#define NDEBUG
-
 int
 main(int argc, char **argv)
 {

@@ -41,7 +41,7 @@ argc=2 optind=2
 dryrun is 0 0
 conf is 0x0 0
 + ./prog -V
-%Id: main.c 386 2016-01-27 13:25:47Z greg $
+wersion...
 progname is prog
 verbosity is 0 0
 argc=2 optind=2

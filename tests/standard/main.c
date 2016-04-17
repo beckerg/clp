@@ -7,8 +7,6 @@
 #include "main.h"
 #include "clp.h"
 
-#define NDEBUG
-
 char version[] = "version...";
 FILE *conf;
 int dryrun;
@@ -20,7 +18,7 @@ clp_option_t optionv[] = {
     CLP_OPTION_CONF(&conf),
     CLP_OPTION_HELP,
 
-    { .optopt = 0 }
+    CLP_OPTION_END
 };
 
 static bool

@@ -1,0 +1,5 @@
+./prog -s
+./prog -s foo
+./prog -s bar
+./prog -s "i am a string"
+./prog -s 'and so am i'

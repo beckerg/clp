@@ -27,27 +27,14 @@
 #ifndef CLP_H
 #define CLP_H
 
-#define CLP_ERRBUFSZ    (128)
+#define CLP_ERRBUFSZ        (128)
 
-#define CLP_OPTION_TMPL(xoptopt, xargname, xexcludes, xlongopt, \
-                        xconvert, xresult, xcvtarg,             \
-                        xbefore, xafter, xparamv, xhelp)        \
-    .optopt = (xoptopt),        \
-    .argname = (xargname),      \
-    .excludes = (xexcludes),    \
-    .longopt = (xlongopt),      \
-    .convert = (xconvert),      \
-    .result = (xresult),        \
-    .cvtarg = (xcvtarg),        \
-    .before = (xbefore),        \
-    .after = (xafter),          \
-    .paramv = (xparamv),        \
-    .help = (xhelp),            \
+#define CLP_OPTION_END      { .optopt = 0 }
+#define CLP_PARAM_END       { .name = NULL }
 
-#define CLP_OPTION_SIMPLE(xoptopt, xargname, xexcl, xlongopt,           \
-                          xconvert, xresult, xhelp)                     \
-    { CLP_OPTION_TMPL((xoptopt), (xargname), (xexcl), (xlongopt),       \
-                      (xconvert), (xresult), 0,                         \
+#define CLP_OPTION(xtype, xoptopt, xargname, xexcl, xhelp)          \
+    { CLP_OPTION_TMPL((xoptopt), #xargname, (xexcl), NULL,          \
+                      clp_convert_ ## xtype, &(xargname), 0,        \
                       NULL, NULL, NULL, (xhelp)) }
 
 #define CLP_OPTION_HELP                                             \
@@ -81,52 +68,30 @@
                    "specify a configuration file") }
 
 #define CLP_OPTION_BOOL(xoptopt, xexcl, xhelp)                      \
-    CLP_OPTION_SIMPLE((xoptopt), NULL, (xexcl), NULL,               \
-                      NULL, NULL, (xhelp))
+    { CLP_OPTION_TMPL((xoptopt), NULL, (xexcl), NULL,               \
+                      NULL, NULL, 0,                                \
+                      NULL, NULL, NULL, (xhelp)) }
 
 #define CLP_LONGOPT_BOOL(xoptopt, xexcl, xlongopt, xhelp)           \
-    CLP_OPTION_SIMPLE((xoptopt), NULL, (xexcl), (xlongopt),         \
-                      NULL, NULL, (xhelp))
+    { CLP_OPTION_TMPL((xoptopt), NULL, (xexcl), (xlongopt),         \
+                      NULL, NULL, 0,                                \
+                      NULL, NULL, NULL, (xhelp)) }
 
-#define CLP_OPTION_INT(xoptopt, xargname, xexcl, xhelp)             \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
-                      clp_convert_int, &(xargname), (xhelp))
+#define CLP_OPTION_TMPL(xoptopt, xargname, xexcludes, xlongopt,     \
+                        xconvert, xresult, xcvtarg,                 \
+                        xbefore, xafter, xparamv, xhelp)            \
+    .optopt = (xoptopt),        \
+    .argname = (xargname),      \
+    .excludes = (xexcludes),    \
+    .longopt = (xlongopt),      \
+    .convert = (xconvert),      \
+    .result = (xresult),        \
+    .cvtarg = (xcvtarg),        \
+    .before = (xbefore),        \
+    .after = (xafter),          \
+    .paramv = (xparamv),        \
+    .help = (xhelp),            \
 
-#define CLP_LONGOPT_INT(xoptopt, xargname, xexcl, xhelp)            \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
-                      clp_convert_int, &(xargname), (xhelp))
-
-#define CLP_OPTION_UINT(xoptopt, xargname, xexcl, xhelp)            \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
-                      clp_convert_uint, &(xargname), (xhelp))
-
-#define CLP_LONGOPT_UINT(xoptopt, xargname, xexcl, xhelp)           \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
-                      clp_convert_uint, &(xargname), (xhelp))
-
-#define CLP_OPTION_LONG(xoptopt, xargname, xexcl, xhelp)            \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
-                      clp_convert_long, &(xargname), (xhelp))
-
-#define CLP_LONGOPT_LONG(xoptopt, xargname, xexcl, xhelp) \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
-                      clp_convert_long, &(xargname), (xhelp))
-
-#define CLP_OPTION_ULONG(xoptopt, xargname, xexcl, xhelp)           \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
-                      clp_convert_ulong, &(xargname), (xhelp))
-
-#define CLP_LONGOPT_ULONG(xoptopt, xargname, xexcl, xhelp)          \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
-                      clp_convert_ulong, &(xargname), (xhelp))
-
-#define CLP_OPTION_STRING(xoptopt, xargname, xexcl, xhelp)          \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
-                      clp_convert_string, &(xargname), (xhelp))
-
-#define CLP_LONGOPT_STRING(xoptopt, xargname, xexcl, xhelp)          \
-    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,      \
-                      clp_convert_string, &(xargname), (xhelp))
 
 
 /* By default dprint() and eprint() print to stderr.  You can change that

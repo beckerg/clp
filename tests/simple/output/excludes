@@ -8,6 +8,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 x was given
 + ./prog -y
 progname is prog
@@ -19,6 +20,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 y was given
 + ./prog -z
 progname is prog
@@ -30,6 +32,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 z was given
 + ./prog -x -y
 prog: option -x excludes -y, use -h for help

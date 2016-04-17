@@ -8,22 +8,24 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -h
-usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-x | -y | -z]
+usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
--C cf       specify a configuration file
--h          print this help list
--i myint    specify an int
--I myuint   specify a uint
--L myulong  specify a ulong
--l mylong   specify a long
--n          trace execution but do not change anything
--v          increase verbosity
--V          print version
--x          specify x flag
--y          specify y flag
--z          specify z flag
+-C cf        specify a configuration file
+-h           print this help list
+-I myuint    specify a uint
+-i myint     specify an int
+-l mylong    specify a long
+-L myulong   specify a ulong
+-n           trace execution but do not change anything
+-s mystring  specify a string
+-v           increase verbosity
+-V           print version
+-x           specify x flag
+-y           specify y flag
+-z           specify z flag
 
 progname is prog
 verbosity is 0 0
@@ -34,22 +36,24 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -hv
-usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-x | -y | -z]
+usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
--C cf       specify a configuration file
--h          print this help list
--i myint    specify an int
--I myuint   specify a uint
--L myulong  specify a ulong
--l mylong   specify a long
--n          trace execution but do not change anything
--v          increase verbosity
--V          print version
--x          specify x flag
--y          specify y flag
--z          specify z flag
+-C cf        specify a configuration file
+-h           print this help list
+-I myuint    specify a uint
+-i myint     specify an int
+-l mylong    specify a long
+-L myulong   specify a ulong
+-n           trace execution but do not change anything
+-s mystring  specify a string
+-v           increase verbosity
+-V           print version
+-x           specify x flag
+-y           specify y flag
+-z           specify z flag
 
 progname is prog
 verbosity is 1 1
@@ -60,6 +64,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -V
 wersion...
 progname is prog
@@ -71,6 +76,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -n
 progname is prog
 verbosity is 0 0
@@ -81,6 +87,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -v
 progname is prog
 verbosity is 1 1
@@ -91,6 +98,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -vvv
 progname is prog
 verbosity is 3 1
@@ -101,6 +109,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
 + ./prog -C main.h
@@ -113,6 +122,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 + ./prog a
@@ -126,6 +136,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog a b
 progname is prog
 verbosity is 0 0
@@ -138,6 +149,7 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0
 + ./prog a b c
 progname is prog
 verbosity is 0 0
@@ -151,3 +163,4 @@ myint is 0 0
 myuint is 0 0
 mylong is 0 0
 myulong is 0 0
+mystring is default 0

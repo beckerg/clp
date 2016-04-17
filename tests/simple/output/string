@@ -1,0 +1,46 @@
++ ./prog -s
+prog: option -s requires a parameter, use -h for help
++ ./prog -s foo
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is foo 0
++ ./prog -s bar
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is bar 0
++ ./prog -s 'i am a string'
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is i am a string 0
++ ./prog -s 'and so am i'
+progname is prog
+verbosity is 0 0
+argc=3 optind=3
+dryrun is 0 0
+conf is 0x0 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is and so am i 0

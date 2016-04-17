@@ -9,9 +9,7 @@
 #include "main.h"
 #include "clp.h"
 
-#define NDEBUG
-
-static char svnid[] = "$Id: main.c 386 2016-01-27 13:25:47Z greg $";
+static char version[] = "version...";
 
 FILE *conf;
 int dryrun;
@@ -74,7 +72,8 @@ clp_posparam_t posparamv_default[] = {
     },
 
 #endif
-    { .name = NULL }
+
+    CLP_PARAM_END
 };
 
 /* Positional parameters for the list option (-l, --list)
@@ -92,17 +91,18 @@ clp_posparam_t posparamv_list[] = {
 clp_option_t optionv[] = {
     CLP_OPTION_VERBOSE(&verbosity),
     CLP_OPTION_DRYRUN(&dryrun),
-    CLP_OPTION_VERSION(svnid),
+    CLP_OPTION_VERSION(version),
     CLP_OPTION_CONF(&conf),
     CLP_OPTION_HELP,
 
-    { // Example of a boolean option that triggers non-default positional parameters
+	// Example of a boolean option that triggers non-default positional parameters.
+    {
         .optopt = 'l', .longopt = "list",
         .help = "list...",
         .paramv = posparamv_list,
     },
 
-    { .optopt = 0 }
+    CLP_OPTION_END
 };
 
 void

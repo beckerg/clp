@@ -7,8 +7,6 @@
 #include "main.h"
 #include "clp.h"
 
-#define NDEBUG
-
 char version[] = "version...";
 FILE *conf;
 int dryrun;
@@ -16,6 +14,7 @@ int myint;
 unsigned int myuint;
 long mylong;
 unsigned long myulong;
+char *mystring = "default";
 
 clp_option_t optionv[] = {
     CLP_OPTION_VERBOSE(&verbosity),
@@ -24,24 +23,20 @@ clp_option_t optionv[] = {
     CLP_OPTION_CONF(&conf),
     CLP_OPTION_HELP,
 
-    // Example of a simple integer argument option
-    CLP_OPTION_INT('i', myint, NULL, "specify an int"),
+    CLP_OPTION(int, 'i', myint, NULL, "specify an int"),
+    CLP_OPTION(uint, 'I', myuint, NULL, "specify a uint"),
 
-    // Example of a simple unsigned integer argument option
-    CLP_OPTION_UINT('I', myuint, NULL, "specify a uint"),
+    CLP_OPTION(long, 'l', mylong, NULL, "specify a long"),
+    CLP_OPTION(ulong, 'L', myulong, NULL, "specify a ulong"),
 
-    // Example of a simple long argument option
-    CLP_OPTION_LONG('l', mylong, NULL, "specify a long"),
-
-    // Example of a simple unsigned long argument option
-    CLP_OPTION_LONG('L', myulong, NULL, "specify a ulong"),
+    CLP_OPTION(string, 's', mystring, NULL, "specify a string"),
 
     // Example of a bunch of mutually exclusive boolean options.
     CLP_OPTION_BOOL('x', "yz", "specify x flag"),
     CLP_OPTION_BOOL('y', "xz", "specify y flag"),
     CLP_OPTION_BOOL('z', "xy", "specify z flag"),
 
-    { .optopt = 0 }
+    CLP_OPTION_END
 };
 
 static bool
@@ -88,6 +83,8 @@ main(int argc, char **argv)
 
     printf("mylong is %ld %d\n", mylong, given('l'));
     printf("myulong is %lu %d\n", myulong, given('L'));
+
+    printf("mystring is %s %d\n", mystring, given('L'));
 
     if (given('x'))
         printf("x was given\n");
