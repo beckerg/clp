@@ -42,7 +42,7 @@ RESULT := $(patsubst output/%, result/%, ${OUTPUT})
 all: ${PROG}
 
 clean:
-	rm -rf ${PROG} ${OBJ} *.core result/*
+	rm -rf ${PROG} ${OBJ} *.core result
 
 distclean clobber: clean
 	rm -f cscope.files cscope*.out TAGS
@@ -53,6 +53,7 @@ output/%: input/% ${PROG}
 	bash -x input/${@F} > $@ 2>&1 || true
 
 result/%: input/% ${PROG}
+	mkdir -p ${@D}
 	bash -x input/${@F} > $@ 2>&1 || true
 	@echo "checking $(abspath result/${@F})"
 	diff output/${@F} result/${@F}

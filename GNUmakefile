@@ -1,6 +1,6 @@
-SUBDIRS = lib check
+SUBDIRS = lib tests
 
-.PHONY: all ${SUBDIRS} ${MAKECMDGOALS}
+.PHONY: all check ${SUBDIRS} ${MAKECMDGOALS}
 
 all check clean clobber cscope debug tags ${MAKECMDGOALS}: ${SUBDIRS}
 
