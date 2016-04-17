@@ -166,14 +166,20 @@ extern clp_option_t *clp_option_find(clp_option_t *optionv, int optopt);
 extern void clp_option_priv1_set(clp_option_t *option, void *priv1);
 
 extern clp_convert_t clp_convert_bool;
-extern clp_convert_t clp_convert_int;
-extern clp_convert_t clp_convert_uint;
-extern clp_convert_t clp_convert_long;
-extern clp_convert_t clp_convert_ulong;
 
 extern clp_convert_t clp_convert_string;
 extern clp_convert_t clp_convert_file;
 extern clp_convert_t clp_convert_inc;
+
+extern clp_convert_t clp_convert_int;
+extern clp_convert_t clp_convert_u_int;
+extern clp_convert_t clp_convert_long;
+extern clp_convert_t clp_convert_u_long;
+
+extern clp_convert_t clp_convert_int32_t;
+extern clp_convert_t clp_convert_u_int32_t;
+extern clp_convert_t clp_convert_int64_t;
+extern clp_convert_t clp_convert_u_int64_t;
 
 extern clp_option_cb_t clp_help;
 extern clp_option_cb_t clp_version;

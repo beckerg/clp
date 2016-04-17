@@ -144,137 +144,6 @@ clp_convert_bool(void *cvtarg, const char *str, void *dst)
 }
 
 int
-clp_convert_int(void *cvtarg, const char *str, void *dst)
-{
-    int *result = dst;
-    char *end;
-    long val;
-    int base;
-
-    if (!result) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    base = cvtarg ? (intptr_t)cvtarg : 0;
-    if (base < 0 || base == 1 || base > 36) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    end = NULL;
-    errno = 0;
-
-    val = strtol(str, &end, base);
-
-    if (errno == 0 && end != str && *end == '\000') {
-        if (val >= INT_MIN && val <= INT_MAX) {
-            *result = val;
-            return 0;
-        }
-
-        errno = ERANGE;
-    }
-
-    return EX_DATAERR;
-}
-
-int
-clp_convert_uint(void *cvtarg, const char *str, void *dst)
-{
-    u_int *result = dst;
-    u_long val;
-    char *end;
-    int base;
-
-    if (!result) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    base = cvtarg ? (intptr_t)cvtarg : 0;
-    if (base < 0 || base == 1 || base > 36) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    end = NULL;
-    errno = 0;
-
-    val = strtoul(str, &end, base);
-
-    if (errno == 0 && end != str && *end == '\000') {
-        if (val <= UINT_MAX) {
-            *result = val;
-            return 0;
-        }
-
-        errno = ERANGE;
-    }
-
-    return EX_DATAERR;
-}
-
-int
-clp_convert_long(void *cvtarg, const char *str, void *dst)
-{
-    long *result = dst;
-    char *end;
-    long val;
-    int base;
-
-    if (!result) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    base = cvtarg ? (intptr_t)cvtarg : 0;
-    if (base < 0 || base == 1 || base > 36) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    end = NULL;
-    errno = 0;
-
-    val = strtol(str, &end, base);
-
-    if (errno == 0 && end != str && *end == '\000') {
-        *result = val;
-        return 0;
-    }
-
-    return EX_DATAERR;
-}
-
-int
-clp_convert_ulong(void *cvtarg, const char *str, void *dst)
-{
-    u_long *result = dst;
-    u_long val;
-    char *end;
-    int base;
-
-    base = cvtarg ? (intptr_t)cvtarg : 0;
-    if (base < 0 || base == 1 || base > 36) {
-        errno = EINVAL;
-        return EX_DATAERR;
-    }
-
-    end = NULL;
-    errno = 0;
-
-    val = strtoul(str, &end, base);
-
-    if (errno == 0 && end != str && *end == '\000') {
-        *result = val;
-        return 0;
-    }
-
-    return EX_DATAERR;
-}
-
-int
 clp_convert_string(void *cvtarg, const char *str, void *dst)
 {
     char **result = dst;
@@ -319,6 +188,64 @@ clp_convert_inc(void *cvtarg, const char *str, void *dst)
 
     return 0;
 }
+
+#define CLP_CONVERT_INTXX(xtype, xmin, xmax, xvaltype, xvalcvt)         \
+    int                                                                 \
+    clp_convert_ ## xtype(void *cvtarg, const char *str, void *dst)     \
+    {                                                                   \
+        xtype *result = dst;                                            \
+        xvaltype val;                                                   \
+        char *end;                                                      \
+        int base;                                                       \
+                                                                        \
+        if (!result) {                                                  \
+            errno = EINVAL;                                             \
+            return EX_DATAERR;                                          \
+        }                                                               \
+                                                                        \
+        base = cvtarg ? (intptr_t)cvtarg : 0;                           \
+        if (base < 0 || base == 1 || base > 36) {                       \
+            errno = EINVAL;                                             \
+            return EX_DATAERR;                                          \
+        }                                                               \
+                                                                        \
+        end = NULL;                                                     \
+        errno = 0;                                                      \
+                                                                        \
+        val = xvalcvt(str, &end, base);                                 \
+                                                                        \
+        if (errno == 0 && end != str && *end == '\000') {               \
+            if (val >= xmin && val <= xmax) {                           \
+                *result = val;                                          \
+                return 0;                                               \
+            }                                                           \
+                                                                        \
+            errno = ERANGE;                                             \
+        }                                                               \
+                                                                        \
+        return EX_DATAERR;                                              \
+    }
+
+CLP_CONVERT_INTXX(char, CHAR_MIN, CHAR_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(u_char, 0, UCHAR_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(short, SHRT_MIN, SHRT_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(u_short, 0, USHRT_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(int, INT_MIN, INT_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(u_int, 0, UINT_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(long, LONG_MIN, LONG_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(u_long, 0, ULONG_MAX, u_quad_t, strtouq);
+
+CLP_CONVERT_INTXX(int8_t, INT8_MIN, INT8_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(uint8_t, 0, UINT8_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(int16_t, INT16_MIN, INT16_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(uint16_t, 0, UINT16_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(int32_t, INT32_MIN, INT32_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(uint32_t, 0, UINT32_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(int64_t, INT64_MIN, INT64_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(uint64_t, 0, UINT64_MAX, u_quad_t, strtouq);
+CLP_CONVERT_INTXX(quad_t, QUAD_MIN, QUAD_MAX, quad_t, strtoq);
+CLP_CONVERT_INTXX(u_quad_t, 0, UQUAD_MAX, u_quad_t, strtouq);
+
 
 /* Return true if the two specified options are mutually exclusive.
  */

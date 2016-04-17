@@ -66,7 +66,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x800bcd1a0 1
+conf is 0x800bce1a0 1
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 + ./prog a

@@ -18,10 +18,10 @@ usage: prog -h [-v]
 usage: prog -V
 -C cf        specify a configuration file
 -h           print this help list
--I myuint    specify a uint
+-I myuint    specify a u_int
 -i myint     specify an int
 -l mylong    specify a long
--L myulong   specify a ulong
+-L myulong   specify a u_long
 -n           trace execution but do not change anything
 -s mystring  specify a string
 -v           increase verbosity
@@ -49,10 +49,10 @@ usage: prog -h [-v]
 usage: prog -V
 -C cf        specify a configuration file
 -h           print this help list
--I myuint    specify a uint
+-I myuint    specify a u_int
 -i myint     specify an int
 -l mylong    specify a long
--L myulong   specify a ulong
+-L myulong   specify a u_long
 -n           trace execution but do not change anything
 -s mystring  specify a string
 -v           increase verbosity
@@ -138,7 +138,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x800bcd1a0 1
+conf is 0x800bce1a0 1
 myint is 0 0
 myuint is 0 0
 mylong is 0 0

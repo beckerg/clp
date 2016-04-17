@@ -27,10 +27,10 @@ clp_option_t optionv[] = {
     CLP_OPTION_HELP,
 
     CLP_OPTION(int, 'i', myint, NULL, "specify an int"),
-    CLP_OPTION(uint, 'I', myuint, NULL, "specify a uint"),
+    CLP_OPTION(u_int, 'I', myuint, NULL, "specify a u_int"),
 
     CLP_OPTION(long, 'l', mylong, NULL, "specify a long"),
-    CLP_OPTION(ulong, 'L', myulong, NULL, "specify a ulong"),
+    CLP_OPTION(u_long, 'L', myulong, NULL, "specify a u_long"),
 
     CLP_OPTION(string, 's', mystring, NULL, "specify a string"),
 
