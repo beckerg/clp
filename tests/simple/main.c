@@ -24,34 +24,22 @@ clp_option_t optionv[] = {
     CLP_OPTION_CONF(&conf),
     CLP_OPTION_HELP,
 
-    { // Example of a simple integer argument option
-        .optopt = 'i', .argname = "int",
-        .help = "specify an int",
-        .convert = clp_convert_int, .result = &myint,
-    },
+    // Example of a simple integer argument option
+    CLP_OPTION_INT('i', myint, NULL, "specify an int"),
 
-    { // Example of a simple unsigned integer argument option
-        .optopt = 'I', .argname = "uint",
-        .help = "specify a uint",
-        .convert = clp_convert_uint, .result = &myuint,
-    },
+    // Example of a simple unsigned integer argument option
+    CLP_OPTION_UINT('I', myuint, NULL, "specify a uint"),
 
-    { // Example of a simple long argument option
-        .optopt = 'l', .argname = "long",
-        .help = "specify a long",
-        .convert = clp_convert_long, .result = &mylong,
-    },
+    // Example of a simple long argument option
+    CLP_OPTION_LONG('l', mylong, NULL, "specify a long"),
 
-    { // Example of a simple unsigned long argument option
-        .optopt = 'L', .argname = "ulong",
-        .help = "specify a ulong",
-        .convert = clp_convert_ulong, .result = &myulong,
-    },
+    // Example of a simple unsigned long argument option
+    CLP_OPTION_LONG('L', myulong, NULL, "specify a ulong"),
 
     // Example of a bunch of mutually exclusive boolean options.
-    { .optopt = 'x', .excludes = "yz", .help = "specify x flag", },
-    { .optopt = 'y', .excludes = "xz", .help = "specify y flag", },
-    { .optopt = 'z', .excludes = "xy", .help = "specify z flag", },
+    CLP_OPTION_BOOL('x', "yz", "specify x flag"),
+    CLP_OPTION_BOOL('y', "xz", "specify y flag"),
+    CLP_OPTION_BOOL('z', "xy", "specify z flag"),
 
     { .optopt = 0 }
 };

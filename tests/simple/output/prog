@@ -9,21 +9,21 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 + ./prog -h
-usage: prog [-vn] [-C cf] [-i int] [-I uint] [-l long] [-L ulong] [-x | -y | -z]
+usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
--C cf     specify a configuration file
--h        print this help list
--i int    specify an int
--I uint   specify a uint
--L ulong  specify a ulong
--l long   specify a long
--n        trace execution but do not change anything
--v        increase verbosity
--V        print version
--x        specify x flag
--y        specify y flag
--z        specify z flag
+-C cf       specify a configuration file
+-h          print this help list
+-i myint    specify an int
+-I myuint   specify a uint
+-L myulong  specify a ulong
+-l mylong   specify a long
+-n          trace execution but do not change anything
+-v          increase verbosity
+-V          print version
+-x          specify x flag
+-y          specify y flag
+-z          specify z flag
 
 progname is prog
 verbosity is 0 0
@@ -35,21 +35,21 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 + ./prog -hv
-usage: prog [-vn] [-C cf] [-i int] [-I uint] [-l long] [-L ulong] [-x | -y | -z]
+usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
--C cf     specify a configuration file
--h        print this help list
--i int    specify an int
--I uint   specify a uint
--L ulong  specify a ulong
--l long   specify a long
--n        trace execution but do not change anything
--v        increase verbosity
--V        print version
--x        specify x flag
--y        specify y flag
--z        specify z flag
+-C cf       specify a configuration file
+-h          print this help list
+-i myint    specify an int
+-I myuint   specify a uint
+-L myulong  specify a ulong
+-l mylong   specify a long
+-n          trace execution but do not change anything
+-v          increase verbosity
+-V          print version
+-x          specify x flag
+-y          specify y flag
+-z          specify z flag
 
 progname is prog
 verbosity is 1 1

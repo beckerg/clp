@@ -217,24 +217,8 @@ myulong is 0 0
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -L 18446744073709551615
-progname is prog
-verbosity is 0 0
-argc=3 optind=3
-dryrun is 0 0
-conf is 0x0 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 18446744073709551615 1
+prog: unable to convert '-L 18446744073709551615': Result too large
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -L -18446744073709551615
-progname is prog
-verbosity is 0 0
-argc=3 optind=3
-dryrun is 0 0
-conf is 0x0 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 1 1
+prog: unable to convert '-L -18446744073709551615': Result too large

@@ -36,7 +36,7 @@ RESULT := $(patsubst output/%, result/%, ${OUTPUT})
 #
 .DELETE_ON_ERROR:
 
-.PHONY:	all check clean clobber cscope distclean tags etags debug
+.PHONY:	all check clean clobber cscope debug distclean etags output tags
 
 
 all: ${PROG}
@@ -49,14 +49,18 @@ distclean clobber: clean
 
 check: ${OUTPUT} ${RESULT}
 
-output/%: input/% ${PROG}
-	bash -x input/${@F} > $@ 2>&1 || true
+output/%: input/%
+	env -i PATH=${PATH} bash -x input/${@F} > $@ 2>&1 || true
 
 result/%: input/% ${PROG}
 	mkdir -p ${@D}
-	bash -x input/${@F} > $@ 2>&1 || true
+	env -i PATH=${PATH} bash -x input/${@F} > $@ 2>&1 || true
 	@echo "checking $(abspath result/${@F})"
 	diff output/${@F} result/${@F}
+
+output:
+	touch ${INPUT}
+	${MAKE} ${OUTPUT}
 
 cscope: cscope.out
 
@@ -88,6 +92,6 @@ ${PROG}: ${OBJ}
 ${OBJ}: GNUmakefile
 
 
-main.o: main.c main.h
+main.o: main.c main.h ../../lib/libclp.a
 main.c: ../../lib/clp.h
 

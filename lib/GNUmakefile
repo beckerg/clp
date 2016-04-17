@@ -58,6 +58,8 @@ cscope.files: GNUmakefile
 debug: CFLAGS+=${DEBUG}
 debug: ${LIBBASE}.h lib${LIBBASE}.a
 
+output:
+
 tags etags: TAGS
 
 TAGS: cscope.files

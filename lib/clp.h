@@ -44,6 +44,12 @@
     .paramv = (xparamv),        \
     .help = (xhelp),            \
 
+#define CLP_OPTION_SIMPLE(xoptopt, xargname, xexcl, xlongopt,           \
+                          xconvert, xresult, xhelp)                     \
+    { CLP_OPTION_TMPL((xoptopt), (xargname), (xexcl), (xlongopt),       \
+                      (xconvert), (xresult), 0,                         \
+                      NULL, NULL, NULL, (xhelp)) }
+
 #define CLP_OPTION_HELP                                             \
     { CLP_OPTION_TMPL('h', NULL, "^v", "help",                      \
                    NULL, NULL, 0,                                   \
@@ -73,6 +79,54 @@
                    clp_convert_file, (xconf), 0,                    \
                    NULL, NULL, NULL,                                \
                    "specify a configuration file") }
+
+#define CLP_OPTION_BOOL(xoptopt, xexcl, xhelp)                      \
+    CLP_OPTION_SIMPLE((xoptopt), NULL, (xexcl), NULL,               \
+                      NULL, NULL, (xhelp))
+
+#define CLP_LONGOPT_BOOL(xoptopt, xexcl, xlongopt, xhelp)           \
+    CLP_OPTION_SIMPLE((xoptopt), NULL, (xexcl), (xlongopt),         \
+                      NULL, NULL, (xhelp))
+
+#define CLP_OPTION_INT(xoptopt, xargname, xexcl, xhelp)             \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
+                      clp_convert_int, &(xargname), (xhelp))
+
+#define CLP_LONGOPT_INT(xoptopt, xargname, xexcl, xhelp)            \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
+                      clp_convert_int, &(xargname), (xhelp))
+
+#define CLP_OPTION_UINT(xoptopt, xargname, xexcl, xhelp)            \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
+                      clp_convert_uint, &(xargname), (xhelp))
+
+#define CLP_LONGOPT_UINT(xoptopt, xargname, xexcl, xhelp)           \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
+                      clp_convert_uint, &(xargname), (xhelp))
+
+#define CLP_OPTION_LONG(xoptopt, xargname, xexcl, xhelp)            \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
+                      clp_convert_long, &(xargname), (xhelp))
+
+#define CLP_LONGOPT_LONG(xoptopt, xargname, xexcl, xhelp) \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
+                      clp_convert_long, &(xargname), (xhelp))
+
+#define CLP_OPTION_ULONG(xoptopt, xargname, xexcl, xhelp)           \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
+                      clp_convert_ulong, &(xargname), (xhelp))
+
+#define CLP_LONGOPT_ULONG(xoptopt, xargname, xexcl, xhelp)          \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,     \
+                      clp_convert_ulong, &(xargname), (xhelp))
+
+#define CLP_OPTION_STRING(xoptopt, xargname, xexcl, xhelp)          \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), NULL,          \
+                      clp_convert_string, &(xargname), (xhelp))
+
+#define CLP_LONGOPT_STRING(xoptopt, xargname, xexcl, xhelp)          \
+    CLP_OPTION_SIMPLE((xoptopt), #xargname, (xexcl), #xargname,      \
+                      clp_convert_string, &(xargname), (xhelp))
 
 
 /* By default dprint() and eprint() print to stderr.  You can change that
