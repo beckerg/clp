@@ -134,6 +134,16 @@ clp_eprint(clp_t *clp, const char *fmt, ...)
  * Note:  These functions are not type safe.
  */
 int
+clp_convert_bool(void *cvtarg, const char *str, void *dst)
+{
+    bool *result = dst;
+
+    *result = ! *result;
+
+    return 0;
+}
+
+int
 clp_convert_int(void *cvtarg, const char *str, void *dst)
 {
     int *result = dst;
@@ -876,6 +886,10 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
         for (o = clp->optionv; o->optopt > 0; ++o) {
             if (isprint(o->optopt)) {
                 *pc++ = o->optopt;
+
+                if (o->convert == clp_convert_bool) {
+                    o->argname = NULL;
+                }
 
                 if (o->argname) {
                     *pc++ = ':';

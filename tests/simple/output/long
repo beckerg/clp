@@ -9,6 +9,9 @@ myuint is 0 0
 mylong is 0 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l 1
 progname is prog
 verbosity is 0 0
@@ -20,6 +23,9 @@ myuint is 0 0
 mylong is 1 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l 2
 progname is prog
 verbosity is 0 0
@@ -31,6 +37,9 @@ myuint is 0 0
 mylong is 2 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l -1
 progname is prog
 verbosity is 0 0
@@ -42,6 +51,9 @@ myuint is 0 0
 mylong is -1 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l -2
 progname is prog
 verbosity is 0 0
@@ -53,6 +65,9 @@ myuint is 0 0
 mylong is -2 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l -3
 progname is prog
 verbosity is 0 0
@@ -64,6 +79,9 @@ myuint is 0 0
 mylong is -3 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l 0 -l 1 -l 2
 progname is prog
 verbosity is 0 0
@@ -75,6 +93,9 @@ myuint is 0 0
 mylong is 2 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -l -1 -l -2 -l -3
 progname is prog
 verbosity is 0 0
@@ -86,6 +107,9 @@ myuint is 0 0
 mylong is -3 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^63 - 1'
 ++ bc
 + ./prog -l 9223372036854775807
@@ -99,6 +123,9 @@ myuint is 0 0
 mylong is 9223372036854775807 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^63 - 1'
 ++ bc
 + ./prog -l -9223372036854775807
@@ -112,6 +139,9 @@ myuint is 0 0
 mylong is -9223372036854775807 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -l 18446744073709551615
@@ -131,6 +161,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L 1
 progname is prog
 verbosity is 0 0
@@ -142,6 +175,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 1 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L 2
 progname is prog
 verbosity is 0 0
@@ -153,6 +189,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 2 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L -1
 progname is prog
 verbosity is 0 0
@@ -164,6 +203,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 18446744073709551615 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L -2
 progname is prog
 verbosity is 0 0
@@ -175,6 +217,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 18446744073709551614 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L -3
 progname is prog
 verbosity is 0 0
@@ -186,6 +231,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 18446744073709551613 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L 0 -L 1 -L 2
 progname is prog
 verbosity is 0 0
@@ -197,6 +245,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 2 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 + ./prog -L -1 -L -2 -L -3
 progname is prog
 verbosity is 0 0
@@ -208,6 +259,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 18446744073709551613 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^63 - 1'
 ++ bc
 + ./prog -l 9223372036854775807
@@ -221,6 +275,9 @@ myuint is 0 0
 mylong is 9223372036854775807 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^63 - 1'
 ++ bc
 + ./prog -l -9223372036854775807
@@ -234,6 +291,9 @@ myuint is 0 0
 mylong is -9223372036854775807 1
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -L 18446744073709551615
@@ -247,6 +307,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 18446744073709551615 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -L -18446744073709551615
@@ -260,3 +323,6 @@ myuint is 0 0
 mylong is 0 0
 myulong is 1 1
 mystring is default 1
+x is false 0
+y is false 0
+z is true 0

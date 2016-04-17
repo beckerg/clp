@@ -67,16 +67,6 @@
                    NULL, NULL, NULL,                                \
                    "specify a configuration file") }
 
-#define CLP_OPTION_BOOL(xoptopt, xexcl, xhelp)                      \
-    { CLP_OPTION_TMPL((xoptopt), NULL, (xexcl), NULL,               \
-                      NULL, NULL, 0,                                \
-                      NULL, NULL, NULL, (xhelp)) }
-
-#define CLP_LONGOPT_BOOL(xoptopt, xexcl, xlongopt, xhelp)           \
-    { CLP_OPTION_TMPL((xoptopt), NULL, (xexcl), (xlongopt),         \
-                      NULL, NULL, 0,                                \
-                      NULL, NULL, NULL, (xhelp)) }
-
 #define CLP_OPTION_TMPL(xoptopt, xargname, xexcludes, xlongopt,     \
                         xconvert, xresult, xcvtarg,                 \
                         xbefore, xafter, xparamv, xhelp)            \
@@ -175,6 +165,7 @@ extern clp_option_t *clp_option_find(clp_option_t *optionv, int optopt);
 
 extern void clp_option_priv1_set(clp_option_t *option, void *priv1);
 
+extern clp_convert_t clp_convert_bool;
 extern clp_convert_t clp_convert_int;
 extern clp_convert_t clp_convert_uint;
 extern clp_convert_t clp_convert_long;

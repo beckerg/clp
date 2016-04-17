@@ -9,7 +9,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
-x was given
+x is true 1
+y is false 0
+z is true 0
 + ./prog -y
 progname is prog
 verbosity is 0 0
@@ -21,7 +23,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
-y was given
+x is false 0
+y is true 1
+z is true 0
 + ./prog -z
 progname is prog
 verbosity is 0 0
@@ -33,7 +37,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
-z was given
+x is false 0
+y is false 0
+z is false 1
 + ./prog -x -y
 prog: option -x excludes -y, use -h for help
 + ./prog -x -z

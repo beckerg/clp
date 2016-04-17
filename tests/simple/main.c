@@ -15,6 +15,9 @@ unsigned int myuint;
 long mylong;
 unsigned long myulong;
 char *mystring = "default";
+bool xflag = false;
+bool yflag = false;
+bool zflag = true;
 
 clp_option_t optionv[] = {
     CLP_OPTION_VERBOSE(&verbosity),
@@ -32,9 +35,9 @@ clp_option_t optionv[] = {
     CLP_OPTION(string, 's', mystring, NULL, "specify a string"),
 
     // Example of a bunch of mutually exclusive boolean options.
-    CLP_OPTION_BOOL('x', "yz", "specify x flag"),
-    CLP_OPTION_BOOL('y', "xz", "specify y flag"),
-    CLP_OPTION_BOOL('z', "xy", "specify z flag"),
+    CLP_OPTION(bool, 'x', xflag, "yz", "specify x flag"),
+    CLP_OPTION(bool, 'y', yflag, "xz", "specify y flag"),
+    CLP_OPTION(bool, 'z', zflag, "xy", "specify z flag"),
 
     CLP_OPTION_END
 };
@@ -86,14 +89,9 @@ main(int argc, char **argv)
 
     printf("mystring is %s %d\n", mystring, given('L'));
 
-    if (given('x'))
-        printf("x was given\n");
-
-    if (given('y'))
-        printf("y was given\n");
-
-    if (given('z'))
-        printf("z was given\n");
+    printf("x is %s %d\n", xflag ? "true" : "false", given('x'));
+    printf("y is %s %d\n", yflag ? "true" : "false", given('y'));
+    printf("z is %s %d\n", zflag ? "true" : "false", given('z'));
 
     return 0;
 }

@@ -9,6 +9,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -h
 usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-x | -y | -z]
 usage: prog -h [-v]
@@ -37,6 +40,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -hv
 usage: prog [-vn] [-C cf] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-x | -y | -z]
 usage: prog -h [-v]
@@ -65,6 +71,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -V
 wersion...
 progname is prog
@@ -77,6 +86,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -n
 progname is prog
 verbosity is 0 0
@@ -88,6 +100,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -v
 progname is prog
 verbosity is 1 1
@@ -99,6 +114,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -vvv
 progname is prog
 verbosity is 3 1
@@ -110,6 +128,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
 + ./prog -C main.h
@@ -123,6 +144,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 + ./prog a
@@ -137,6 +161,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog a b
 progname is prog
 verbosity is 0 0
@@ -150,6 +177,9 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
 + ./prog a b c
 progname is prog
 verbosity is 0 0
@@ -164,3 +194,6 @@ myuint is 0 0
 mylong is 0 0
 myulong is 0 0
 mystring is default 0
+x is false 0
+y is false 0
+z is true 0
