@@ -19,7 +19,7 @@ progname is prog
 verbosity is 0 0
 argc=2 optind=2
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 + ./prog -hv
 usage: prog [-vn] [-C cf] [leftmost [left]] src...
 usage: prog -h [-v]
@@ -39,14 +39,14 @@ progname is prog
 verbosity is 1 1
 argc=2 optind=2
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 + ./prog -V
-wersion...
+version...
 progname is prog
 verbosity is 0 0
 argc=2 optind=2
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 + ./prog -n
 prog: mandatory positional parameters required, use -h for help
 + ./prog -v
@@ -66,7 +66,7 @@ verbosity is 0 0
 argc=2 optind=1
 posparams: 0 a
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 + ./prog a b
 posparamv_default_after: name=[leftmost]    argv[0]=a
 posparamv_default_after: name=src...        argv[0]=b
@@ -76,7 +76,7 @@ argc=3 optind=1
 posparams: 0 a
 posparams: 1 b
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 + ./prog a b c
 posparamv_default_after: name=[leftmost]    argv[0]=a
 posparamv_default_after: name=[left]        argv[0]=b
@@ -88,4 +88,4 @@ posparams: 0 a
 posparams: 1 b
 posparams: 2 c
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0

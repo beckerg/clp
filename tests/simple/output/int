@@ -3,7 +3,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 1073741824 1
 myuint is 0 0
 mylong is 0 0
@@ -17,7 +17,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is -1073741824 1
 myuint is 0 0
 mylong is 0 0
@@ -33,7 +33,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is -2147483648 1
 myuint is 0 0
 mylong is 0 0
@@ -51,7 +51,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 0 0
 myuint is 1073741824 1
 mylong is 0 0
@@ -67,7 +67,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 0 0
 myuint is 2147483648 1
 mylong is 0 0
@@ -83,7 +83,7 @@ progname is prog
 verbosity is 0 0
 argc=3 optind=3
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 0 0
 myuint is 4294967295 1
 mylong is 0 0

@@ -3,7 +3,7 @@ progname is prog
 verbosity is 0 0
 argc=2 optind=2
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 0 0
 myuint is 0 0
 mylong is 0 0
@@ -17,7 +17,7 @@ progname is prog
 verbosity is 0 0
 argc=2 optind=2
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 0 0
 myuint is 0 0
 mylong is 0 0
@@ -31,7 +31,7 @@ progname is prog
 verbosity is 0 0
 argc=2 optind=2
 dryrun is 0 0
-conf is 0x0 0
+cf is nil 0
 myint is 0 0
 myuint is 0 0
 mylong is 0 0

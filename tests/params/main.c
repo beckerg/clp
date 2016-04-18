@@ -11,8 +11,8 @@
 
 static char version[] = "version...";
 
-FILE *conf;
 int dryrun;
+FILE *cf;
 char *dst_path;
 
 clp_posparam_cb_t posparamv_default_after;
@@ -89,10 +89,10 @@ clp_posparam_t posparamv_list[] = {
 };
 
 clp_option_t optionv[] = {
-    CLP_OPTION_VERBOSE(&verbosity),
-    CLP_OPTION_DRYRUN(&dryrun),
+    CLP_OPTION_VERBOSE(verbosity),
+    CLP_OPTION_DRYRUN(dryrun),
     CLP_OPTION_VERSION(version),
-    CLP_OPTION_CONF(&conf),
+    CLP_OPTION_CONF(cf),
     CLP_OPTION_HELP,
 
 	// Example of a boolean option that triggers non-default positional parameters.
@@ -170,7 +170,12 @@ main(int argc, char **argv)
     }
 
     printf("dryrun is %d %d\n", dryrun, given('n'));
-    printf("conf is %p %d\n", conf, given('C'));
+
+	if (cf) {
+        printf("cf is %s %d\n", ferror(cf) ? "in error" : "open", given('C'));
+	} else {
+        printf("cf is nil %d\n", given('C'));
+	}
 
     return 0;
 }
