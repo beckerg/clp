@@ -37,6 +37,9 @@
                       clp_convert_ ## xtype, &(xargname), 0,        \
                       NULL, NULL, NULL, (xhelp)) }
 
+#define CLP_OPTION_VERBOSE(xverbose)                                \
+    CLP_OPTION(incr, 'v', xverbose, NULL, "increase verbosity")
+
 #define CLP_OPTION_HELP                                             \
     { CLP_OPTION_TMPL('h', NULL, "^v", "help",                      \
                       NULL, NULL, 0,                                \
@@ -48,12 +51,6 @@
                       NULL, &(xversion), 0,                         \
                       NULL, clp_version, clp_posparam_none,         \
                       "print version") }
-
-#define CLP_OPTION_VERBOSE(xverbose)                                \
-    { CLP_OPTION_TMPL('v', NULL, NULL, #xverbose,                   \
-                      clp_convert_incr, &(xverbose), 0,             \
-                      NULL, NULL, NULL,                             \
-                      "increase verbosity") }
 
 #define CLP_OPTION_DRYRUN(xdryrun)                                  \
     { CLP_OPTION_TMPL('n', NULL, NULL, #xdryrun,                    \

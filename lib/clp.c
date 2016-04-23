@@ -633,6 +633,8 @@ clp_help(clp_option_t *opthelp)
      */
     width = 0;
     for (i = 0; i < optionc; ++i) {
+        int len = 0;
+
         option = optionv[i];
 
         if (!option->help) {
@@ -642,15 +644,13 @@ clp_help(clp_option_t *opthelp)
         clp_usage(clp, option, fp);
 
         if (option->argname) {
-            int len = strlen(option->argname) + 1;
-
-            if (longhelp && option->longopt) {
-                len += strlen(option->longopt) + 4;
-            }
-
-            if (len > width) {
-                width = len;
-            }
+            len += strlen(option->argname) + 1;
+        }
+        if (longhelp && option->longopt) {
+            len += strlen(option->longopt) + 4;
+        }
+        if (len > width) {
+            width = len;
         }
     }
 
@@ -813,10 +813,6 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
         for (o = clp->optionv; o->optopt > 0; ++o) {
             if (isprint(o->optopt)) {
                 *pc++ = o->optopt;
-
-                if (o->convert == clp_convert_bool) {
-                    o->argname = NULL;
-                }
 
                 if (o->argname) {
                     *pc++ = ':';
@@ -1056,6 +1052,14 @@ clp_parsev(int argc, char **argv,
 
         for (o = optionv; o->optopt > 0; ++o) {
             o->clp = &clp;
+
+            /* Initialize/reset from previous run.
+             */
+            o->given = 0;
+
+            if (o->convert == clp_convert_bool || o->convert == clp_convert_incr) {
+                o->argname = NULL;
+            }
 
             if (o->argname && !o->convert) {
                 clp_eprint(&clp, "%s: option -%c requires an argument"

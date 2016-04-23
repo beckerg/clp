@@ -1,0 +1,11 @@
+./prog -L a
+./prog -LL b
+./prog -L -L c
+./prog -LL -L d
+./prog -L -LL e
+./prog -G a
+./prog -GG b
+./prog -G -G c
+./prog -GG -G d
+./prog -G -GG e
+./prog -LLL -G -LLLL -GG -L abcde

@@ -1,0 +1,15 @@
+./prog
+./prog -h
+./prog --help
+./prog -hv
+./prog --help -v
+./prog -V
+./prog -n
+./prog -v
+./prog -vvv
+./prog -C -
+./prog -C main.h
+./prog -C file-that-does-not-exist
+./prog a
+./prog a b
+./prog a b c

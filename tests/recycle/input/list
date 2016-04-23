@@ -1,0 +1,6 @@
+./prog -l
+./prog -l a
+./prog -l a b
+./prog -l a b c
+./prog -l a b c e
+./prog -l a b c e f

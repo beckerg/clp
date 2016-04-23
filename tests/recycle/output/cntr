@@ -1,0 +1,241 @@
++ ./prog -L a
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+lcntr is 1 1
++ ./prog -LL b
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+lcntr is 2 2
++ ./prog -L -L c
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+lcntr is 2 2
++ ./prog -LL -L d
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+lcntr is 3 3
++ ./prog -L -LL e
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+lcntr is 3 3
++ ./prog -G a
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 1 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 2 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 3 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 4 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 5 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 6 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 7 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 8 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 9 1
+posparamv_default_after: name=src...        argv[0]=a
+gcntr is 10 1
++ ./prog -GG b
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 4 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 6 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 8 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 10 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 12 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 14 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 16 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 18 2
+posparamv_default_after: name=src...        argv[0]=b
+gcntr is 20 2
++ ./prog -G -G c
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 2 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 4 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 6 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 8 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 10 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 12 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 14 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 16 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 18 2
+posparamv_default_after: name=src...        argv[0]=c
+gcntr is 20 2
++ ./prog -GG -G d
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 6 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 9 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 12 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 15 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 18 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 21 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 24 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 27 3
+posparamv_default_after: name=src...        argv[0]=d
+gcntr is 30 3
++ ./prog -G -GG e
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 6 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 9 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 12 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 15 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 18 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 21 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 24 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 27 3
+posparamv_default_after: name=src...        argv[0]=e
+gcntr is 30 3
++ ./prog -LLL -G -LLLL -GG -L abcde
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 3 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 6 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 9 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 12 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 15 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 18 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 21 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 24 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 27 3
+posparamv_default_after: name=src...        argv[0]=abcde
+lcntr is 8 8
+gcntr is 30 3
