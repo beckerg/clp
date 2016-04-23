@@ -3,3 +3,4 @@
 ./prog -s bar
 ./prog -s "i am a string"
 ./prog -s 'and so am i'
+./prog -s 'string one' -s 'string two' -s 'string three'

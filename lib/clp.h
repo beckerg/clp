@@ -138,8 +138,9 @@ typedef struct clp_option_s {
     /* The following fields are used by the option parser, whereas the above
      * fields are supplied by the user.
      */
-    struct clp_s       *clp;
+    struct clp_s       *clp;            // Not valid when parser returns
     int                 given;          // Count of time this option was given
+    const char         *optarg;         // optarg from getopt()
     int                 longidx;        // Index into cli->longopts[]
 } clp_option_t;
 

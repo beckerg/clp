@@ -17,6 +17,7 @@ FILE *cf;
 char *dst_path;
 
 int lcntr, gcntr;
+char *mystring = "default is non-null";
 
 clp_posparam_cb_t posparamv_default_after;
 clp_posparam_cb_t posparamv_list_after;
@@ -73,6 +74,7 @@ clp_option_t optionv[] = {
 
     CLP_OPTION(incr, 'L', lcntr, NULL, "increment a local int counter"),
     CLP_OPTION(incr, 'G', gcntr, NULL, "increment a global int counter"),
+    CLP_OPTION(string, 's', mystring, NULL, "specify a string"),
     
     CLP_OPTION_END
 };
@@ -151,6 +153,9 @@ main(int argc, char **argv)
 
         if (given('G'))
             printf("gcntr is %d %d\n", gcntr, given('G'));
+
+        if (given('s'))
+            printf("mystring is %s %d\n", mystring, given('s'));
 
         for (j = argc; j < xoptind; ++j) {
             printf("posparams: %d %s\n", j, argv[j]);
