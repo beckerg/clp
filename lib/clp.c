@@ -53,7 +53,7 @@ clp_posparam_t clp_posparam_none[] = {
 /* dprint() prints a message if (lvl >= clp_debug).
  */
 #ifdef CLP_DEBUG
-static int clp_debug;
+static int clp_debug = 3;
 
 #define dprint(lvl, ...)                                                \
 do {                                                                    \

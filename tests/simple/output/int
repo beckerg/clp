@@ -1,7 +1,7 @@
 + ./prog -i 1073741824
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 1073741824 1
@@ -15,7 +15,7 @@ z is true 0
 + ./prog -i -1073741824
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is -1073741824 1
@@ -31,7 +31,7 @@ prog: unable to convert '-i 2147483648': Result too large
 + ./prog -i -2147483648
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is -2147483648 1
@@ -49,7 +49,7 @@ prog: unable to convert '-i -4294967295': Result too large
 + ./prog -I 1073741824
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -65,7 +65,7 @@ prog: unable to convert '-I -1073741824': Result too large
 + ./prog -I 2147483648
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -81,7 +81,7 @@ prog: unable to convert '-I -2147483648': Result too large
 + ./prog -I 4294967295
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0

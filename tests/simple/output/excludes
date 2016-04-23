@@ -1,7 +1,7 @@
 + ./prog -x
 progname is prog
 verbosity is 0 0
-argc=2 optind=2
+argc=2 xoptind=2
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -15,7 +15,7 @@ z is true 0
 + ./prog -y
 progname is prog
 verbosity is 0 0
-argc=2 optind=2
+argc=2 xoptind=2
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -29,7 +29,7 @@ z is true 0
 + ./prog -z
 progname is prog
 verbosity is 0 0
-argc=2 optind=2
+argc=2 xoptind=2
 dryrun is 0 0
 cf is nil 0
 myint is 0 0

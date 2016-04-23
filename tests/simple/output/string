@@ -3,7 +3,7 @@ prog: option -s requires a parameter, use -h for help
 + ./prog -s foo
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -17,7 +17,7 @@ z is true 0
 + ./prog -s bar
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -31,7 +31,7 @@ z is true 0
 + ./prog -s 'i am a string'
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -45,7 +45,7 @@ z is true 0
 + ./prog -s 'and so am i'
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0

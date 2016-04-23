@@ -1,7 +1,7 @@
 + ./prog -l 0
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -15,7 +15,7 @@ z is true 0
 + ./prog -l 1
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -29,7 +29,7 @@ z is true 0
 + ./prog -l 2
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -43,7 +43,7 @@ z is true 0
 + ./prog -l -1
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -57,7 +57,7 @@ z is true 0
 + ./prog -l -2
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -71,7 +71,7 @@ z is true 0
 + ./prog -l -3
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -85,7 +85,7 @@ z is true 0
 + ./prog -l 0 -l 1 -l 2
 progname is prog
 verbosity is 0 0
-argc=7 optind=7
+argc=7 xoptind=7
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -99,7 +99,7 @@ z is true 0
 + ./prog -l -1 -l -2 -l -3
 progname is prog
 verbosity is 0 0
-argc=7 optind=7
+argc=7 xoptind=7
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -115,7 +115,7 @@ z is true 0
 + ./prog -l 9223372036854775807
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -131,7 +131,7 @@ z is true 0
 + ./prog -l -9223372036854775807
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -153,7 +153,7 @@ prog: unable to convert '-l -18446744073709551615': Result too large
 + ./prog -L 0
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -167,7 +167,7 @@ z is true 0
 + ./prog -L 1
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -181,7 +181,7 @@ z is true 0
 + ./prog -L 2
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -195,7 +195,7 @@ z is true 0
 + ./prog -L -1
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -209,7 +209,7 @@ z is true 0
 + ./prog -L -2
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -223,7 +223,7 @@ z is true 0
 + ./prog -L -3
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -237,7 +237,7 @@ z is true 0
 + ./prog -L 0 -L 1 -L 2
 progname is prog
 verbosity is 0 0
-argc=7 optind=7
+argc=7 xoptind=7
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -251,7 +251,7 @@ z is true 0
 + ./prog -L -1 -L -2 -L -3
 progname is prog
 verbosity is 0 0
-argc=7 optind=7
+argc=7 xoptind=7
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -267,7 +267,7 @@ z is true 0
 + ./prog -l 9223372036854775807
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -283,7 +283,7 @@ z is true 0
 + ./prog -l -9223372036854775807
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -299,7 +299,7 @@ z is true 0
 + ./prog -L 18446744073709551615
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0
@@ -315,7 +315,7 @@ z is true 0
 + ./prog -L -18446744073709551615
 progname is prog
 verbosity is 0 0
-argc=3 optind=3
+argc=3 xoptind=3
 dryrun is 0 0
 cf is nil 0
 myint is 0 0

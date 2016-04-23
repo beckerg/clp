@@ -116,7 +116,7 @@ int
 main(int argc, char **argv)
 {
     char errbuf[CLP_ERRBUFSZ];
-    int optind;
+    int xoptind;
     int i, j;
     int rc;
 
@@ -126,7 +126,7 @@ main(int argc, char **argv)
     for (i = 0; i < 10; ++i) {
         lcntr = 0;
 
-        rc = clp_parsev(argc, argv, optionv, posparamv_default, errbuf, &optind);
+        rc = clp_parsev(argc, argv, optionv, posparamv_default, errbuf, &xoptind);
         if (rc) {
             fprintf(stderr, "%s: %s\n", progname, errbuf);
             exit(rc);
@@ -152,7 +152,7 @@ main(int argc, char **argv)
         if (given('G'))
             printf("gcntr is %d %d\n", gcntr, given('G'));
 
-        for (j = argc; j < optind; ++j) {
+        for (j = argc; j < xoptind; ++j) {
             printf("posparams: %d %s\n", j, argv[j]);
         }
     }
