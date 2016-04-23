@@ -6,6 +6,8 @@
 #include "main.h"
 #include "clp.h"
 
+char *progname;
+
 int
 main(int argc, char **argv)
 {
@@ -24,7 +26,6 @@ main(int argc, char **argv)
     }
 
     printf("progname is %s\n", progname);
-    printf("verbosity is %d\n", verbosity);
     printf("argc=%d optind=%d\n", argc, optind);
 
     argc -= optind;

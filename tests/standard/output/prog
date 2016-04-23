@@ -11,8 +11,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -h     print this help list
 -n     trace execution but do not change anything
--v     increase verbosity
 -V     print version
+-v     increase verbosity
 
 progname is prog
 verbosity is 0 0
@@ -26,8 +26,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -h     print this help list
 -n     trace execution but do not change anything
--v     increase verbosity
 -V     print version
+-v     increase verbosity
 
 progname is prog
 verbosity is 1 1

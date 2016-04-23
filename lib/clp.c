@@ -46,21 +46,18 @@
 //#define CLP_DEBUG
 
 
-__attribute__((weak)) char *progname;
-__attribute__((weak)) int verbosity;
-
 clp_posparam_t clp_posparam_none[] = {
     { .name = NULL }
 };
 
-/* dprint() prints a message if (lvl >= verbosity).  'verbosity' is
- * increased by one each time the -v option is given on the command
- * line.
+/* dprint() prints a message if (lvl >= clp_debug).
  */
 #ifdef CLP_DEBUG
+static int clp_debug;
+
 #define dprint(lvl, ...)                                                \
 do {                                                                    \
-    if (verbosity >= (lvl)) {                                           \
+    if (clp_debug >= (lvl)) {                                           \
         clp_printf(stdout, __func__, __LINE__, __VA_ARGS__);            \
     }                                                                   \
 } while (0);
@@ -74,10 +71,9 @@ clp_printf(FILE *fp, const char *func, int line, const char *fmt, ...)
     int msglen;
     va_list ap;
 
+    msg[0] = '\000';
     if (func) {
         snprintf(msg, sizeof(msg), "%4d %-12s ", line, func);
-    } else {
-        snprintf(msg, sizeof(msg), "%s: ", progname);
     }
     msglen = strlen(msg);
 
@@ -570,7 +566,11 @@ clp_help_cmp(const void *lhs, const void *rhs)
 
     int lc = isupper((*l)->optopt) ? tolower((*l)->optopt) : (*l)->optopt;
     int rc = isupper((*r)->optopt) ? tolower((*r)->optopt) : (*r)->optopt;
-    
+
+    if (lc == rc) {
+        return (isupper((*l)->optopt) ? -1 : 1);
+    }
+
     return (lc - rc);
 }
 

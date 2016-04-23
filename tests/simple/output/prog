@@ -20,12 +20,12 @@ usage: prog -V
 -h           print this help list
 -I myuint    specify a u_int
 -i myint     specify an int
--l mylong    specify a long
 -L myulong   specify a u_long
+-l mylong    specify a long
 -n           trace execution but do not change anything
 -s mystring  specify a string
--v           increase verbosity
 -V           print version
+-v           increase verbosity
 -x           specify x flag
 -y           specify y flag
 -z           specify z flag
@@ -51,12 +51,12 @@ usage: prog -V
 -h           print this help list
 -I myuint    specify a u_int
 -i myint     specify an int
--l mylong    specify a long
 -L myulong   specify a u_long
+-l mylong    specify a long
 -n           trace execution but do not change anything
 -s mystring  specify a string
--v           increase verbosity
 -V           print version
+-v           increase verbosity
 -x           specify x flag
 -y           specify y flag
 -z           specify z flag

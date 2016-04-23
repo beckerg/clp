@@ -9,8 +9,8 @@ usage: prog -V
 -h     print this help list
 -l     list...
 -n     trace execution but do not change anything
--v     increase verbosity
 -V     print version
+-v     increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -29,8 +29,8 @@ usage: prog -V
 -h     print this help list
 -l     list...
 -n     trace execution but do not change anything
--v     increase verbosity
 -V     print version
+-v     increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files

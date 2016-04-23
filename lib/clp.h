@@ -88,8 +88,6 @@ extern FILE *clp_dprint_fp;
 extern FILE *clp_eprint_fp;
 extern FILE *clp_vprint_fp;
 
-extern int verbosity;
-
 extern void clp_printf(FILE *fp , const char *file, int line, const char *fmt, ...);
 
 

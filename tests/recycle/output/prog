@@ -8,8 +8,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -24,8 +24,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -40,8 +40,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -56,8 +56,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -72,8 +72,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -88,8 +88,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -104,8 +104,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -120,8 +120,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -136,8 +136,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -152,8 +152,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -169,8 +169,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -185,8 +185,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -201,8 +201,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -217,8 +217,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -233,8 +233,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -249,8 +249,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -265,8 +265,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -281,8 +281,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -297,8 +297,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -313,8 +313,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -330,8 +330,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -347,8 +347,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -364,8 +364,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -381,8 +381,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -398,8 +398,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -415,8 +415,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -432,8 +432,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -449,8 +449,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -466,8 +466,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -483,8 +483,8 @@ usage: prog -V
 -C cf  specify a configuration file
 -G     increment a global int counter
 -h     print this help list
--l     list...
 -L     increment a local int counter
+-l     list...
 -n     trace execution but do not change anything
 -V     print version
 -v     increase verbosity
@@ -501,8 +501,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -518,8 +518,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -535,8 +535,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -552,8 +552,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -569,8 +569,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -586,8 +586,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -603,8 +603,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -620,8 +620,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -637,8 +637,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity
@@ -654,8 +654,8 @@ usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
 -h, --help     print this help list
--l, --list     list...
 -L             increment a local int counter
+-l, --list     list...
 -n, --dryrun   trace execution but do not change anything
 -V, --version  print version
 -v             increase verbosity

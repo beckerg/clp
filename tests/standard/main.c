@@ -8,13 +8,15 @@
 #include "clp.h"
 
 char version[] = "version...";
+char *progname;
+int verbosity;
 int dryrun;
 FILE *cf;
 
 clp_option_t optionv[] = {
     CLP_OPTION_VERBOSE(verbosity),
-    CLP_OPTION_DRYRUN(dryrun),
     CLP_OPTION_VERSION(version),
+    CLP_OPTION_DRYRUN(dryrun),
     CLP_OPTION_CONF(cf),
     CLP_OPTION_HELP,
 
