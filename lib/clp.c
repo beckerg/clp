@@ -155,7 +155,7 @@ clp_convert_string(void *cvtarg, const char *str, void *dst)
 }
 
 int
-clp_convert_file(void *cvtarg, const char *str, void *dst)
+clp_convert_fopen(void *cvtarg, const char *str, void *dst)
 {
     char *mode = cvtarg ? cvtarg : "r";
     FILE **result = dst;
@@ -164,10 +164,26 @@ clp_convert_file(void *cvtarg, const char *str, void *dst)
         errno = EINVAL;
         return EX_DATAERR;
     }
-    
+
     *result = fopen(str, mode);
 
     return *result ? 0 : EX_NOINPUT;
+}
+
+int
+clp_convert_open(void *cvtarg, const char *str, void *dst)
+{
+    int flags = cvtarg ? *(int *)cvtarg : O_RDONLY;
+    int *result = dst;
+
+    if (!result) {
+        errno = EINVAL;
+        return EX_DATAERR;
+    }
+
+    *result = open(str, flags);
+
+    return (*result >= 0) ? 0 : EX_NOINPUT;
 }
 
 int

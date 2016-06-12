@@ -32,6 +32,26 @@
 #define CLP_OPTION_END      { .optopt = 0 }
 #define CLP_PARAM_END       { .name = NULL }
 
+/* List of conversion routines provided by clp.
+ *
+ * xtype        .result         .cvtarg
+ *
+ * bool         bool *
+ * char         char *
+ * u_char       u_char *
+ * short        short *
+ * u_short      u_short *
+ * int          int *
+ * u_int        u_int *
+ * long         long *
+ * u_long       u_long *
+ * intXX_t      intXX_t *
+ * u_intXX_t    u_intXX_t *
+ * string       char *
+ * fopen        FILE **         mode arg ptr to fopen()
+ * open         int *           flags arg ptr to open()
+ */
+
 #define CLP_OPTION(xtype, xoptopt, xargname, xexcl, xhelp)          \
     { CLP_OPTION_TMPL((xoptopt), #xargname, (xexcl), NULL,          \
                       clp_convert_ ## xtype, &(xargname), 0,        \
@@ -60,7 +80,7 @@
 
 #define CLP_OPTION_CONF(xconf)                                      \
     { CLP_OPTION_TMPL('C', #xconf, NULL, #xconf,                    \
-                      clp_convert_file, &(xconf), 0,                \
+                      clp_convert_fopen, &(xconf), 0,               \
                       NULL, NULL, NULL,                             \
                       "specify a configuration file") }
 
@@ -164,7 +184,8 @@ extern void clp_option_priv1_set(clp_option_t *option, void *priv1);
 extern clp_convert_t clp_convert_bool;
 
 extern clp_convert_t clp_convert_string;
-extern clp_convert_t clp_convert_file;
+extern clp_convert_t clp_convert_fopen;
+extern clp_convert_t clp_convert_open;
 extern clp_convert_t clp_convert_incr;
 
 extern clp_convert_t clp_convert_int;
