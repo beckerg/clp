@@ -45,6 +45,14 @@
 
 //#define CLP_DEBUG
 
+#ifdef __linux__
+#define strtoq      strtol
+#define strtouq     strtoul
+#define QUAD_MIN    LONG_MIN
+#define QUAD_MAX    LONG_MAX
+#define UQUAD_MAX   ULONG_MAX
+#endif
+
 
 clp_posparam_t clp_posparam_none[] = {
     { .name = NULL }
@@ -148,7 +156,7 @@ clp_convert_string(void *cvtarg, const char *str, void *dst)
         errno = EINVAL;
         return EX_DATAERR;
     }
-    
+
     *result = strdup(str);
 
     return *result ? 0 : EX_OSERR;
@@ -869,7 +877,10 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     /* Reset getopt_long().
      * TODO: Create getopt_long_r() for MT goodness.
      */
+#ifdef __freebsd__
     optreset = 1;
+#endif
+
     optind = 1;
 
     while (1) {
