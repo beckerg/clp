@@ -21,6 +21,14 @@ bool xflag = false;
 bool yflag = false;
 bool zflag = true;
 
+long myvec[5];
+
+clp_cvtparms_t myvec_parms = {
+    .min = 2,
+    .max = sizeof(myvec) / sizeof(myvec[0]),
+    .delim = ",",
+};
+
 clp_option_t optionv[] = {
     CLP_OPTION_VERBOSE(verbosity),
     CLP_OPTION_VERSION(version),
@@ -35,6 +43,11 @@ clp_option_t optionv[] = {
     CLP_OPTION(u_long, 'L', myulong, NULL, NULL, "specify a u_long"),
 
     CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
+
+    { .optopt = 'o', .argname = "vec",
+      .convert = clp_convert_long, .cvtparms = &myvec_parms,
+      .cvtdst = myvec,
+      .help = "specify a vector of longs" },
 
     // Example of a bunch of mutually exclusive boolean options.
     CLP_OPTION(bool, 'x', xflag, NULL, "yz", "specify x flag"),
@@ -99,6 +112,14 @@ main(int argc, char **argv)
     printf("x is %s %d\n", xflag ? "true" : "false", given('x'));
     printf("y is %s %d\n", yflag ? "true" : "false", given('y'));
     printf("z is %s %d\n", zflag ? "true" : "false", given('z'));
+
+    if (given('o')) {
+        printf("myvec is: ");
+        for (i = 0; i < myvec_parms.len; ++i) {
+            printf(" %ld", myvec[i]);
+        }
+        printf("\n");
+    }
 
     return 0;
 }
