@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <float.h>
 #include <string.h>
 
 #include "main.h"
@@ -16,6 +17,8 @@ int myint;
 unsigned int myuint;
 long mylong;
 unsigned long myulong;
+float myfloat;
+double mydouble;
 char *mystring = "default";
 bool xflag = false;
 bool yflag = false;
@@ -35,6 +38,9 @@ clp_option_t optionv[] = {
     CLP_OPTION_DRYRUN(dryrun),
     CLP_OPTION_CONF(cf),
     CLP_OPTION_HELP,
+
+    CLP_OPTION(float, 'f', myfloat, NULL, NULL, "specify a float"),
+    CLP_OPTION(double, 'd', mydouble, NULL, NULL, "specify a double"),
 
     CLP_OPTION(int, 'i', myint, NULL, NULL, "specify an int"),
     CLP_OPTION(u_int, 'I', myuint, NULL, NULL, "specify a u_int"),
@@ -112,6 +118,14 @@ main(int argc, char **argv)
     printf("x is %s %d\n", xflag ? "true" : "false", given('x'));
     printf("y is %s %d\n", yflag ? "true" : "false", given('y'));
     printf("z is %s %d\n", zflag ? "true" : "false", given('z'));
+
+    if (given('f')) {
+        printf("f is %.*g\n", FLT_DECIMAL_DIG, myfloat);
+    }
+
+    if (given('d')) {
+        printf("d is %.*lf\n", DBL_DECIMAL_DIG, mydouble);
+    }
 
     if (given('o')) {
         printf("myvec is: ");

@@ -32,6 +32,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <inttypes.h>
+#include <float.h>
 #include <string.h>
 #include <errno.h>
 #include <assert.h>
@@ -201,6 +202,12 @@ clp_convert_incr(const char *optarg, int flags, void *parms, void *dst)
     return 0;
 }
 
+static double
+clp_strtold(const char * restrict nptr, char ** restrict endptr, int base)
+{
+    return strtold(nptr, endptr);
+}
+
 /* This template produces type-specific functions to convert a string
  * of one or more delimited numbers to a single/vector of integers.
  *
@@ -208,7 +215,7 @@ clp_convert_incr(const char *optarg, int flags, void *parms, void *dst)
  * can be parsed by strtol().  If cvtarg is not nil, then it points to
  * a clp_cvtparms_t structure which describes how to parse optarg.
  */
-#define CLP_CONVERT_INTXX(_xsuffix, _xtype, _xmin, _xmax, _xvaltype, _xvalcvt) \
+#define CLP_CONVERT_XX(_xsuffix, _xtype, _xmin, _xmax, _xvaltype, _xvalcvt) \
 int                                                                     \
 clp_convert_ ## _xsuffix(const char *optarg, int flags, void *params, void *dst) \
 {                                                                       \
@@ -293,38 +300,41 @@ clp_convert_ ## _xsuffix(const char *optarg, int flags, void *params, void *dst)
     return errno ? EX_DATAERR : 0;                                      \
 }
 
-CLP_CONVERT_INTXX(char,     char,       CHAR_MIN,   CHAR_MAX,   long,       strtol);
-CLP_CONVERT_INTXX(u_char,   u_char,     0,          UCHAR_MAX,  u_long,     strtoul);
+CLP_CONVERT_XX(char,        char,       CHAR_MIN,   CHAR_MAX,   long,       strtol);
+CLP_CONVERT_XX(u_char,      u_char,     0,          UCHAR_MAX,  u_long,     strtoul);
 
-CLP_CONVERT_INTXX(short,    short,      SHRT_MIN,   SHRT_MAX,   long,      strtol);
-CLP_CONVERT_INTXX(u_short,  u_short,    0,          USHRT_MAX,  u_long,     strtoul);
+CLP_CONVERT_XX(short,       short,      SHRT_MIN,   SHRT_MAX,   long,      strtol);
+CLP_CONVERT_XX(u_short,     u_short,    0,          USHRT_MAX,  u_long,     strtoul);
 
-CLP_CONVERT_INTXX(int,      int,        INT_MIN,    INT_MAX,    long,        strtol);
-CLP_CONVERT_INTXX(u_int,    u_int,      0,          UINT_MAX,   u_long,     strtoul);
+CLP_CONVERT_XX(int,         int,        INT_MIN,    INT_MAX,    long,        strtol);
+CLP_CONVERT_XX(u_int,       u_int,      0,          UINT_MAX,   u_long,     strtoul);
 
-CLP_CONVERT_INTXX(long,     long,       LONG_MIN,   LONG_MAX,   long,       strtol);
-CLP_CONVERT_INTXX(u_long,   u_long,     0,          ULONG_MAX,  u_long,     strtoul);
+CLP_CONVERT_XX(long,        long,       LONG_MIN,   LONG_MAX,   long,       strtol);
+CLP_CONVERT_XX(u_long,      u_long,     0,          ULONG_MAX,  u_long,     strtoul);
 
-CLP_CONVERT_INTXX(int8_t,   int8_t,     INT8_MIN,   INT8_MAX,   long,       strtol);
-CLP_CONVERT_INTXX(uint8_t,  uint8_t,    0,          UINT8_MAX,  u_long,     strtoul);
+CLP_CONVERT_XX(float,       float,      -FLT_MAX,   FLT_MAX,    long double, clp_strtold);
+CLP_CONVERT_XX(double,      double,     -DBL_MAX,   DBL_MAX,    long double, clp_strtold);
 
-CLP_CONVERT_INTXX(int16_t,  int16_t,    INT16_MIN,  INT16_MAX,  long,       strtol);
-CLP_CONVERT_INTXX(uint16_t, uint16_t,   0,          UINT16_MAX, u_long,     strtoul);
+CLP_CONVERT_XX(int8_t,      int8_t,     INT8_MIN,   INT8_MAX,   long,       strtol);
+CLP_CONVERT_XX(uint8_t,     uint8_t,    0,          UINT8_MAX,  u_long,     strtoul);
 
-CLP_CONVERT_INTXX(int32_t,  int32_t,    INT32_MIN,  INT32_MAX,  long,       strtol);
-CLP_CONVERT_INTXX(uint32_t, uint32_t,   0,          UINT32_MAX, u_long,     strtoul);
+CLP_CONVERT_XX(int16_t,     int16_t,    INT16_MIN,  INT16_MAX,  long,       strtol);
+CLP_CONVERT_XX(uint16_t,    uint16_t,   0,          UINT16_MAX, u_long,     strtoul);
 
-CLP_CONVERT_INTXX(int64_t,  int64_t,    INT64_MIN,  INT64_MAX,  long long,  strtoll);
-CLP_CONVERT_INTXX(uint64_t, uint64_t,   0,          UINT64_MAX, unsigned long long, strtoull);
+CLP_CONVERT_XX(int32_t,     int32_t,    INT32_MIN,  INT32_MAX,  long,       strtol);
+CLP_CONVERT_XX(uint32_t,    uint32_t,   0,          UINT32_MAX, u_long,     strtoul);
 
-CLP_CONVERT_INTXX(intmax_t, intmax_t,   0,          INT_MAX,    intmax_t,   strtoimax);
-CLP_CONVERT_INTXX(uintmax_t,uintmax_t,  0,          UINT_MAX,   uintmax_t,  strtoumax);
+CLP_CONVERT_XX(int64_t,     int64_t,    INT64_MIN,  INT64_MAX,  long long,  strtoll);
+CLP_CONVERT_XX(uint64_t,    uint64_t,   0,          UINT64_MAX, unsigned long long, strtoull);
 
-CLP_CONVERT_INTXX(intptr_t, intptr_t,   0,          INT_MAX,    intptr_t,   strtoimax);
-CLP_CONVERT_INTXX(uintptr_t, uintptr_t, 0,          UINT_MAX,   uintptr_t,  strtoumax);
+CLP_CONVERT_XX(intmax_t,    intmax_t,   0,          INT_MAX,    intmax_t,   strtoimax);
+CLP_CONVERT_XX(uintmax_t,   uintmax_t,  0,          UINT_MAX,   uintmax_t,  strtoumax);
 
-CLP_CONVERT_INTXX(size_t,   size_t,     0,          SIZE_T_MAX, unsigned long long, strtoull);
-CLP_CONVERT_INTXX(time_t,   time_t,     0,          LONG_MAX,   long long,  strtoll);
+CLP_CONVERT_XX(intptr_t,    intptr_t,   0,          INT_MAX,    intptr_t,   strtoimax);
+CLP_CONVERT_XX(uintptr_t,   uintptr_t, 0,          UINT_MAX,   uintptr_t,  strtoumax);
+
+CLP_CONVERT_XX(size_t,      size_t,     0,          SIZE_MAX,   unsigned long long, strtoull);
+CLP_CONVERT_XX(time_t,      time_t,     0,          LONG_MAX,   long long,  strtoll);
 
 
 /* Return true if the two specified options are mutually exclusive.

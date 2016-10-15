@@ -224,6 +224,9 @@ extern clp_convert_t clp_convert_long;
 extern clp_convert_t clp_convert_ulong;
 extern clp_convert_t clp_convert_u_long;
 
+extern clp_convert_t clp_convert_float;
+extern clp_convert_t clp_convert_double;
+
 extern clp_convert_t clp_convert_int8;
 extern clp_convert_t clp_convert_int8_t;
 
@@ -247,6 +250,15 @@ extern clp_convert_t clp_convert_int64_t;
 
 extern clp_convert_t clp_convert_uint64;
 extern clp_convert_t clp_convert_uint64_t;
+
+extern clp_convert_t clp_convert_intmax_t;
+extern clp_convert_t clp_convert_uintmax_t;
+
+extern clp_convert_t clp_convert_intptr_t;
+extern clp_convert_t clp_convert_uintptr_t;
+
+extern clp_convert_t clp_convert_size_t;
+extern clp_convert_t clp_convert_time_t;
 
 
 extern clp_option_cb_t clp_help;
