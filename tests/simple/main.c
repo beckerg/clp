@@ -51,7 +51,7 @@ clp_option_t optionv[] = {
     CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
 
     { .optopt = 'o', .argname = "vec",
-      .convert = clp_convert_long, .cvtparms = &myvec_parms,
+      .convert = clp_cvt_long, .cvtparms = &myvec_parms,
       .cvtdst = myvec,
       .help = "specify a vector of longs" },
 

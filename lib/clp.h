@@ -67,7 +67,7 @@
 
 #define CLP_OPTION(xtype, xoptopt, xargname, xlongopt, xexcl, xhelp) \
     { CLP_OPTION_TMPL((xoptopt), #xargname, (xexcl), (xlongopt),     \
-                      clp_convert_ ## xtype, 0, NULL, &(xargname),  \
+                      clp_cvt_ ## xtype, 0, NULL, &(xargname),       \
                       NULL, NULL, NULL, (xhelp)) }
 
 #define CLP_OPTION_VERBOSE(xverbose)                                \
@@ -87,13 +87,13 @@
 
 #define CLP_OPTION_DRYRUN(xdryrun)                                  \
     { CLP_OPTION_TMPL('n', NULL, NULL, #xdryrun,                    \
-                      clp_convert_incr, 0, NULL, &(xdryrun),        \
+                      clp_cvt_incr, 0, NULL, &(xdryrun),            \
                       NULL, NULL, NULL,                             \
                       "trace execution but do not change anything") }
 
 #define CLP_OPTION_CONF(xconf)                                      \
     { CLP_OPTION_TMPL('C', #xconf, NULL, #xconf,                    \
-                      clp_convert_fopen, 0, NULL, &(xconf),         \
+                      clp_cvt_fopen, 0, NULL, &(xconf),             \
                       NULL, NULL, NULL,                             \
                       "specify a configuration file") }
 
@@ -129,7 +129,7 @@ struct clp_s;
 struct clp_option_s;
 struct clp_posparam_s;
 
-typedef int clp_convert_t(const char *optarg, int flags, void *parms, void *dst);
+typedef int clp_cvt_t(const char *optarg, int flags, void *parms, void *dst);
 
 typedef void clp_option_cb_t(struct clp_option_s *option);
 
@@ -138,7 +138,7 @@ typedef void clp_posparam_cb_t(struct clp_posparam_s *param);
 typedef struct clp_posparam_s {
     const char         *name;           // Name shown by help for the parameter
     const char         *help;           // One line that descibes this parameter
-    clp_convert_t      *convert;        // Called for each positional argument
+    clp_cvt_t          *convert;        // Called for each positional argument
     int                 cvtflags;       // Arg 2 to convert()
     void               *cvtparms;       // Arg 3 to convert()
     void               *cvtdst;         // Where convert() stores its output
@@ -162,7 +162,7 @@ typedef struct clp_option_s {
     const char         *excludes;       // List of options excluded by optopt
     const char         *longopt;        // Long option name for getopt
     const char         *help;           // One line that describes this option
-    clp_convert_t      *convert;        // Function to convert optarg
+    clp_cvt_t          *convert;        // Function to convert optarg
     int                 cvtflags;       // Arg 2 to convert()
     void               *cvtparms;       // Arg 3 to convert()
     void               *cvtdst;         // Where convert() stores its result
@@ -205,60 +205,60 @@ extern clp_option_t *clp_option_find(clp_option_t *optionv, int optopt);
 
 extern void clp_option_priv1_set(clp_option_t *option, void *priv1);
 
-extern clp_convert_t clp_convert_bool;
+extern clp_cvt_t clp_cvt_bool;
 
-extern clp_convert_t clp_convert_string;
-extern clp_convert_t clp_convert_fopen;
-extern clp_convert_t clp_convert_open;
-extern clp_convert_t clp_convert_incr;
+extern clp_cvt_t clp_cvt_string;
+extern clp_cvt_t clp_cvt_fopen;
+extern clp_cvt_t clp_cvt_open;
+extern clp_cvt_t clp_cvt_incr;
 
-extern clp_convert_t clp_convert_char;
-extern clp_convert_t clp_convert_uchar;
-extern clp_convert_t clp_convert_u_char;
+extern clp_cvt_t clp_cvt_char;
+extern clp_cvt_t clp_cvt_uchar;
+extern clp_cvt_t clp_cvt_u_char;
 
-extern clp_convert_t clp_convert_int;
-extern clp_convert_t clp_convert_uint;
-extern clp_convert_t clp_convert_u_int;
+extern clp_cvt_t clp_cvt_int;
+extern clp_cvt_t clp_cvt_uint;
+extern clp_cvt_t clp_cvt_u_int;
 
-extern clp_convert_t clp_convert_long;
-extern clp_convert_t clp_convert_ulong;
-extern clp_convert_t clp_convert_u_long;
+extern clp_cvt_t clp_cvt_long;
+extern clp_cvt_t clp_cvt_ulong;
+extern clp_cvt_t clp_cvt_u_long;
 
-extern clp_convert_t clp_convert_float;
-extern clp_convert_t clp_convert_double;
+extern clp_cvt_t clp_cvt_float;
+extern clp_cvt_t clp_cvt_double;
 
-extern clp_convert_t clp_convert_int8;
-extern clp_convert_t clp_convert_int8_t;
+extern clp_cvt_t clp_cvt_int8;
+extern clp_cvt_t clp_cvt_int8_t;
 
-extern clp_convert_t clp_convert_uint8;
-extern clp_convert_t clp_convert_uint8_t;
+extern clp_cvt_t clp_cvt_uint8;
+extern clp_cvt_t clp_cvt_uint8_t;
 
-extern clp_convert_t clp_convert_int16;
-extern clp_convert_t clp_convert_int16_t;
+extern clp_cvt_t clp_cvt_int16;
+extern clp_cvt_t clp_cvt_int16_t;
 
-extern clp_convert_t clp_convert_uint16;
-extern clp_convert_t clp_convert_uint16_t;
+extern clp_cvt_t clp_cvt_uint16;
+extern clp_cvt_t clp_cvt_uint16_t;
 
-extern clp_convert_t clp_convert_int32;
-extern clp_convert_t clp_convert_int32_t;
+extern clp_cvt_t clp_cvt_int32;
+extern clp_cvt_t clp_cvt_int32_t;
 
-extern clp_convert_t clp_convert_uint32;
-extern clp_convert_t clp_convert_uint32_t;
+extern clp_cvt_t clp_cvt_uint32;
+extern clp_cvt_t clp_cvt_uint32_t;
 
-extern clp_convert_t clp_convert_int64;
-extern clp_convert_t clp_convert_int64_t;
+extern clp_cvt_t clp_cvt_int64;
+extern clp_cvt_t clp_cvt_int64_t;
 
-extern clp_convert_t clp_convert_uint64;
-extern clp_convert_t clp_convert_uint64_t;
+extern clp_cvt_t clp_cvt_uint64;
+extern clp_cvt_t clp_cvt_uint64_t;
 
-extern clp_convert_t clp_convert_intmax_t;
-extern clp_convert_t clp_convert_uintmax_t;
+extern clp_cvt_t clp_cvt_intmax_t;
+extern clp_cvt_t clp_cvt_uintmax_t;
 
-extern clp_convert_t clp_convert_intptr_t;
-extern clp_convert_t clp_convert_uintptr_t;
+extern clp_cvt_t clp_cvt_intptr_t;
+extern clp_cvt_t clp_cvt_uintptr_t;
 
-extern clp_convert_t clp_convert_size_t;
-extern clp_convert_t clp_convert_time_t;
+extern clp_cvt_t clp_cvt_size_t;
+extern clp_cvt_t clp_cvt_time_t;
 
 
 extern clp_option_cb_t clp_help;
