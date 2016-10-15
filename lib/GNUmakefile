@@ -45,7 +45,7 @@ clean:
 distclean clobber: clean
 	rm -f cscope.files cscope*.out TAGS
 
-check:
+check test:
 
 cscope: cscope.out
 

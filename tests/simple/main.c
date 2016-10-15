@@ -28,18 +28,18 @@ clp_option_t optionv[] = {
     CLP_OPTION_CONF(cf),
     CLP_OPTION_HELP,
 
-    CLP_OPTION(int, 'i', myint, NULL, "specify an int"),
-    CLP_OPTION(u_int, 'I', myuint, NULL, "specify a u_int"),
+    CLP_OPTION(int, 'i', myint, NULL, NULL, "specify an int"),
+    CLP_OPTION(u_int, 'I', myuint, NULL, NULL, "specify a u_int"),
 
-    CLP_OPTION(long, 'l', mylong, NULL, "specify a long"),
-    CLP_OPTION(u_long, 'L', myulong, NULL, "specify a u_long"),
+    CLP_OPTION(long, 'l', mylong, NULL, NULL, "specify a long"),
+    CLP_OPTION(u_long, 'L', myulong, NULL, NULL, "specify a u_long"),
 
-    CLP_OPTION(string, 's', mystring, NULL, "specify a string"),
+    CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
 
     // Example of a bunch of mutually exclusive boolean options.
-    CLP_OPTION(bool, 'x', xflag, "yz", "specify x flag"),
-    CLP_OPTION(bool, 'y', yflag, "xz", "specify y flag"),
-    CLP_OPTION(bool, 'z', zflag, "xy", "specify z flag"),
+    CLP_OPTION(bool, 'x', xflag, NULL, "yz", "specify x flag"),
+    CLP_OPTION(bool, 'y', yflag, NULL, "xz", "specify y flag"),
+    CLP_OPTION(bool, 'z', zflag, NULL, "xy", "specify z flag"),
 
     CLP_OPTION_END
 };

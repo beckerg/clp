@@ -72,10 +72,10 @@ clp_option_t optionv[] = {
         .paramv = posparamv_list,
     },
 
-    CLP_OPTION(incr, 'L', lcntr, NULL, "increment a local int counter"),
-    CLP_OPTION(incr, 'G', gcntr, NULL, "increment a global int counter"),
-    CLP_OPTION(string, 's', mystring, NULL, "specify a string"),
-    
+    CLP_OPTION(incr, 'L', lcntr, NULL, NULL, "increment a local int counter"),
+    CLP_OPTION(incr, 'G', gcntr, NULL, NULL, "increment a global int counter"),
+    CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
+
     CLP_OPTION_END
 };
 

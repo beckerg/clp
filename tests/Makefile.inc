@@ -36,7 +36,7 @@ RESULT := $(patsubst output/%, result/%, ${OUTPUT})
 #
 .DELETE_ON_ERROR:
 
-.PHONY:	all check clean clobber cscope debug distclean etags output tags
+.PHONY:	all check clean clobber cscope debug distclean etags output tags test
 
 
 all: ${PROG}
@@ -47,7 +47,7 @@ clean:
 distclean clobber: clean
 	rm -f cscope.files cscope*.out TAGS
 
-check: ${OUTPUT} ${RESULT}
+check test: ${OUTPUT} ${RESULT}
 
 output/%: input/%
 	env -i PATH=${PATH} bash -x input/${@F} > $@ 2>&1 || true
