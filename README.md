@@ -10,7 +10,7 @@ into your application.  There are no external programs to run to generate the pa
 nor are there any functions to call to set things up (e.g., some tools of this ilk
 require creating an object for each option).
 
-By default, clp builds as a static library, but your best best is probably to simply
+By default, clp builds as a static library, but your best bet is probably to simply
 include clp/lib/clp.[ch] into your project.
 
 TODO:
