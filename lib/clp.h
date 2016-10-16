@@ -180,14 +180,6 @@ typedef struct clp_option_s {
     int                 longidx;        // Index into cli->longopts[]
 } clp_option_t;
 
-typedef struct clp_cvtparms_s {
-    int         min;                    // Vector minimum length
-    int         max;                    // Vector maximum length
-    int         len;                    // Vector current length
-    const char *delim;                  // Delimiter string for strsep
-    void       *priv;                   // Free for use by caller of clp_parse()
-} clp_cvtparms_t;
-
 typedef struct clp_s {
     const char         *basename;       // From argv[0] of clp_parsev()
     clp_option_t       *optionv;        // Argument from clp_parsev()
@@ -198,6 +190,30 @@ typedef struct clp_s {
     int                 opthelp;        // The option tied to opt_help()
     char               *errbuf;
 } clp_t;
+
+
+/* Declare a vector.
+ */
+#define CLP_VECTOR_DECL(_xname, _xtype, _xsize)                        \
+    struct _xname {                                                    \
+        int             min;                                           \
+        int             max;                                           \
+        int             len;                                           \
+        const char     *delim;                                         \
+        void           *priv;                                          \
+        _xtype          data[(_xsize)];                                \
+    }
+
+/* Declare, define, and initialize a vector.
+ */
+#define CLP_VECTOR(_xname, _xtype, _xsize)                             \
+    CLP_VECTOR_DECL(_xname, _xtype, _xsize) _xname = {                 \
+        .min = 1,                                                      \
+        .max = (_xsize),                                               \
+        .delim = ",",                                                  \
+    }
+
+typedef CLP_VECTOR_DECL(clp_vector, char, 0) clp_vector_t;
 
 extern clp_posparam_t clp_posparam_none[];
 

@@ -1,0 +1,96 @@
++ ./prog -j
+prog: option -j requires a parameter, use -h for help
++ ./prog -j,
+progname is prog
+verbosity is 0 0
+argc=2 xoptind=2
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+intv is:  0 0
++ ./prog -j 1
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+intv is:  1
++ ./prog -j 1,2
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+intv is:  1 2
++ ./prog -j 1,2,3
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+intv is:  1 2 3
++ ./prog -j 1,2,3,4
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+intv is:  1 2 3 4
++ ./prog -j 1,2,3,4,5
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+intv is:  1 2 3 4 5
++ ./prog -j 1,2,3,4,5,6
+prog: unable to convert '-j 1,2,3,4,5,6': Argument list too long
++ ./prog -j 1:2
+prog: unable to convert '-j 1:2': Invalid argument

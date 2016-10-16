@@ -1,0 +1,10 @@
+./prog -j
+./prog -j,
+./prog -j 1
+./prog -j 1,2
+./prog -j 1,2,3
+./prog -j 1,2,3,4
+./prog -j 1,2,3,4,5
+./prog -j 1,2,3,4,5,6
+
+./prog -j 1:2

@@ -217,9 +217,9 @@ clp_cvt_strtold(const char * restrict nptr, char ** restrict endptr, int base)
  */
 #define CLP_CVT_XX(_xsuffix, _xtype, _xmin, _xmax, _xvaltype, _xvalcvt) \
 int                                                                     \
-clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *params, void *dst) \
+clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
-    clp_cvtparms_t *parms, parmsbuf;                                    \
+    clp_vector_t *vector, vectorbuf;                                    \
     char *str, *strbase;                                                \
     char *tok, *end;                                                    \
     _xtype *result;                                                     \
@@ -235,12 +235,12 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *params, void *dst) \
         return EX_DATAERR;                                              \
     }                                                                   \
                                                                         \
-    parms = params;                                                     \
-    if (!parms) {                                                       \
-        parms = &parmsbuf;                                              \
-        parms->min = 1;                                                 \
-        parms->max = 1;                                                 \
-        parms->delim = "";                                              \
+    vector = parms;                                                     \
+    if (!vector) {                                                      \
+        vector = &vectorbuf;                                            \
+        vector->min = 1;                                                \
+        vector->max = 1;                                                \
+        vector->delim = "";                                             \
     }                                                                   \
                                                                         \
     str = strdup(optarg);                                               \
@@ -252,8 +252,8 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *params, void *dst) \
     strbase = str;                                                      \
     end = NULL;                                                         \
                                                                         \
-    for (n = 0; n < parms->max; ++n) {                                  \
-        tok = strsep(&str, parms->delim);                               \
+    for (n = 0; n < vector->max; ++n) {                                 \
+        tok = strsep(&str, vector->delim);                              \
         if (!tok) {                                                     \
             break;                                                      \
         }                                                               \
@@ -282,14 +282,14 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *params, void *dst) \
         *result++ = val;                                                \
     }                                                                   \
                                                                         \
-    parms->len = n;                                                     \
+    vector->len = n;                                                    \
                                                                         \
     if (errno) {                                                        \
     }                                                                   \
-    else if (n < parms->min) {                                          \
+    else if (n < vector->min) {                                         \
         errno = EINVAL;                                                 \
     }                                                                   \
-    else if (n >= parms->max && str) {                                  \
+    else if (n >= vector->max && str) {                                 \
         errno = E2BIG;                                                  \
     }                                                                   \
                                                                         \
