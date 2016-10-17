@@ -27,6 +27,8 @@
 #ifndef CLP_H
 #define CLP_H
 
+#include <sys/types.h>
+
 #define CLP_ERRBUFSZ        (128)
 
 #define CLP_OPTION_END      { .optopt = 0 }
@@ -194,23 +196,21 @@ typedef struct clp_s {
 
 /* Declare a vector.
  */
-#define CLP_VECTOR_DECL(_xname, _xtype, _xsize)                        \
-    struct _xname {                                                    \
-        int             min;                                           \
-        int             max;                                           \
-        int             len;                                           \
-        const char     *delim;                                         \
-        void           *priv;                                          \
-        _xtype          data[(_xsize)];                                \
+#define CLP_VECTOR_DECL(_xname, _xtype, _xsize)                         \
+    struct _xname {                                                     \
+        u_int            len;                                           \
+        u_int            size;                                          \
+        const char     *delim;                                          \
+        void           *priv;                                           \
+        _xtype          data[(_xsize)];                                 \
     }
 
 /* Declare, define, and initialize a vector.
  */
-#define CLP_VECTOR(_xname, _xtype, _xsize)                             \
+#define CLP_VECTOR(_xname, _xtype, _xsize, _xdelim)                    \
     CLP_VECTOR_DECL(_xname, _xtype, _xsize) _xname = {                 \
-        .min = 1,                                                      \
-        .max = (_xsize),                                               \
-        .delim = ",",                                                  \
+        .size = (_xsize),                                              \
+        .delim = (_xdelim),                                            \
     }
 
 typedef CLP_VECTOR_DECL(clp_vector, char, 0) clp_vector_t;

@@ -25,7 +25,7 @@ bool yflag = false;
 bool zflag = true;
 
 
-CLP_VECTOR(intv, int, 5);
+CLP_VECTOR(intv, int, 5, ",");
 
 clp_option_t optionv[] = {
     CLP_OPTION_VERBOSE(verbosity),

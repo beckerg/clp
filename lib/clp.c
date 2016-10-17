@@ -219,7 +219,8 @@ clp_cvt_strtold(const char * restrict nptr, char ** restrict endptr, int base)
 int                                                                     \
 clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
-    clp_vector_t *vector, vectorbuf;                                    \
+    CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
+    clp_vector_t *vector;                                               \
     char *str, *strbase;                                                \
     char *tok, *end;                                                    \
     _xtype *result;                                                     \
@@ -235,12 +236,9 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
         return EX_DATAERR;                                              \
     }                                                                   \
                                                                         \
-    vector = parms;                                                     \
-    if (!vector) {                                                      \
-        vector = &vectorbuf;                                            \
-        vector->min = 1;                                                \
-        vector->max = 1;                                                \
-        vector->delim = "";                                             \
+    vector = (void *)&vectorbuf;                                        \
+    if (parms) {                                                        \
+        vector = parms;                                                 \
     }                                                                   \
                                                                         \
     str = strdup(optarg);                                               \
@@ -252,7 +250,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     strbase = str;                                                      \
     end = NULL;                                                         \
                                                                         \
-    for (n = 0; n < vector->max; ++n) {                                 \
+    for (n = 0; n < vector->size; ++n) {                                \
         tok = strsep(&str, vector->delim);                              \
         if (!tok) {                                                     \
             break;                                                      \
@@ -286,10 +284,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
                                                                         \
     if (errno) {                                                        \
     }                                                                   \
-    else if (n < vector->min) {                                         \
-        errno = EINVAL;                                                 \
-    }                                                                   \
-    else if (n >= vector->max && str) {                                 \
+    else if (n >= vector->size && str) {                                \
         errno = E2BIG;                                                  \
     }                                                                   \
                                                                         \
@@ -524,7 +519,6 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
             fprintf(fp, " [-%c %s]", o->optopt, o->argname);
         }
     }
-    
 
     /* Generate the mutually exclusive option usage message...
      */
@@ -599,7 +593,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     next:
         continue;
     }
-    
+
     /* Now, print out the remaining strings of mutually exclusive options.
      */
     for (i = 0; i < listc; ++i) {
@@ -1298,7 +1292,7 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
         free(argv);
         return EX_DATAERR;
     }
-    
+
     if (dst > prev) {
         argv[argc++] = prev;
         *dst++ = '\000';
