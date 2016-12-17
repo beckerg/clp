@@ -13,7 +13,7 @@ x is false 0
 y is false 0
 z is true 0
 + ./prog -h
-usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-x | -y | -z]
+usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-t mytime] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
 -C cf        specify a configuration file
@@ -27,6 +27,7 @@ usage: prog -V
 -l mylong    specify a long
 -n           trace execution but do not change anything
 -s mystring  specify a string
+-t mytime    specify a time_t
 -V           print version
 -v           increase verbosity
 -x           specify x flag
@@ -47,7 +48,7 @@ x is false 0
 y is false 0
 z is true 0
 + ./prog -hv
-usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-x | -y | -z]
+usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-t mytime] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
 -C cf        specify a configuration file
@@ -61,6 +62,7 @@ usage: prog -V
 -l mylong    specify a long
 -n           trace execution but do not change anything
 -s mystring  specify a string
+-t mytime    specify a time_t
 -V           print version
 -v           increase verbosity
 -x           specify x flag

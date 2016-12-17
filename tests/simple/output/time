@@ -1,0 +1,180 @@
++ ./prog -t 1
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 1
++ ./prog -t 1s
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 1
++ ./prog -t 1m
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 60
++ ./prog -t 1h
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 3600
++ ./prog -t 1d
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 86400
++ ./prog -t 1c
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 3153600000
++ ./prog -t 7
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 7
++ ./prog -t 7s
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 7
++ ./prog -t 7m
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 420
++ ./prog -t 7h
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 25200
++ ./prog -t 7d
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 604800
++ ./prog -t 7c
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 0 0
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
+t is 22075200000

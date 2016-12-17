@@ -203,28 +203,52 @@ clp_cvt_incr(const char *optarg, int flags, void *parms, void *dst)
 }
 
 static double
-clp_cvt_strtold(const char * restrict nptr, char ** restrict endptr, int base)
+clp_strtold(const char * restrict nptr, char ** restrict endptr, int base)
 {
     return strtold(nptr, endptr);
+}
+
+static long
+clp_strtotime(const char * restrict nptr, char ** restrict endptr, int base)
+{
+    const long multab[] = { 60, 60, 24, 365, 100 };
+    const char suftab[] = "smhdyc";
+    long val;
+
+    errno = 0;
+    val = strtoull(nptr, endptr, base);
+
+    if (!errno && endptr && *endptr != nptr && *endptr && **endptr) {
+        const char *pc;
+
+        pc = strchr(suftab, tolower(**endptr));
+        if (pc) {
+            while (pc-- > suftab) {
+                val *= multab[pc - suftab];
+            }
+
+            ++(*endptr);
+        }
+    }
+
+    return val;
 }
 
 /* This template produces type-specific functions to convert a string
  * of one or more delimited numbers to a single/vector of integers.
  *
- * If cvtarg is nil, then optarg is expected to be a simple string that
- * can be parsed by strtol().  If cvtarg is not nil, then it points to
- * a clp_cvtparms_t structure which describes how to parse optarg.
+ * Each string to be converted may end in a single character suffix
+ * which amplifies the result.  The suffixes "bkmgtpezy" successively
+ * multiply by 1024, while "BKMGTPEZY" multiply by 1000.
  */
-#define CLP_CVT_XX(_xsuffix, _xtype, _xmin, _xmax, _xvaltype, _xvalcvt) \
+#define CLP_CVT_XX(_xsuffix, _xtype, _xmin, _xmax, _xtypecvt, _xvalcvt) \
 int                                                                     \
 clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
     CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
     clp_vector_t *vector;                                               \
     char *str, *strbase;                                                \
-    char *tok, *end;                                                    \
     _xtype *result;                                                     \
-    _xvaltype val;                                                      \
     int xerrno;                                                         \
     int base;                                                           \
     int n;                                                              \
@@ -248,9 +272,12 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     }                                                                   \
                                                                         \
     strbase = str;                                                      \
-    end = NULL;                                                         \
+    errno = 0;                                                          \
                                                                         \
     for (n = 0; n < vector->size; ++n) {                                \
+        char *tok, *end;                                                \
+        _xtypecvt val;                                                  \
+                                                                        \
         tok = strsep(&str, vector->delim);                              \
         if (!tok) {                                                     \
             break;                                                      \
@@ -268,11 +295,34 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
         if (errno) {                                                    \
             break;                                                      \
         }                                                               \
-        else if (*end) {                                                \
+        if (end == tok) {                                               \
             errno = EINVAL;                                             \
             break;                                                      \
         }                                                               \
-        else if (val < _xmin || val > _xmax) {                          \
+        if (*end) {                                                     \
+            const char suftab[] = "bkmgtpezy";                          \
+            _xtypecvt mult;                                             \
+            const char *pc;                                             \
+                                                                        \
+            pc = strchr(suftab, tolower(*end));                         \
+            if (!pc || end[1]) {                                        \
+                errno = EINVAL;                                         \
+                break;                                                  \
+            }                                                           \
+                                                                        \
+            mult = islower(*end) ? 1024 : 1000;                         \
+                                                                        \
+            while (pc-- > suftab) {                                     \
+                _xtypecvt prev = val;                                   \
+                                                                        \
+                val *= mult;                                            \
+                if (val < prev) {                                       \
+                    errno = ERANGE;                                     \
+                    break;                                              \
+                }                                                       \
+            }                                                           \
+        }                                                               \
+        if (val < _xmin || val > _xmax) {                               \
             errno = ERANGE;                                             \
             break;                                                      \
         }                                                               \
@@ -282,9 +332,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
                                                                         \
     vector->len = n;                                                    \
                                                                         \
-    if (errno) {                                                        \
-    }                                                                   \
-    else if (n >= vector->size && str) {                                \
+    if (!errno && n >= vector->size && str) {                           \
         errno = E2BIG;                                                  \
     }                                                                   \
                                                                         \
@@ -307,8 +355,8 @@ CLP_CVT_XX(u_int,       u_int,      0,          UINT_MAX,   u_long,         strt
 CLP_CVT_XX(long,        long,       LONG_MIN,   LONG_MAX,   long,           strtol);
 CLP_CVT_XX(u_long,      u_long,     0,          ULONG_MAX,  u_long,         strtoul);
 
-CLP_CVT_XX(float,       float,      -FLT_MAX,   FLT_MAX,    long double,    clp_cvt_strtold);
-CLP_CVT_XX(double,      double,     -DBL_MAX,   DBL_MAX,    long double,    clp_cvt_strtold);
+CLP_CVT_XX(float,       float,      -FLT_MAX,   FLT_MAX,    long double,    clp_strtold);
+CLP_CVT_XX(double,      double,     -DBL_MAX,   DBL_MAX,    long double,    clp_strtold);
 
 CLP_CVT_XX(int8_t,      int8_t,     INT8_MIN,   INT8_MAX,   long,           strtol);
 CLP_CVT_XX(uint8_t,     uint8_t,    0,          UINT8_MAX,  u_long,         strtoul);
@@ -329,7 +377,7 @@ CLP_CVT_XX(intptr_t,    intptr_t,   0,          INT_MAX,    intptr_t,       strt
 CLP_CVT_XX(uintptr_t,   uintptr_t,  0,          UINT_MAX,   uintptr_t,      strtoumax);
 
 CLP_CVT_XX(size_t,      size_t,     0,          SIZE_MAX,   unsigned long long, strtoull);
-CLP_CVT_XX(time_t,      time_t,     0,          LONG_MAX,   long long,      strtoll);
+CLP_CVT_XX(time_t,      time_t,     0,          LONG_MAX,   long long,      clp_strtotime);
 
 
 /* Return true if the two specified options are mutually exclusive.
@@ -941,8 +989,13 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     /* Reset getopt_long().
      * TODO: Create getopt_long_r() for MT goodness.
      */
-    optreset = 1;
     optind = 1;
+
+#ifdef __FreeBSD__
+    optreset = 1;
+#else
+#error optreset...
+#endif
 
     while (1) {
         int curind = optind;

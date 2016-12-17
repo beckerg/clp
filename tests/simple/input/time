@@ -1,0 +1,13 @@
+./prog -t 1
+./prog -t 1s
+./prog -t 1m
+./prog -t 1h
+./prog -t 1d
+./prog -t 1c
+
+./prog -t 7
+./prog -t 7s
+./prog -t 7m
+./prog -t 7h
+./prog -t 7d
+./prog -t 7c

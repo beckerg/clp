@@ -1,0 +1,88 @@
++ ./prog -l 1b
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 1 1
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
++ ./prog -l 1k
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 1024 1
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
++ ./prog -l 1g
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 1073741824 1
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
++ ./prog -l 1t
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 1099511627776 1
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
++ ./prog -l 1p
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 1125899906842624 1
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
++ ./prog -l 1e
+progname is prog
+verbosity is 0 0
+argc=3 xoptind=3
+dryrun is 0 0
+cf is nil 0
+myint is 0 0
+myuint is 0 0
+mylong is 1152921504606846976 1
+myulong is 0 0
+mystring is default 0
+x is false 0
+y is false 0
+z is true 0
++ ./prog -l 1z
+prog: unable to convert '-l 1z': Result too large
++ ./prog -l 1y
+prog: unable to convert '-l 1y': Result too large

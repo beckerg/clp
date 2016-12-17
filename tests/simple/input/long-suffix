@@ -1,0 +1,8 @@
+./prog -l 1b
+./prog -l 1k
+./prog -l 1g
+./prog -l 1t
+./prog -l 1p
+./prog -l 1e
+./prog -l 1z
+./prog -l 1y

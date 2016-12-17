@@ -23,6 +23,7 @@ char *mystring = "default";
 bool xflag = false;
 bool yflag = false;
 bool zflag = true;
+time_t mytime;
 
 
 CLP_VECTOR(intv, int, 5, ",");
@@ -53,6 +54,8 @@ clp_option_t optionv[] = {
     CLP_OPTION(bool, 'x', xflag, NULL, "yz", "specify x flag"),
     CLP_OPTION(bool, 'y', yflag, NULL, "xz", "specify y flag"),
     CLP_OPTION(bool, 'z', zflag, NULL, "xy", "specify z flag"),
+
+    CLP_OPTION(time_t, 't', mytime, NULL, NULL, "specify a time_t"),
 
     CLP_OPTION_END
 };
@@ -127,6 +130,10 @@ main(int argc, char **argv)
             printf(" %d", intv.data[i]);
         }
         printf("\n");
+    }
+
+    if (given('t')) {
+        printf("t is %ld\n", mytime);
     }
 
     return 0;
