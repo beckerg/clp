@@ -1,4 +1,4 @@
-SUBDIRS = null standard simple params recycle
+SUBDIRS = null standard simple params recycle breakargs
 
 .PHONY: all ${SUBDIRS} ${MAKECMDGOALS}
 

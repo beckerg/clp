@@ -1,0 +1,25 @@
+# All these tests should pass.
+#
+a
+a,b
+a,b,c
+a,b,c,d
+a,,,d
+a\,b
+a\,b\,c
+a\,b\,c\,d
+a,"b,c",d
+a,'b,c',d
+"a,b","c,d"
+"a,b",'c,d'
+field one, field two, field three
+field one, "field two, field two.5", field three
+,
+,,
+,,,
+, , ,
+
+# All these tests should fail.
+#
+a,"
+a,'

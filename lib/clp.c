@@ -1172,11 +1172,10 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
 }
 
 int
-clp_parsev(int argc, char **argv,
-           clp_option_t *optionv, clp_posparam_t *paramv,
+clp_parsev(int argc, char **argv, clp_option_t *optionv, clp_posparam_t *paramv,
            char *errbuf, int *optindp)
 {
-    char _errbuf[128];
+    char _errbuf[CLP_ERRBUFSZ];
     clp_t clp;
     int rc;
 
@@ -1261,8 +1260,13 @@ clp_parsev(int argc, char **argv,
     return rc;
 }
 
-/* Create a vector of strings from src broken up by spaces.
- * Spaces between arguments are elided.
+/* Create a vector of strings from words in src.
+ *
+ * Words are delimited by any character from sep (or isspace() if
+ * sep is NULL).  Separator characters between arguments are elided.
+ * Separators that are escaped by a backslash and/or occur within
+ * quoted strings lose their significance as separators and are
+ * retained with the word.
  */
 int
 clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char ***argvp)
@@ -1282,12 +1286,12 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
     errbuf = errbuf ?: _errbuf;
 
     if (!src) {
-        snprintf(errbuf, CLP_ERRBUFSZ, "%s: invalid input: src may not be NULL", __func__);
+        snprintf(errbuf, CLP_ERRBUFSZ, "src may not be NULL");
         return EX_SOFTWARE;
     }
 
     srclen = strlen(src);
-    argcmax = (srclen / 2) + 1;
+    argcmax = (srclen / 2) + 3;
 
     /* Allocate enough space to hold the maximum needed pointers
      * plus the entire source string.  This will generally waste
@@ -1297,9 +1301,8 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
 
     argv = malloc(argvsz);
     if (!argv) {
-        snprintf(errbuf, CLP_ERRBUFSZ, "%s: unable to allocate %zu bytes",
-                 __func__, argvsz);
-        return ENOMEM;
+        snprintf(errbuf, CLP_ERRBUFSZ, "unable to allocate %zu bytes", argvsz);
+        return EX_OSERR;
     }
 
     dst = (char *)(argv + argcmax);
@@ -1309,30 +1312,58 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
     while (*src) {
         if (backslash) {
             backslash = false;
-            *dst++ = *src;
-        } else if (*src == '\\') {
+
+            /* TODO: Not sure if we should convert printf escapes
+             * or leave them unconverted in dst.
+             */
+            switch (*src) {
+            case 'a': *dst++ = '\a'; break;
+            case 'b': *dst++ = '\b'; break;
+            case 'f': *dst++ = '\f'; break;
+            case 'n': *dst++ = '\n'; break;
+            case 'r': *dst++ = '\r'; break;
+            case 't': *dst++ = '\t'; break;
+            case 'v': *dst++ = '\v'; break;
+
+            default:
+                if (isdigit(*src)) {
+                    char *end;
+
+                    *dst++ = strtoul(src, &end, 8); // TODO: Test me...
+                    src = end;
+                    continue;
+                }
+
+                *dst++ = *src;
+                break;
+            }
+        }
+        else if (*src == '\\') {
             backslash = true;
-        } else if (*src == '"') {
+        }
+        else if (*src == '"') {
             if (squote) {
                 *dst++ = *src;
             } else {
                 dquote = !dquote;
             }
-        } else if (*src == '\'') {
+        }
+        else if (*src == '\'') {
             if (dquote) {
                 *dst++ = *src;
             } else {
                 squote = !squote;
             }
-        } else if (dquote || squote) {
+        }
+        else if (dquote || squote) {
             *dst++ = *src;
-        } else if ((!sep && isspace(*src)) || (sep && strchr(sep, *src))) {
-            if (dst > prev) {
-                argv[argc++] = prev;
-                *dst++ = '\000';
-                prev = dst;
-            }
-        } else {
+        }
+        else if ((!sep && isspace(*src)) || (sep && strchr(sep, *src))) {
+            argv[argc++] = prev;
+            *dst++ = '\000';
+            prev = dst;
+        }
+        else {
             *dst++ = *src;
         }
 
@@ -1340,8 +1371,8 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
     }
 
     if (dquote || squote) {
-        snprintf(errbuf, CLP_ERRBUFSZ, "%s: unterminated %s quote",
-                 __func__, dquote ? "double" : "single");
+        snprintf(errbuf, CLP_ERRBUFSZ, "unterminated %s quote",
+                 dquote ? "double" : "single");
         free(argv);
         return EX_DATAERR;
     }
@@ -1350,6 +1381,8 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
         argv[argc++] = prev;
         *dst++ = '\000';
     }
+
+    argv[argc] = NULL;
 
     if (argcp) {
         *argcp = argc;
@@ -1363,6 +1396,8 @@ clp_breakargs(const char *src, const char *sep, char *errbuf, int *argcp, char *
     return 0;
 }
 
+/* Like clp_parsev(), but takes a line instead of a vector.
+ */
 int
 clp_parsel(const char *line, clp_option_t *optionv, clp_posparam_t *paramv, char *errbuf)
 {
@@ -1370,17 +1405,14 @@ clp_parsel(const char *line, clp_option_t *optionv, clp_posparam_t *paramv, char
     int optind;
     int argc;
     int rc;
-    int i;
 
     rc = clp_breakargs(line, NULL, errbuf, &argc, &argv);
-    if (!rc) {
-        for (i = 0; i < argc; ++i) {
-            printf("%d %s\n", i, argv[i]);
-        }
-        rc = clp_parsev(argc, argv, optionv, paramv, errbuf, &optind);
-    }
 
-    free(argv);
+    if (!rc) {
+        rc = clp_parsev(argc, argv, optionv, paramv, errbuf, &optind);
+
+        free(argv);
+    }
 
     return rc;
 }

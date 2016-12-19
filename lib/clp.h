@@ -280,6 +280,9 @@ extern clp_cvt_t clp_cvt_time_t;
 extern clp_option_cb_t clp_help;
 extern clp_option_cb_t clp_version;
 
+extern int clp_breakargs(const char *src, const char *sep, char *errbuf,
+                         int *argcp, char ***argvp);
+
 extern int clp_parsev(int argc, char **argv,
                       clp_option_t *optionv,
                       clp_posparam_t *paramv,

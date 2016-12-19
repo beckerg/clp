@@ -1,0 +1,27 @@
+# All these tests should pass.
+#
+/bin/ls -latr /usr/local/lib/
+"double-quoted string"
+'single-quoted string'
+-x 'arg' -y'arg' -z\"arg\"
+"-x 'arg' -y'arg' -z\"arg\""
+"\""
+"\"\""
+'\''
+'\'\''
+""""""""""""
+''''''''''''
+"'"
+"'""'"
+"'"'"'"'"'"'
+'"'
+'"''"'
+'"'"'"'"'"'"
+
+
+# All these tests should fail.
+#
+'
+"
+"'
+'"

@@ -1,0 +1,2 @@
+./prog < data-isspace
+./prog -d',' < data-csv

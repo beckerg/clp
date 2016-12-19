@@ -1,0 +1,140 @@
++ ./prog
+   3: nargc=3 nargv=0x800e26000
+   3:    0 [/bin/ls]
+   3:    1 [-latr]
+   3:    2 [/usr/local/lib/]
+
+   4: nargc=1 nargv=0x800e29000
+   4:    0 [double-quoted string]
+
+   5: nargc=1 nargv=0x800e29000
+   5:    0 [single-quoted string]
+
+   6: nargc=4 nargv=0x800e29000
+   6:    0 [-x]
+   6:    1 [arg]
+   6:    2 [-yarg]
+   6:    3 [-z"arg"]
+
+   7: nargc=1 nargv=0x800e26000
+   7:    0 [-x 'arg' -y'arg' -z"arg"]
+
+   8: nargc=1 nargv=0x800e2e000
+   8:    0 ["]
+
+   9: nargc=1 nargv=0x800e31000
+   9:    0 [""]
+
+  10: nargc=1 nargv=0x800e2e000
+  10:    0 [']
+
+  11: nargc=1 nargv=0x800e31000
+  11:    0 ['']
+
+  12: nargc=0 nargv=0x800e18000
+
+  13: nargc=0 nargv=0x800e18000
+
+  14: nargc=1 nargv=0x800e2e000
+  14:    0 [']
+
+  15: nargc=1 nargv=0x800e31000
+  15:    0 ['']
+
+  16: nargc=1 nargv=0x800e18000
+  16:    0 ['"'"]
+
+  17: nargc=1 nargv=0x800e2e000
+  17:    0 ["]
+
+  18: nargc=1 nargv=0x800e31000
+  18:    0 [""]
+
+  19: nargc=1 nargv=0x800e18000
+  19:    0 ["'"']
+
+  24: rc=65 unterminated single quote
+  25: rc=65 unterminated double quote
+  26: rc=65 unterminated double quote
+  27: rc=65 unterminated single quote
++ ./prog -d,
+   3: nargc=1 nargv=0x800e27000
+   3:    0 [a]
+
+   4: nargc=2 nargv=0x800e28000
+   4:    0 [a]
+   4:    1 [b]
+
+   5: nargc=3 nargv=0x800e28000
+   5:    0 [a]
+   5:    1 [b]
+   5:    2 [c]
+
+   6: nargc=4 nargv=0x800e2b000
+   6:    0 [a]
+   6:    1 [b]
+   6:    2 [c]
+   6:    3 [d]
+
+   7: nargc=4 nargv=0x800e28000
+   7:    0 [a]
+   7:    1 []
+   7:    2 []
+   7:    3 [d]
+
+   8: nargc=1 nargv=0x800e28000
+   8:    0 [a,b]
+
+   9: nargc=1 nargv=0x800e2b000
+   9:    0 [a,b,c]
+
+  10: nargc=1 nargv=0x800e2c000
+  10:    0 [a,b,c,d]
+
+  11: nargc=3 nargv=0x800e2c000
+  11:    0 [a]
+  11:    1 [b,c]
+  11:    2 [d]
+
+  12: nargc=3 nargv=0x800e2c000
+  12:    0 [a]
+  12:    1 [b,c]
+  12:    2 [d]
+
+  13: nargc=2 nargv=0x800e2c000
+  13:    0 [a,b]
+  13:    1 [c,d]
+
+  14: nargc=2 nargv=0x800e2c000
+  14:    0 [a,b]
+  14:    1 [c,d]
+
+  15: nargc=3 nargv=0x800e31000
+  15:    0 [field one]
+  15:    1 [ field two]
+  15:    2 [ field three]
+
+  16: nargc=3 nargv=0x800e34000
+  16:    0 [field one]
+  16:    1 [ field two, field two.5]
+  16:    2 [ field three]
+
+  17: nargc=1 nargv=0x800e27000
+  17:    0 []
+
+  18: nargc=2 nargv=0x800e28000
+  18:    0 []
+  18:    1 []
+
+  19: nargc=3 nargv=0x800e28000
+  19:    0 []
+  19:    1 []
+  19:    2 []
+
+  20: nargc=3 nargv=0x800e28000
+  20:    0 []
+  20:    1 [ ]
+  20:    2 [ ]
+
+  24: rc=65 unterminated double quote
+  25: rc=65 unterminated single quote
