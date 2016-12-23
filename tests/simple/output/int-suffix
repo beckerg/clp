@@ -1,64 +1,24 @@
 + ./prog -i 1b
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
-myint is 1 1
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+myint is 512 1
+
 + ./prog -i 1k
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
 myint is 1024 1
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -i 1g
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
 myint is 1073741824 1
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -i 1t
 prog: unable to convert '-i 1t': Result too large
+
 + ./prog -i -1b
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
-myint is -1 1
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+myint is -512 1
+
 + ./prog -i -1k
-prog: unable to convert '-i -1k': Result too large
+myint is -1024 1
+
 + ./prog -i -1g
-prog: unable to convert '-i -1g': Result too large
+myint is -1073741824 1
+
 + ./prog -i -1t
 prog: unable to convert '-i -1t': Result too large
+

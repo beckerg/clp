@@ -1,66 +1,45 @@
 + ./prog -x
-progname is prog
-verbosity is 0 0
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
 x is true 1
-y is false 0
-z is true 0
+
 + ./prog -y
-progname is prog
-verbosity is 0 0
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
 y is true 1
-z is true 0
+
 + ./prog -z
-progname is prog
-verbosity is 0 0
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
 z is false 1
+
 + ./prog -x -y
 prog: option -x excludes -y, use -h for help
+
 + ./prog -x -z
 prog: option -x excludes -z, use -h for help
+
 + ./prog -y -x
 prog: option -y excludes -x, use -h for help
+
 + ./prog -y -z
 prog: option -y excludes -z, use -h for help
+
 + ./prog -z -x
 prog: option -z excludes -x, use -h for help
+
 + ./prog -z -y
 prog: option -z excludes -y, use -h for help
+
 + ./prog -xy
 prog: option -x excludes -y, use -h for help
+
 + ./prog -xz
 prog: option -x excludes -z, use -h for help
+
 + ./prog -yx
 prog: option -y excludes -x, use -h for help
+
 + ./prog -yz
 prog: option -y excludes -z, use -h for help
+
 + ./prog -zx
 prog: option -z excludes -x, use -h for help
+
 + ./prog -zy
 prog: option -z excludes -y, use -h for help
+

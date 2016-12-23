@@ -1,17 +1,5 @@
 + ./prog
-progname is prog
-verbosity is 0 0
-argc=1 xoptind=1
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -h
 usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-t mytime] [-x | -y | -z]
 usage: prog -h [-v]
@@ -34,19 +22,7 @@ usage: prog -V
 -y           specify y flag
 -z           specify z flag
 
-progname is prog
-verbosity is 0 0
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -hv
 usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-t mytime] [-x | -y | -z]
 usage: prog -h [-v]
@@ -69,139 +45,41 @@ usage: prog -V
 -y           specify y flag
 -z           specify z flag
 
-progname is prog
 verbosity is 1 1
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -V
 version...
-progname is prog
-verbosity is 0 0
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -n
-progname is prog
-verbosity is 0 0
-argc=2 xoptind=2
 dryrun is 1 1
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -v
-progname is prog
 verbosity is 1 1
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -vvv
-progname is prog
 verbosity is 3 1
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
+
 + ./prog -C main.h
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
 cf is open 1
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
+
 + ./prog a
-progname is prog
-verbosity is 0 0
+argc=1 xoptind=1
+posparams: 0 a
+
++ ./prog a b
 argc=2 xoptind=1
 posparams: 0 a
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
-+ ./prog a b
-progname is prog
-verbosity is 0 0
+posparams: 1 b
+
++ ./prog a b c
 argc=3 xoptind=1
 posparams: 0 a
 posparams: 1 b
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
-+ ./prog a b c
-progname is prog
-verbosity is 0 0
-argc=4 xoptind=1
-posparams: 0 a
-posparams: 1 b
 posparams: 2 c
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is default 0
-x is false 0
-y is false 0
-z is true 0
+

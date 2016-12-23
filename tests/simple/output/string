@@ -1,72 +1,18 @@
 + ./prog -s
 prog: option -s requires a parameter, use -h for help
+
 + ./prog -s foo
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is foo 0
-x is false 0
-y is false 0
-z is true 0
+mystring is foo 1
+
 + ./prog -s bar
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is bar 0
-x is false 0
-y is false 0
-z is true 0
+mystring is bar 1
+
 + ./prog -s 'i am a string'
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is i am a string 0
-x is false 0
-y is false 0
-z is true 0
+mystring is i am a string 1
+
 + ./prog -s 'and so am i'
-progname is prog
-verbosity is 0 0
-argc=3 xoptind=3
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is and so am i 0
-x is false 0
-y is false 0
-z is true 0
+mystring is and so am i 1
+
 + ./prog -s 'string one' -s 'string two' -s 'string three'
-progname is prog
-verbosity is 0 0
-argc=7 xoptind=7
-dryrun is 0 0
-cf is nil 0
-myint is 0 0
-myuint is 0 0
-mylong is 0 0
-myulong is 0 0
-mystring is string three 0
-x is false 0
-y is false 0
-z is true 0
+mystring is string three 1
+

@@ -81,48 +81,58 @@ main(int argc, char **argv)
 
     rc = clp_parsev(argc, argv, optionv, NULL, errbuf, &xoptind);
     if (rc) {
-        fprintf(stderr, "%s: %s\n", progname, errbuf);
+        fprintf(stderr, "%s: %s\n\n", progname, errbuf);
         exit(rc);
     }
 
-    printf("progname is %s\n", progname);
-    printf("verbosity is %d %d\n", verbosity, given('v'));
-    printf("argc=%d xoptind=%d\n", argc, xoptind);
-
     argc -= xoptind;
     argv += xoptind;
+
+    if (argc > 0)
+        printf("argc=%d xoptind=%d\n", argc, xoptind);
+
+    if (given('v'))
+        printf("verbosity is %d %d\n", verbosity, given('v'));
 
     for (i = 0; i < argc; ++i) {
         printf("posparams: %d %s\n", i, argv[i]);
     }
 
-    printf("dryrun is %d %d\n", dryrun, given('n'));
+    if (given('n'))
+        printf("dryrun is %d %d\n", dryrun, given('n'));
 
-    if (cf) {
+    if (cf || given('C'))
         printf("cf is %s %d\n", ferror(cf) ? "in error" : "open", given('C'));
-    } else {
-        printf("cf is nil %d\n", given('C'));
-    }
 
-    printf("myint is %d %d\n", myint, given('i'));
-    printf("myuint is %u %d\n", myuint, given('I'));
+    if (given('i'))
+        printf("myint is %d %d\n", myint, given('i'));
 
-    printf("mylong is %ld %d\n", mylong, given('l'));
-    printf("myulong is %lu %d\n", myulong, given('L'));
+    if (given('I'))
+        printf("myuint is %u %d\n", myuint, given('I'));
 
-    printf("mystring is %s %d\n", mystring, given('L'));
+    if (given('l'))
+        printf("mylong is %ld %d\n", mylong, given('l'));
 
-    printf("x is %s %d\n", xflag ? "true" : "false", given('x'));
-    printf("y is %s %d\n", yflag ? "true" : "false", given('y'));
-    printf("z is %s %d\n", zflag ? "true" : "false", given('z'));
+    if (given('L'))
+        printf("myulong is %lu %d\n", myulong, given('L'));
 
-    if (given('f')) {
+    if (given('s'))
+        printf("mystring is %s %d\n", mystring, given('s'));
+
+    if (given('x'))
+        printf("x is %s %d\n", xflag ? "true" : "false", given('x'));
+
+    if (given('y'))
+        printf("y is %s %d\n", yflag ? "true" : "false", given('y'));
+
+    if (given('z'))
+        printf("z is %s %d\n", zflag ? "true" : "false", given('z'));
+
+    if (given('f'))
         printf("f is %.*g\n", FLT_DECIMAL_DIG, myfloat);
-    }
 
-    if (given('d')) {
+    if (given('d'))
         printf("d is %.*lf\n", DBL_DECIMAL_DIG, mydouble);
-    }
 
     if (given('j')) {
         printf("intv is: ");
@@ -132,9 +142,10 @@ main(int argc, char **argv)
         printf("\n");
     }
 
-    if (given('t')) {
+    if (given('t'))
         printf("t is %ld\n", mytime);
-    }
+
+    printf("\n");
 
     return 0;
 }

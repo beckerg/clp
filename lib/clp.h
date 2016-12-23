@@ -194,15 +194,15 @@ typedef struct clp_s {
 } clp_t;
 
 
-/* Declare a vector.
+/* Declare a type-specific vector.
  */
 #define CLP_VECTOR_DECL(_xname, _xtype, _xsize)                         \
     struct _xname {                                                     \
         u_int            len;                                           \
         u_int            size;                                          \
-        const char     *delim;                                          \
-        void           *priv;                                           \
-        _xtype          data[(_xsize)];                                 \
+        const char      *delim;                                         \
+        void            *priv;                                          \
+        _xtype           data[(_xsize)];                                \
     }
 
 /* Declare, define, and initialize a vector.
