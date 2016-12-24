@@ -1,3 +1,21 @@
++ ./prog -f nan
+f is nan
+
++ ./prog -f -nan
+f is nan
+
++ ./prog -f inf
+f is inf
+
++ ./prog -f -inf
+f is -inf
+
++ ./prog -f infinity
+f is inf
+
++ ./prog -f -infinity
+f is -inf
+
 + ./prog -f 0
 f is 0
 

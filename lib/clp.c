@@ -236,6 +236,13 @@ clp_cvt_incr(const char *optarg, int flags, void *parms, void *dst)
  *
  * Each string to be converted may end in a single character suffix
  * from suftab which modifies the result.
+ *
+ * Note that we use strtold() to parse each number in order to allow
+ * the caller maximum flexibility when specifying number formats.
+ * There is the possibility for loss of precision if long double
+ * on the target platform doesn't have at least as many bits in the
+ * significand as the widest integer type for which this function
+ * may be called.
  */
 #define CLP_CVT_XX(_xsuffix, _xtype, _xmin, _xmax, _suftab)             \
 int                                                                     \
@@ -246,7 +253,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     clp_vector_t *vector;                                               \
     char *str, *strbase;                                                \
     _xtype *result;                                                     \
-    int xerrno;                                                         \
+    bool rangechk;                                                      \
     int nrange;                                                         \
     int n;                                                              \
                                                                         \
@@ -260,28 +267,37 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
         vector = parms;                                                 \
     }                                                                   \
                                                                         \
-    str = strdup(optarg);                                               \
-    if (!str) {                                                         \
-        errno = ENOMEM;                                                 \
-        return EX_DATAERR;                                              \
+    /* Only call strdup if there are delimiters in optarg.              \
+     */                                                                 \
+    str = (char *)optarg;                                               \
+    strbase = strpbrk(str, vector->delim);                              \
+    if (strbase) {                                                      \
+        strbase = strdup(optarg);                                       \
+        if (!strbase) {                                                 \
+            errno = ENOMEM;                                             \
+            return EX_DATAERR;                                          \
+        }                                                               \
+        str = strbase;                                                  \
     }                                                                   \
                                                                         \
-    strbase = str;                                                      \
+    rangechk = (_xmin) < (_xmax);                                       \
     result = dst;                                                       \
     nrange = 0;                                                         \
     errno = 0;                                                          \
                                                                         \
-    for (n = 0; n < vector->size; ++n, ++result) {                      \
+    for (n = 0; n < vector->size && str; ++n, ++result) {               \
         char *tok, *end;                                                \
         long double val;                                                \
                                                                         \
-        tok = strsep(&str, vector->delim);                              \
-        if (!tok) {                                                     \
-            break;                                                      \
-        }                                                               \
-        else if (!*tok) {                                               \
-            *result = 0;                                                \
-            continue;                                                   \
+        if (strbase) {                                                  \
+            tok = strsep(&str, vector->delim);                          \
+            if (tok && *tok == '\000') {                                \
+                *result = 0;                                            \
+                continue;                                               \
+            }                                                           \
+        } else {                                                        \
+            tok = str;                                                  \
+            str = NULL;                                                 \
         }                                                               \
                                                                         \
         errno = 0;                                                      \
@@ -301,7 +317,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
             break;                                                      \
         }                                                               \
                                                                         \
-        if (*end && !isspace(*end)) {                                   \
+        if (*end) {                                                     \
             const char *pc;                                             \
                                                                         \
             pc = strchr(suftab->list, *end);                            \
@@ -314,7 +330,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
             val *= *(suftab->mult + (pc - suftab->list));               \
         }                                                               \
                                                                         \
-        if (val < (_xmin) || val > (_xmax)) {                           \
+        if (rangechk && (val < (_xmin) || val > (_xmax))) {             \
             val = (val < (_xmin)) ? (_xmin) : (_xmax);                  \
             ++nrange;                                                   \
         }                                                               \
@@ -331,9 +347,12 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
         errno = ERANGE;                                                 \
     }                                                                   \
                                                                         \
-    xerrno = errno;                                                     \
-    free(strbase);                                                      \
-    errno = xerrno;                                                     \
+    if (strbase) {                                                      \
+        int save = errno;                                               \
+                                                                        \
+        free(strbase);                                                  \
+        errno = save;                                                   \
+    }                                                                   \
                                                                         \
     return errno ? EX_DATAERR : 0;                                      \
 }
@@ -350,8 +369,8 @@ CLP_CVT_XX(u_int,       u_int,      0,          UINT_MAX,   suftab_combo);
 CLP_CVT_XX(long,        long,       LONG_MIN,   LONG_MAX,   suftab_combo);
 CLP_CVT_XX(u_long,      u_long,     0,          ULONG_MAX,  suftab_combo);
 
-CLP_CVT_XX(float,       float,      -FLT_MAX,   FLT_MAX,    suftab_combo);
-CLP_CVT_XX(double,      double,     -DBL_MAX,   DBL_MAX,    suftab_combo);
+CLP_CVT_XX(float,       float,      0,          0,          suftab_combo);
+CLP_CVT_XX(double,      double,     0,          0,          suftab_combo);
 
 CLP_CVT_XX(int8_t,      int8_t,     INT8_MIN,   INT8_MAX,   suftab_combo);
 CLP_CVT_XX(uint8_t,     uint8_t,    0,          UINT8_MAX,  suftab_combo);
@@ -984,12 +1003,10 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     /* Reset getopt_long().
      * TODO: Create getopt_long_r() for MT goodness.
      */
-    optind = 1;
-
-#ifdef __FreeBSD__
-    optreset = 1;
+#ifdef optreset
+    optreset = 1; // FreeBSD
 #else
-#error optreset...
+    optind = 1; // GNU
 #endif
 
     while (1) {

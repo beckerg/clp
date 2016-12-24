@@ -1,3 +1,9 @@
+./prog -f nan
+./prog -f -nan
+./prog -f inf
+./prog -f -inf
+./prog -f infinity
+./prog -f -infinity
 ./prog -f 0
 ./prog -f -0
 ./prog -f 1
