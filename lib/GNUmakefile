@@ -69,7 +69,7 @@ TAGS: cscope.files
 # Use gmake's link rule to produce the target.
 #
 lib${LIBBASE}.a: ${OBJ}
-	${AR} cru lib${FPA}${LIBBASE}.a `lorder ${OBJ} | tsort`
+	${AR} cr lib${FPA}${LIBBASE}.a ${OBJ}
 	${RANLIB} lib${FPA}${LIBBASE}.a
 
 
