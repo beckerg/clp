@@ -431,7 +431,7 @@ clp_excludes2(const clp_option_t *l, const clp_option_t *r)
 }
 
 /* Return the opt letter of any option that is mutually exclusive
- * with the specified option and was appeared on the command line
+ * with the specified option and which appeared on the command line
  * at least the specified number of times.
  */
 clp_option_t *
@@ -489,7 +489,8 @@ clp_unbracket(const char *name, char *buf, size_t bufsz)
     return nbrackets;
 }
 
-/* Print lines of the form "usage: progname [options] args...".
+/* Print just the usage line, i.e., lines of the general form
+ *   "usage: progname [options] args..."
  */
 void
 clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
@@ -518,8 +519,8 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
 
     /* Build three lists of option characters:
      *
-     * 1) excludes_buf[] contains all the options that might exclude or be
-     * excluded by another option.
+     * 1) excludes_buf[] contains all the options that might exclude
+     * or be excluded by another option.
      *
      * 2) optarg_buf[] contains all the options not in (1) that require
      * an argument.
@@ -565,15 +566,22 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
      *
      * usage: basename [mandatory-opt] [bool-opts] [opts-with-args] [exclusive-opts] [parameters...]
      */
+
+    /* [mandatory-opt]
+     */
     fprintf(fp, "usage: %s", clp->basename);
     if (limit) {
         fprintf(fp, " -%c", limit->optopt);
     }
 
+    /* [bool-opts]
+     */
     if (opt_buf[0]) {
         fprintf(fp, " [-%s]", opt_buf);
     }
 
+    /* [opts-with-args]
+     */
     for (pc = optarg_buf; *pc; ++pc) {
         clp_option_t *o = clp_option_find(clp->optionv, *pc);
 
@@ -583,6 +591,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     }
 
     /* Generate the mutually exclusive option usage message...
+     * [exclusive-args]
      */
     char *listv[clp->optionc + 1];
     int listc = 0;
@@ -674,6 +683,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     }
 
     /* Finally, print out all the positional parameters.
+     * [parameters]
      */
     if (paramv) {
         int noptional = 0;
@@ -711,14 +721,14 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
 static int
 clp_help_cmp(const void *lhs, const void *rhs)
 {
-    clp_option_t * const *l = lhs;
-    clp_option_t *const *r = rhs;
+    clp_option_t const *l = *(clp_option_t * const *)lhs;
+    clp_option_t const *r = *(clp_option_t * const *)rhs;
 
-    int lc = isupper((*l)->optopt) ? tolower((*l)->optopt) : (*l)->optopt;
-    int rc = isupper((*r)->optopt) ? tolower((*r)->optopt) : (*r)->optopt;
+    int lc = tolower(l->optopt);
+    int rc = tolower(r->optopt);
 
     if (lc == rc) {
-        return (isupper((*l)->optopt) ? -1 : 1);
+        return (isupper(l->optopt) ? -1 : 1);
     }
 
     return (lc - rc);
