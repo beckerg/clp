@@ -1,9 +1,9 @@
 + ./prog
 prog: mandatory positional parameters required, use -h for help
 + ./prog -h
-usage: prog [-vn] [-C cf] [leftmost [left]] src...
+usage: prog [-nv] [-C cf] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vn] [-C cf] [file...]
+usage: prog -l [-nv] [-C cf] [file...]
 usage: prog -V
 -C cf  specify a configuration file
 -h     print this help list
@@ -21,9 +21,9 @@ argc=2 xoptind=2
 dryrun is 0 0
 cf is nil 0
 + ./prog -hv
-usage: prog [-vn] [-C cf] [leftmost [left]] src...
+usage: prog [-nv] [-C cf] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vn] [-C cf] [file...]
+usage: prog -l [-nv] [-C cf] [file...]
 usage: prog -V
 -C cf  specify a configuration file
 -h     print this help list

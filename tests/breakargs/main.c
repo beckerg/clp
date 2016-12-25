@@ -70,7 +70,7 @@ main(int argc, char **argv)
             continue;
         }
 
-        printf("%4d: nargc=%d nargv=%p\n", lineno, nargc, nargv);
+        printf("%4d: nargc=%d\n", lineno, nargc);
 
         for (i = 0; i < nargc; ++i) {
             printf("%4d: %4d [%s]\n", lineno, i, nargv[i]);

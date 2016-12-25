@@ -1,7 +1,7 @@
 + ./prog
 
 + ./prog -h
-usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-t mytime] [-x | -y | -z]
+usage: prog [-nv] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
 -C cf        specify a configuration file
@@ -24,7 +24,7 @@ usage: prog -V
 
 
 + ./prog -hv
-usage: prog [-vn] [-C cf] [-f myfloat] [-d mydouble] [-i myint] [-I myuint] [-l mylong] [-L myulong] [-s mystring] [-j intv] [-t mytime] [-x | -y | -z]
+usage: prog [-nv] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
 usage: prog -h [-v]
 usage: prog -V
 -C cf        specify a configuration file

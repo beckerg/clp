@@ -1,9 +1,9 @@
 + ./prog
 prog: mandatory positional parameters required, use -h for help
 + ./prog -h
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -18,9 +18,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -35,9 +35,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -52,9 +52,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -69,9 +69,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -86,9 +86,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -103,9 +103,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -120,9 +120,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -137,9 +137,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -154,9 +154,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -172,9 +172,9 @@ left      optional left parameter
 src...    one or more source files
 
 + ./prog --help
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -189,9 +189,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -206,9 +206,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -223,9 +223,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -240,9 +240,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -257,9 +257,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -274,9 +274,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -291,9 +291,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -308,9 +308,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -325,9 +325,9 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -343,9 +343,9 @@ left      optional left parameter
 src...    one or more source files
 
 + ./prog -hv
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -361,9 +361,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 1 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -379,9 +379,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 2 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -397,9 +397,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 3 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -415,9 +415,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 4 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -433,9 +433,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 5 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -451,9 +451,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 6 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -469,9 +469,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 7 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -487,9 +487,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 8 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -505,9 +505,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 9 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C cf        specify a configuration file
 -G           increment a global int counter
@@ -524,9 +524,9 @@ src...    one or more source files
 
 verbosity is 10 1
 + ./prog --help -v
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -542,9 +542,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 1 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -560,9 +560,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 2 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -578,9 +578,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 3 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -596,9 +596,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 4 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -614,9 +614,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 5 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -632,9 +632,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 6 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -650,9 +650,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 7 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -668,9 +668,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 8 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter
@@ -686,9 +686,9 @@ left      optional left parameter
 src...    one or more source files
 
 verbosity is 9 1
-usage: prog [-vnLG] [-C cf] [-s mystring] [leftmost [left]] src...
+usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h [-v]
-usage: prog -l [-vnLG] [-C cf] [-s mystring] [file...]
+usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
 -C, --cf cf    specify a configuration file
 -G             increment a global int counter

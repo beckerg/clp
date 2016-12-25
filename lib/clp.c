@@ -45,7 +45,7 @@
 
 #include "clp.h"
 
-//#define CLP_DEBUG
+#define CLP_DEBUG
 
 struct suftab {
     const char *list;
@@ -81,11 +81,12 @@ clp_posparam_t clp_posparam_none[] = {
     { .name = NULL }
 };
 
+
+static int clp_debug;
+
+#ifdef CLP_DEBUG
 /* dprint() prints a message if (lvl >= clp_debug).
  */
-#ifdef CLP_DEBUG
-static int clp_debug = 3;
-
 #define dprint(lvl, ...)                                                \
 do {                                                                    \
     if (clp_debug >= (lvl)) {                                           \
@@ -114,7 +115,9 @@ clp_printf(FILE *fp, const char *func, int line, const char *fmt, ...)
 
     fputs(msg, fp ? fp : stderr);
 }
+
 #else
+
 #define dprint(lvl, ...)
 #endif /* CLP_DEBUG */
 
@@ -489,6 +492,24 @@ clp_unbracket(const char *name, char *buf, size_t bufsz)
     return nbrackets;
 }
 
+/* Lexical string comparator for qsort (e.g., AaBbCcDd...)
+ */
+static int
+clp_string_cmp(const void *lhs, const void *rhs)
+{
+    const char *l = (const char *)lhs;
+    const char *r = (const char *)rhs;
+
+    int lc = tolower(*l);
+    int rc = tolower(*r);
+
+    if (lc == rc) {
+        return (isupper(*l) ? -1 : 1);
+    }
+
+    return (lc - rc);
+}
+
 /* Print just the usage line, i.e., lines of the general form
  *   "usage: progname [options] args..."
  */
@@ -557,6 +578,10 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     *pc_optarg = '\000';
     *pc_opt = '\000';
 
+    qsort(opt_buf, strlen(opt_buf), 1, clp_string_cmp);
+    qsort(optarg_buf, strlen(optarg_buf), 1, clp_string_cmp);
+    qsort(excludes_buf, strlen(excludes_buf), 1, clp_string_cmp);
+
     dprint(1, "option -%c:\n", limit ? limit->optopt : '?');
     dprint(1, "  excludes: %s\n", excludes_buf);
     dprint(1, "  optarg:   %s\n", optarg_buf);
@@ -564,7 +589,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
 
     /* Now print out the usage line in the form of:
      *
-     * usage: basename [mandatory-opt] [bool-opts] [opts-with-args] [exclusive-opts] [parameters...]
+     * usage: basename [mandatory-opt] [bool-opts] [opts-with-args] [excl-opts] [posparams...]
      */
 
     /* [mandatory-opt]
@@ -591,99 +616,101 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     }
 
     /* Generate the mutually exclusive option usage message...
-     * [exclusive-args]
+     * [excl-args]
      */
-    char *listv[clp->optionc + 1];
-    int listc = 0;
-    char *cur;
-    int i;
+    if (excludes_buf[0]) {
+        char *listv[clp->optionc + 1];
+        int listc = 0;
+        char *cur;
+        int i;
 
-    /* Build a vector of strings where each string contains
-     * mutually exclusive options.
-     */
-    for (cur = excludes_buf; *cur; ++cur) {
-        clp_option_t *l = clp_option_find(clp->optionv, *cur);
-        char buf[1024], *pc_buf;
+        /* Build a vector of strings where each string contains
+         * mutually exclusive options.
+         */
+        for (cur = excludes_buf; *cur; ++cur) {
+            clp_option_t *l = clp_option_find(clp->optionv, *cur);
+            char buf[1024], *pc_buf;
 
-        pc_buf = buf;
+            pc_buf = buf;
 
-        for (pc = excludes_buf; *pc; ++pc) {
-            if (cur == pc) {
-                *pc_buf++ = *pc;
-            } else {
-                clp_option_t *r = clp_option_find(clp->optionv, *pc);
-
-                if (clp_excludes2(l, r)) {
+            for (pc = excludes_buf; *pc; ++pc) {
+                if (cur == pc) {
                     *pc_buf++ = *pc;
+                } else {
+                    clp_option_t *r = clp_option_find(clp->optionv, *pc);
+
+                    if (clp_excludes2(l, r)) {
+                        *pc_buf++ = *pc;
+                    }
                 }
             }
+
+            *pc_buf = '\000';
+
+            listv[listc++] = strdup(buf);
         }
 
-        *pc_buf = '\000';
+        /* Eliminate duplicate strings.
+         */
+        for (i = 0; i < listc; ++i) {
+            int j;
 
-        listv[listc++] = strdup(buf);
-    }
-
-    /* Eliminate duplicate strings.
-     */
-    for (i = 0; i < listc; ++i) {
-        int j;
-
-        for (j = i + 1; j < listc; ++j) {
-            if (listv[i] && listv[j]) {
-                if (0 == strcmp(listv[i], listv[j])) {
-                    free(listv[j]);
-                    listv[j] = NULL;
-                }
-            }
-        }
-    }
-
-    /* Ensure that all options within a list are mutually exclusive.
-     */
-    for (i = 0; i < listc; ++i) {
-        if (listv[i]) {
-            for (pc = listv[i]; *pc; ++pc) {
-                clp_option_t *l = clp_option_find(clp->optionv, *pc);
-                char *pc2;
-
-                for (pc2 = listv[i]; *pc2; ++pc2) {
-                    if (pc2 != pc) {
-                        clp_option_t *r = clp_option_find(clp->optionv, *pc2);
-
-                        if (!clp_excludes2(l, r)) {
-                            free(listv[i]);
-                            listv[i] = NULL;
-                            goto next;
-                        }
+            for (j = i + 1; j < listc; ++j) {
+                if (listv[i] && listv[j]) {
+                    if (0 == strcmp(listv[i], listv[j])) {
+                        free(listv[j]);
+                        listv[j] = NULL;
                     }
                 }
             }
         }
 
-    next:
-        continue;
-    }
+        /* Ensure that all options within a list are mutually exclusive.
+         */
+        for (i = 0; i < listc; ++i) {
+            if (listv[i]) {
+                for (pc = listv[i]; *pc; ++pc) {
+                    clp_option_t *l = clp_option_find(clp->optionv, *pc);
+                    char *pc2;
 
-    /* Now, print out the remaining strings of mutually exclusive options.
-     */
-    for (i = 0; i < listc; ++i) {
-        if (listv[i]) {
-            char *bar = "";
+                    for (pc2 = listv[i]; *pc2; ++pc2) {
+                        if (pc2 != pc) {
+                            clp_option_t *r = clp_option_find(clp->optionv, *pc2);
 
-            fprintf(fp, " [");
-
-            for (pc = listv[i]; *pc; ++pc) {
-                fprintf(fp, "%s-%c", bar, *pc);
-                bar = " | ";
+                            if (!clp_excludes2(l, r)) {
+                                free(listv[i]);
+                                listv[i] = NULL;
+                                goto next;
+                            }
+                        }
+                    }
+                }
             }
 
-            fprintf(fp, "]");
+          next:
+            continue;
+        }
+
+        /* Now, print out the remaining strings of mutually exclusive options.
+         */
+        for (i = 0; i < listc; ++i) {
+            if (listv[i]) {
+                char *bar = "";
+
+                fprintf(fp, " [");
+
+                for (pc = listv[i]; *pc; ++pc) {
+                    fprintf(fp, "%s-%c", bar, *pc);
+                    bar = " | ";
+                }
+
+                fprintf(fp, "]");
+            }
         }
     }
 
     /* Finally, print out all the positional parameters.
-     * [parameters]
+     * [posparams...]
      */
     if (paramv) {
         int noptional = 0;
@@ -718,6 +745,8 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     fprintf(fp, "\n");
 }
 
+/* Lexical option comparator for qsort (e.g., AaBbCcDd...)
+ */
 static int
 clp_help_cmp(const void *lhs, const void *rhs)
 {
@@ -942,8 +971,14 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     clp_option_t *o;
     int posmin;
     int posmax;
+    char *env;
     char *pc;
     int rc;
+
+    env = getenv("CLP_DEBUG");
+    if (env) {
+        clp_debug = strtol(env, NULL, 0);
+    }
 
     clp->longopts = calloc(clp->optionc + 1, sizeof(*clp->longopts));
     if (!clp->longopts) {
