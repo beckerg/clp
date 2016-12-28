@@ -47,31 +47,31 @@
 
 #define CLP_DEBUG
 
-struct suftab {
+struct clp_suftab {
     const char *list;
     double mult[];
 };
 
 #if 0
-static struct suftab suftab_iec = {
+static struct clp_suftab clp_suftab_iec = {
     .list = "kmgtpezy",
     .mult = { 0x1p10, 0x1p20, 0x1p30, 0x1p40, 0x1p50, 0x1p60, 0x1p70, 0x1p80 }
 };
 
-static struct suftab suftab_si = {
+static struct clp_suftab clp_suftab_si = {
     .list = "KMGTPEZY",
     .mult = { 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24 }
 };
 #endif
 
-static struct suftab suftab_combo = {
+static struct clp_suftab clp_suftab_combo = {
     .list = "kmgtpezyKMGTPEZYbw",
     .mult = { 0x1p10, 0x1p20, 0x1p30, 0x1p40, 0x1p50, 0x1p60, 0x1p70, 0x1p80,
               1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24,
               512, sizeof(int) }
 };
 
-static struct suftab suftab_time_t = {
+static struct clp_suftab clp_suftab_time_t = {
     .list = "smhdwyc",
     .mult = { 1, 60, 3600, 86400, 86400 * 7, 86400 * 365, 86400 * 365 * 100ul }
 };
@@ -90,14 +90,14 @@ static int clp_debug;
 #define dprint(lvl, ...)                                                \
 do {                                                                    \
     if (clp_debug >= (lvl)) {                                           \
-        clp_dprint(__FILE__, __LINE__, __func__, stdout, __VA_ARGS__);  \
+        dprint_impl(__FILE__, __LINE__, __func__, stdout, __VA_ARGS__); \
     }                                                                   \
 } while (0);
 
 /* Called via the dprint() macro..
  */
-void
-clp_dprint(const char *file, int line, const char *func, FILE *fp, const char *fmt, ...)
+static void
+dprint_impl(const char *file, int line, const char *func, FILE *fp, const char *fmt, ...)
 {
     va_list ap;
 
@@ -120,7 +120,7 @@ clp_dprint(const char *file, int line, const char *func, FILE *fp, const char *f
 /* Format and save an error message for retrieval by the caller
  * of clp_parse().
  */
-void
+static void
 eprint(clp_t *clp, const char *fmt, ...)
 {
     va_list ap;
@@ -249,7 +249,7 @@ clp_cvt_incr(const char *optarg, int flags, void *parms, void *dst)
 int                                                                     \
 clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
-    const struct suftab *suftab = &(_suftab);                           \
+    const struct clp_suftab *suftab = &(_suftab);                       \
     CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
     clp_vector_t *vector;                                               \
     char *str, *strbase;                                                \
@@ -358,41 +358,41 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     return errno ? EX_DATAERR : 0;                                      \
 }
 
-CLP_CVT_XX(char,        char,       CHAR_MIN,   CHAR_MAX,   suftab_combo);
-CLP_CVT_XX(u_char,      u_char,     0,          UCHAR_MAX,  suftab_combo);
+CLP_CVT_XX(char,        char,       CHAR_MIN,   CHAR_MAX,   clp_suftab_combo);
+CLP_CVT_XX(u_char,      u_char,     0,          UCHAR_MAX,  clp_suftab_combo);
 
-CLP_CVT_XX(short,       short,      SHRT_MIN,   SHRT_MAX,   suftab_combo);
-CLP_CVT_XX(u_short,     u_short,    0,          USHRT_MAX,  suftab_combo);
+CLP_CVT_XX(short,       short,      SHRT_MIN,   SHRT_MAX,   clp_suftab_combo);
+CLP_CVT_XX(u_short,     u_short,    0,          USHRT_MAX,  clp_suftab_combo);
 
-CLP_CVT_XX(int,         int,        INT_MIN,    INT_MAX,    suftab_combo);
-CLP_CVT_XX(u_int,       u_int,      0,          UINT_MAX,   suftab_combo);
+CLP_CVT_XX(int,         int,        INT_MIN,    INT_MAX,    clp_suftab_combo);
+CLP_CVT_XX(u_int,       u_int,      0,          UINT_MAX,   clp_suftab_combo);
 
-CLP_CVT_XX(long,        long,       LONG_MIN,   LONG_MAX,   suftab_combo);
-CLP_CVT_XX(u_long,      u_long,     0,          ULONG_MAX,  suftab_combo);
+CLP_CVT_XX(long,        long,       LONG_MIN,   LONG_MAX,   clp_suftab_combo);
+CLP_CVT_XX(u_long,      u_long,     0,          ULONG_MAX,  clp_suftab_combo);
 
-CLP_CVT_XX(float,       float,      0,          0,          suftab_combo);
-CLP_CVT_XX(double,      double,     0,          0,          suftab_combo);
+CLP_CVT_XX(float,       float,      0,          0,          clp_suftab_combo);
+CLP_CVT_XX(double,      double,     0,          0,          clp_suftab_combo);
 
-CLP_CVT_XX(int8_t,      int8_t,     INT8_MIN,   INT8_MAX,   suftab_combo);
-CLP_CVT_XX(uint8_t,     uint8_t,    0,          UINT8_MAX,  suftab_combo);
+CLP_CVT_XX(int8_t,      int8_t,     INT8_MIN,   INT8_MAX,   clp_suftab_combo);
+CLP_CVT_XX(uint8_t,     uint8_t,    0,          UINT8_MAX,  clp_suftab_combo);
 
-CLP_CVT_XX(int16_t,     int16_t,    INT16_MIN,  INT16_MAX,  suftab_combo);
-CLP_CVT_XX(uint16_t,    uint16_t,   0,          UINT16_MAX, suftab_combo);
+CLP_CVT_XX(int16_t,     int16_t,    INT16_MIN,  INT16_MAX,  clp_suftab_combo);
+CLP_CVT_XX(uint16_t,    uint16_t,   0,          UINT16_MAX, clp_suftab_combo);
 
-CLP_CVT_XX(int32_t,     int32_t,    INT32_MIN,  INT32_MAX,  suftab_combo);
-CLP_CVT_XX(uint32_t,    uint32_t,   0,          UINT32_MAX, suftab_combo);
+CLP_CVT_XX(int32_t,     int32_t,    INT32_MIN,  INT32_MAX,  clp_suftab_combo);
+CLP_CVT_XX(uint32_t,    uint32_t,   0,          UINT32_MAX, clp_suftab_combo);
 
-CLP_CVT_XX(int64_t,     int64_t,    INT64_MIN,  INT64_MAX,  suftab_combo);
-CLP_CVT_XX(uint64_t,    uint64_t,   0,          UINT64_MAX, suftab_combo);
+CLP_CVT_XX(int64_t,     int64_t,    INT64_MIN,  INT64_MAX,  clp_suftab_combo);
+CLP_CVT_XX(uint64_t,    uint64_t,   0,          UINT64_MAX, clp_suftab_combo);
 
-CLP_CVT_XX(intmax_t,    intmax_t,   INTMAX_MIN, INTMAX_MAX, suftab_combo);
-CLP_CVT_XX(uintmax_t,   uintmax_t,  0,          UINTMAX_MAX,suftab_combo);
+CLP_CVT_XX(intmax_t,    intmax_t,   INTMAX_MIN, INTMAX_MAX, clp_suftab_combo);
+CLP_CVT_XX(uintmax_t,   uintmax_t,  0,          UINTMAX_MAX,clp_suftab_combo);
 
-CLP_CVT_XX(intptr_t,    intptr_t,   INTPTR_MIN, INTPTR_MAX, suftab_combo);
-CLP_CVT_XX(uintptr_t,   uintptr_t,  0,          UINTPTR_MAX,suftab_combo);
+CLP_CVT_XX(intptr_t,    intptr_t,   INTPTR_MIN, INTPTR_MAX, clp_suftab_combo);
+CLP_CVT_XX(uintptr_t,   uintptr_t,  0,          UINTPTR_MAX,clp_suftab_combo);
 
-CLP_CVT_XX(size_t,      size_t,     0,          SIZE_MAX,   suftab_combo);
-CLP_CVT_XX(time_t,      time_t,     0,          LONG_MAX,   suftab_time_t);
+CLP_CVT_XX(size_t,      size_t,     0,          SIZE_MAX,   clp_suftab_combo);
+CLP_CVT_XX(time_t,      time_t,     0,          LONG_MAX,   clp_suftab_time_t);
 
 
 /* Return true if the two specified options are mutually exclusive.
