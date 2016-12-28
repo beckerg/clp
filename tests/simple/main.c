@@ -71,7 +71,7 @@ given(int c)
 int
 main(int argc, char **argv)
 {
-    char errbuf[CLP_ERRBUFSZ];
+    char errbuf[128];
     int xoptind;
     int rc;
     int i;
@@ -79,7 +79,7 @@ main(int argc, char **argv)
     progname = strrchr(argv[0], '/');
     progname = (progname ? progname + 1 : argv[0]);
 
-    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, &xoptind);
+    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf), &xoptind);
     if (rc) {
         fprintf(stderr, "%s: %s\n\n", progname, errbuf);
         exit(rc);

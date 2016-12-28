@@ -1,140 +1,183 @@
 + ./prog
-   3: nargc=3
+   3: delim=[] nargc=3 [/bin/ls -latr /usr/local/lib/]
    3:    0 [/bin/ls]
    3:    1 [-latr]
    3:    2 [/usr/local/lib/]
 
-   4: nargc=1
-   4:    0 [double-quoted string]
+   4: delim=[] nargc=3 [	  /bin/ls   	-latr   /usr/local/lib/  ]
+   4:    0 [/bin/ls]
+   4:    1 [-latr]
+   4:    2 [/usr/local/lib/]
 
-   5: nargc=1
-   5:    0 [single-quoted string]
+   5: delim=[] nargc=1 ["double-quoted string"]
+   5:    0 [double-quoted string]
 
-   6: nargc=4
-   6:    0 [-x]
-   6:    1 [arg]
-   6:    2 [-yarg]
-   6:    3 [-z"arg"]
+   6: delim=[] nargc=1 ['single-quoted string']
+   6:    0 [single-quoted string]
 
-   7: nargc=1
-   7:    0 [-x 'arg' -y'arg' -z"arg"]
+   7: delim=[] nargc=4 [-x 'arg' -y'arg' -z\"arg\"]
+   7:    0 [-x]
+   7:    1 [arg]
+   7:    2 [-yarg]
+   7:    3 [-z"arg"]
 
-   8: nargc=1
-   8:    0 ["]
+   8: delim=[] nargc=1 ["-x 'arg' -y'arg' -z\"arg\""]
+   8:    0 [-x 'arg' -y'arg' -z"arg"]
 
-   9: nargc=1
-   9:    0 [""]
+   9: delim=[] nargc=1 ["\""]
+   9:    0 ["]
 
-  10: nargc=1
-  10:    0 [']
+  10: delim=[] nargc=1 ["\"\""]
+  10:    0 [""]
 
-  11: nargc=1
-  11:    0 ['']
+  11: delim=[] nargc=1 ['\'']
+  11:    0 [']
 
-  12: nargc=0
+  12: delim=[] nargc=1 ['\'\'']
+  12:    0 ['']
 
-  13: nargc=0
+  13: delim=[] nargc=0 [""""""""""""]
 
-  14: nargc=1
-  14:    0 [']
+  14: delim=[] nargc=0 ['''''''''''']
 
-  15: nargc=1
-  15:    0 ['']
+  15: delim=[] nargc=1 ["'"]
+  15:    0 [']
 
-  16: nargc=1
-  16:    0 ['"'"]
+  16: delim=[] nargc=1 ["'""'"]
+  16:    0 ['']
 
-  17: nargc=1
-  17:    0 ["]
+  17: delim=[] nargc=1 ["'"'"'"'"'"']
+  17:    0 ['"'"]
 
-  18: nargc=1
-  18:    0 [""]
+  18: delim=[] nargc=1 ['"']
+  18:    0 ["]
 
-  19: nargc=1
-  19:    0 ["'"']
+  19: delim=[] nargc=1 ['"''"']
+  19:    0 [""]
 
-  24: rc=65 unterminated single quote
-  25: rc=65 unterminated double quote
+  20: delim=[] nargc=1 ['"'"'"'"'"'"]
+  20:    0 ["'"']
+
+  21: delim=[] nargc=0 []
+
+  22: delim=[] nargc=0 []
+
+  25: rc=65 unterminated single quote
   26: rc=65 unterminated double quote
-  27: rc=65 unterminated single quote
+  27: rc=65 unterminated double quote
+  28: rc=65 unterminated single quote
 + ./prog -d,
-   3: nargc=1
+   3: delim=[,] nargc=1 [a]
    3:    0 [a]
 
-   4: nargc=2
+   4: delim=[,] nargc=2 [a,b]
    4:    0 [a]
    4:    1 [b]
 
-   5: nargc=3
+   5: delim=[,] nargc=3 [a,b,c]
    5:    0 [a]
    5:    1 [b]
    5:    2 [c]
 
-   6: nargc=4
+   6: delim=[,] nargc=4 [a,b,c,d]
    6:    0 [a]
    6:    1 [b]
    6:    2 [c]
    6:    3 [d]
 
-   7: nargc=4
+   7: delim=[,] nargc=4 [a,,,d]
    7:    0 [a]
    7:    1 []
    7:    2 []
    7:    3 [d]
 
-   8: nargc=1
+   8: delim=[,] nargc=1 [a\,b]
    8:    0 [a,b]
 
-   9: nargc=1
+   9: delim=[,] nargc=1 [a\,b\,c]
    9:    0 [a,b,c]
 
-  10: nargc=1
+  10: delim=[,] nargc=1 [a\,b\,c\,d]
   10:    0 [a,b,c,d]
 
-  11: nargc=3
+  11: delim=[,] nargc=3 [a,"b,c",d]
   11:    0 [a]
   11:    1 [b,c]
   11:    2 [d]
 
-  12: nargc=3
+  12: delim=[,] nargc=3 [a,'b,c',d]
   12:    0 [a]
   12:    1 [b,c]
   12:    2 [d]
 
-  13: nargc=2
+  13: delim=[,] nargc=2 ["a,b","c,d"]
   13:    0 [a,b]
   13:    1 [c,d]
 
-  14: nargc=2
+  14: delim=[,] nargc=2 ["a,b",'c,d']
   14:    0 [a,b]
   14:    1 [c,d]
 
-  15: nargc=3
+  15: delim=[,] nargc=3 [field one, field two, field three]
   15:    0 [field one]
   15:    1 [ field two]
   15:    2 [ field three]
 
-  16: nargc=3
+  16: delim=[,] nargc=3 [field one, "field two, field two.5", field three]
   16:    0 [field one]
   16:    1 [ field two, field two.5]
   16:    2 [ field three]
 
-  17: nargc=1
+  17: delim=[,] nargc=2 [,]
   17:    0 []
+  17:    1 []
 
-  18: nargc=2
+  18: delim=[,] nargc=3 [,,]
   18:    0 []
   18:    1 []
+  18:    2 []
 
-  19: nargc=3
+  19: delim=[,] nargc=4 [,,,]
   19:    0 []
   19:    1 []
   19:    2 []
+  19:    3 []
 
-  20: nargc=3
+  20: delim=[,] nargc=4 [, , ,]
   20:    0 []
   20:    1 [ ]
   20:    2 [ ]
+  20:    3 []
+
+  21: delim=[,] nargc=1 []
+  21:    0 []
 
   24: rc=65 unterminated double quote
   25: rc=65 unterminated single quote
++ ./prog -d,:
+   1: delim=[,:] nargc=6 [:one\, two,, , "four,five" :]
+   1:    0 []
+   1:    1 [one, two]
+   1:    2 []
+   1:    3 [ ]
+   1:    4 [ four,five ]
+   1:    5 []
+
+   2: delim=[,:] nargc=4 [,,,]
+   2:    0 []
+   2:    1 []
+   2:    2 []
+   2:    3 []
+
+   3: delim=[,:] nargc=1 []
+   3:    0 []
+
+   4: delim=[,:] nargc=7 [root:*:0:0:Charlie &:/root:/bin/csh]
+   4:    0 [root]
+   4:    1 [*]
+   4:    2 [0]
+   4:    3 [0]
+   4:    4 [Charlie &]
+   4:    5 [/root]
+   4:    6 [/bin/csh]
+

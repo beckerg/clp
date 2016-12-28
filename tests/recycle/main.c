@@ -117,7 +117,7 @@ given(int c)
 int
 main(int argc, char **argv)
 {
-    char errbuf[CLP_ERRBUFSZ];
+    char errbuf[128];
     int xoptind;
     int i, j;
     int rc;
@@ -128,7 +128,7 @@ main(int argc, char **argv)
     for (i = 0; i < 10; ++i) {
         lcntr = 0;
 
-        rc = clp_parsev(argc, argv, optionv, posparamv_default, errbuf, &xoptind);
+        rc = clp_parsev(argc, argv, optionv, posparamv_default, errbuf, sizeof(errbuf), &xoptind);
         if (rc) {
             fprintf(stderr, "%s: %s\n", progname, errbuf);
             exit(rc);

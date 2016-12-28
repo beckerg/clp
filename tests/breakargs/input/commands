@@ -1,2 +1,3 @@
 ./prog < data-isspace
 ./prog -d',' < data-csv
+./prog -d',:' < data-other
