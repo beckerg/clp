@@ -14,10 +14,10 @@ mylong is 1125899906842624 1
 mylong is 1152921504606846976 1
 
 + ./prog -l 1z
-prog: unable to convert '-l 1z': Result too large
+prog: unable to convert '-l 1z': ERANGE
 
 + ./prog -l 1y
-prog: unable to convert '-l 1y': Result too large
+prog: unable to convert '-l 1y': ERANGE
 
 + ./prog -l 1b
 mylong is 512 1

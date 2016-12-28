@@ -9,7 +9,7 @@
 PROG	:= prog
 
 HDR	:= main.h clp.h
-SRC	:= main.c
+SRC	:= main.c ../strerror.c
 #LDLIBS	:= -lm -lpthread -lrt
 LDLIBS	:= -L../../lib -lclp
 

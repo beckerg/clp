@@ -35,12 +35,12 @@ mylong is -9223372036854775807 1
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -l 18446744073709551615
-prog: unable to convert '-l 18446744073709551615': Result too large
+prog: unable to convert '-l 18446744073709551615': ERANGE
 
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -l -18446744073709551615
-prog: unable to convert '-l -18446744073709551615': Result too large
+prog: unable to convert '-l -18446744073709551615': ERANGE
 
 + ./prog -L 0
 myulong is 0 1
@@ -52,19 +52,19 @@ myulong is 1 1
 myulong is 2 1
 
 + ./prog -L -1
-prog: unable to convert '-L -1': Result too large
+prog: unable to convert '-L -1': ERANGE
 
 + ./prog -L -2
-prog: unable to convert '-L -2': Result too large
+prog: unable to convert '-L -2': ERANGE
 
 + ./prog -L -3
-prog: unable to convert '-L -3': Result too large
+prog: unable to convert '-L -3': ERANGE
 
 + ./prog -L 0 -L 1 -L 2
 myulong is 2 1
 
 + ./prog -L -1 -L -2 -L -3
-prog: unable to convert '-L -1': Result too large
+prog: unable to convert '-L -1': ERANGE
 
 ++ echo '2^63 - 1'
 ++ bc
@@ -84,5 +84,5 @@ myulong is 18446744073709551615 1
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -L -18446744073709551615
-prog: unable to convert '-L -18446744073709551615': Result too large
+prog: unable to convert '-L -18446744073709551615': ERANGE
 
