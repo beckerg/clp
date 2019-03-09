@@ -8,7 +8,7 @@
  * error messages between platforms (e.g., FreeBSD and Linux).
  */
 char *
-strerror(int errnum)
+__wrap_strerror(int errnum)
 {
     static char errbuf[128];
 

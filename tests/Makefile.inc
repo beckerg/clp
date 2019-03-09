@@ -11,7 +11,7 @@ PROG	:= prog
 HDR	:= main.h clp.h
 SRC	:= main.c ../strerror.c
 #LDLIBS	:= -lm -lpthread -lrt
-LDLIBS	:= -L../../lib -lclp
+LDLIBS	:= -L../../lib -lclp -Wl,--wrap=strerror
 
 VPATH	:=
 
@@ -19,9 +19,9 @@ VPATH	:=
 
 PLATFORM	:= $(shell uname -s | tr 'a-z' 'A-Z')
 INCLUDE		:= -I. -I../../lib
-DEBUG		:= -g -O0 -DDEBUG
+DEBUG		:= -O0 -DDEBUG -fno-omit-frame-pointer
 CPPFLAGS	:= -D${PLATFORM}
-CFLAGS		+= -Wall -g -O2 ${INCLUDE}
+CFLAGS		+= -Wall -O2 -g3 ${INCLUDE}
 
 OBJ		:= ${SRC:.c=.o}
 
@@ -36,15 +36,20 @@ RESULT := $(patsubst output/%, result/%, ${OUTPUT})
 #
 .DELETE_ON_ERROR:
 
-.PHONY:	all check clean clobber cscope debug distclean etags output tags test
+.PHONY:	all asan check clean clobber cscope debug distclean etags output tags test
 
 
 all: ${PROG}
 
+asan: CFLAGS+=${DEBUG}
+asan: CFLAGS+=-fsanitize=address -fsanitize=undefined
+asan: LDLIBS+=-fsanitize=address -fsanitize=undefined
+asan: ${PROG}
+
 clean:
 	rm -rf ${PROG} ${OBJ} *.core result
 
-distclean clobber: clean
+clobber distclean: clean
 	rm -f cscope.files cscope*.out TAGS
 
 check test: ${OUTPUT} ${RESULT}

@@ -21,28 +21,34 @@ VPATH	:=
 
 PLATFORM	:= $(shell uname -s | tr 'a-z' 'A-Z')
 INCLUDE		:= -I. -I../lib -I../../src/include
-DEBUG		:= -g -O0 -DDEBUG
+DEBUG		:= -O0 -DDEBUG -fno-omit-frame-pointer
 CPPFLAGS	:= -D${PLATFORM}
-CFLAGS		+= -Wall -g -O2 ${INCLUDE}
+CFLAGS		+= -Wall -O2 -g3 ${INCLUDE}
 
 OBJ		:= ${SRC:.c=.o}
 
-CSCOPE_DIRS	?= . ${VPATH} /usr/src/lib /usr/src/sys/kern /usr/src/sys/sys
+#CSCOPE_DIRS	?= . ${VPATH} /usr/src/lib /usr/src/sys/kern /usr/src/sys/sys
+CSCOPE_DIRS	?= . ${VPATH} /usr/src/lib /usr/src/sys
 
 
 # Always delete partially built targets.
 #
 .DELETE_ON_ERROR:
 
-.PHONY:	all check clean clobber cscope debug etags tags
+.PHONY:	all asan check clean clobber cscope debug distclean etags tags
 
 
 all: ${LIBBASE}.h lib${LIBBASE}.a
 
+asan: CFLAGS+=${DEBUG}
+asan: CFLAGS+=-fsanitize=address -fsanitize=undefined
+asan: LDLIBS+=-fsanitize=address -fsanitize=undefined
+asan: ${LIBBASE}.h lib${LIBBASE}.a
+
 clean:
 	rm -f lib${LIBBASE}.a ${OBJ} *.core
 
-distclean clobber: clean
+clobber distclean: clean
 	rm -f cscope.files cscope*.out TAGS
 
 check test:
