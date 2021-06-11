@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 Greg Becker.  All rights reserved.
+ * Copyright (c) 2015-2016,2021 Greg Becker.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -77,7 +77,7 @@ static struct clp_suftab clp_suftab_time_t = {
 };
 
 
-clp_posparam_t clp_posparam_none[] = {
+struct clp_posparam clp_posparam_none[] = {
     { .name = NULL }
 };
 
@@ -121,7 +121,7 @@ dprint_impl(const char *file, int line, const char *func, FILE *fp, const char *
  * of clp_parse().
  */
 static void
-eprint(clp_t *clp, const char *fmt, ...)
+eprint(struct clp *clp, const char *fmt, ...)
 {
     va_list ap;
 
@@ -133,8 +133,8 @@ eprint(clp_t *clp, const char *fmt, ...)
 }
 
 
-clp_option_t *
-clp_option_find(clp_option_t *optionv, int optopt)
+struct clp_option *
+clp_option_find(struct clp_option *optionv, int optopt)
 {
     if (optionv && optopt > 0) {
         while (optionv->optopt > 0) {
@@ -149,7 +149,7 @@ clp_option_find(clp_option_t *optionv, int optopt)
 }
 
 void
-clp_option_priv_set(clp_option_t *option, void *priv)
+clp_option_priv_set(struct clp_option *option, void *priv)
 {
     if (option) {
         option->priv = priv;
@@ -400,7 +400,7 @@ CLP_CVT_XX(time_t,      time_t,     0,          LONG_MAX,   clp_suftab_time_t);
 /* Return true if the two specified options are mutually exclusive.
  */
 int
-clp_excludes2(const clp_option_t *l, const clp_option_t *r)
+clp_excludes2(const struct clp_option *l, const struct clp_option *r)
 {
     if (l && r) {
         if (l->excludes) {
@@ -437,10 +437,10 @@ clp_excludes2(const clp_option_t *l, const clp_option_t *r)
  * with the specified option and which appeared on the command line
  * at least the specified number of times.
  */
-clp_option_t *
-clp_excludes(clp_option_t *first, const clp_option_t *option, int given)
+struct clp_option *
+clp_excludes(struct clp_option *first, const struct clp_option *option, int given)
 {
-    clp_option_t *o;
+    struct clp_option *o;
 
     for (o = first; o->optopt > 0; ++o) {
         if (o->given >= given && clp_excludes2(option, o)) {
@@ -455,7 +455,7 @@ clp_excludes(clp_option_t *first, const clp_option_t *option, int given)
  * for each option that was given on the command line.
  */
 void
-clp_version(clp_option_t *option)
+clp_version(struct clp_option *option)
 {
     printf("%s\n", (char *)option->cvtdst);
 }
@@ -514,15 +514,15 @@ clp_string_cmp(const void *lhs, const void *rhs)
  *   "usage: progname [options] args..."
  */
 void
-clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
+clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
 {
-    clp_posparam_t *paramv = clp->paramv;
+    struct clp_posparam *paramv = clp->paramv;
     char excludes_buf[clp->optionc + 1];
     char optarg_buf[clp->optionc * 16];
     char opt_buf[clp->optionc + 1];
-    clp_posparam_t *param;
+    struct clp_posparam *param;
+    struct clp_option *o;
     char *pc_excludes;
-    clp_option_t *o;
     char *pc_optarg;
     char *pc_opt;
     char *pc;
@@ -608,7 +608,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
     /* [opts-with-args]
      */
     for (pc = optarg_buf; *pc; ++pc) {
-        clp_option_t *o = clp_option_find(clp->optionv, *pc);
+        struct clp_option *o = clp_option_find(clp->optionv, *pc);
 
         if (o) {
             fprintf(fp, " [-%c %s]", o->optopt, o->argname);
@@ -628,7 +628,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
          * mutually exclusive options.
          */
         for (cur = excludes_buf; *cur; ++cur) {
-            clp_option_t *l = clp_option_find(clp->optionv, *cur);
+            struct clp_option *l = clp_option_find(clp->optionv, *cur);
             char buf[1024], *pc_buf;
 
             pc_buf = buf;
@@ -637,7 +637,7 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
                 if (cur == pc) {
                     *pc_buf++ = *pc;
                 } else {
-                    clp_option_t *r = clp_option_find(clp->optionv, *pc);
+                    struct clp_option *r = clp_option_find(clp->optionv, *pc);
 
                     if (clp_excludes2(l, r)) {
                         *pc_buf++ = *pc;
@@ -670,12 +670,12 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
         for (i = 0; i < listc; ++i) {
             if (listv[i]) {
                 for (pc = listv[i]; *pc; ++pc) {
-                    clp_option_t *l = clp_option_find(clp->optionv, *pc);
+                    struct clp_option *l = clp_option_find(clp->optionv, *pc);
                     char *pc2;
 
                     for (pc2 = listv[i]; *pc2; ++pc2) {
                         if (pc2 != pc) {
-                            clp_option_t *r = clp_option_find(clp->optionv, *pc2);
+                            struct clp_option *r = clp_option_find(clp->optionv, *pc2);
 
                             if (!clp_excludes2(l, r)) {
                                 free(listv[i]);
@@ -750,8 +750,8 @@ clp_usage(clp_t *clp, const clp_option_t *limit, FILE *fp)
 static int
 clp_help_cmp(const void *lhs, const void *rhs)
 {
-    clp_option_t const *l = *(clp_option_t * const *)lhs;
-    clp_option_t const *r = *(clp_option_t * const *)rhs;
+    struct clp_option const *l = *(struct clp_option * const *)lhs;
+    struct clp_option const *r = *(struct clp_option * const *)rhs;
 
     int lc = tolower(l->optopt);
     int rc = tolower(r->optopt);
@@ -776,14 +776,14 @@ clp_help_cmp(const void *lhs, const void *rhs)
  * src...  specify one or more source files
  */
 void
-clp_help(clp_option_t *opthelp)
+clp_help(struct clp_option *opthelp)
 {
-    const clp_posparam_t *param;
-    const clp_option_t *option;
-    clp_posparam_t *paramv;
+    const struct clp_posparam *param;
+    const struct clp_option *option;
+    struct clp_posparam *paramv;
+    struct clp *clp;
     int longhelp;
     int optionc;
-    clp_t *clp;
     int width;
     FILE *fp;
     int i;
@@ -804,7 +804,7 @@ clp_help(clp_option_t *opthelp)
 
     /* Create an array of pointers to options and sort it.
      */
-    clp_option_t *optionv[optionc];
+    struct clp_option *optionv[optionc];
 
     for (i = 0; i < optionc; ++i) {
         optionv[i] = clp->optionv + i;
@@ -929,9 +929,9 @@ clp_help(clp_option_t *opthelp)
  * given posparam vector could consume.
  */
 void
-clp_posparam_minmax(clp_posparam_t *paramv, int *posminp, int *posmaxp)
+clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
 {
-    clp_posparam_t *param;
+    struct clp_posparam *param;
 
     if (!paramv || !posminp || !posmaxp) {
         assert(0);
@@ -963,16 +963,14 @@ clp_posparam_minmax(clp_posparam_t *paramv, int *posminp, int *posmaxp)
 }
 
 static int
-clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
+clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
 {
+    struct clp_posparam *paramv;
     struct option *longopt;
-    clp_posparam_t *paramv;
+    struct clp_option *o;
     size_t optstringsz;
-    clp_option_t *o;
-    int posmin;
-    int posmax;
-    char *env;
-    char *pc;
+    int posmin, posmax;
+    char *env, *pc;
     int rc;
 
     env = getenv("CLP_DEBUG");
@@ -1055,9 +1053,9 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
 #endif
 
     while (1) {
+        struct clp_option *x;
         int curind = optind;
         int longidx = -1;
-        clp_option_t *x;
         int c;
 
         c = getopt_long(argc, argv, clp->optstring, clp->longopts, &longidx);
@@ -1098,15 +1096,15 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
             paramv = o->paramv;
         }
 
-        if (o->convert) {
+        if (o->cvtfunc) {
             if (o->given > 1 && o->cvtdst) {
-                if (o->convert == clp_cvt_string) {
+                if (o->cvtfunc == clp_cvt_string) {
                     free(*(void **)o->cvtdst);
                     *(void **)o->cvtdst = NULL;
                 }
             }
 
-            rc = o->convert(optarg, o->cvtflags, o->cvtparms, o->cvtdst);
+            rc = o->cvtfunc(optarg, o->cvtflags, o->cvtparms, o->cvtdst);
 
             if (rc) {
                 char optbuf[] = { o->optopt, '\000' };
@@ -1160,7 +1158,7 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
     }
 
     if (paramv) {
-        clp_posparam_t *param;
+        struct clp_posparam *param;
         int i;
 
         /* Call each parameter's before() procedure before positional parameter processing.
@@ -1209,9 +1207,9 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
         /* Call each parameter's convert() procedure for each given argument.
          */
         for (param = paramv; param->name; ++param) {
-            if (param->convert) {
+            if (param->cvtfunc) {
                 for (i = 0; i < param->argc; ++i) {
-                    param->convert(param->argv[i], param->cvtflags,
+                    param->cvtfunc(param->argv[i], param->cvtflags,
                                    param->cvtparms, param->cvtdst);
                 }
             }
@@ -1234,7 +1232,8 @@ clp_parsev_impl(clp_t *clp, int argc, char **argv, int *optindp)
  */
 int
 clp_parsel(const char *line, const char *delim,
-           clp_option_t *optionv, clp_posparam_t *paramv,
+           struct clp_option *optionv,
+           struct clp_posparam *paramv,
            char *errbuf, size_t errbufsz)
 {
     char **argv;
@@ -1265,11 +1264,12 @@ clp_parsel(const char *line, const char *delim,
  */
 int
 clp_parsev(int argc, char **argv,
-           clp_option_t *optionv, clp_posparam_t *paramv,
+           struct clp_option *optionv,
+           struct clp_posparam *paramv,
            char *errbuf, size_t errbufsz, int *optindp)
 {
     char _errbuf[128];
-    clp_t clp;
+    struct clp clp;
     int rc;
 
     if (argc < 1)
@@ -1292,24 +1292,24 @@ clp_parsev(int argc, char **argv,
     /* Validate options and initialize/reset from previous run.
      */
     if (optionv) {
-        clp_option_t *o;
+        struct clp_option *o;
 
         for (o = optionv; o->optopt > 0; ++o) {
             o->clp = &clp;
             o->given = 0;
             o->optarg = NULL;
 
-            if (o->convert == clp_cvt_bool || o->convert == clp_cvt_incr) {
+            if (o->cvtfunc == clp_cvt_bool || o->cvtfunc == clp_cvt_incr) {
                 o->argname = NULL;
             }
 
-            if (o->argname && !o->convert) {
+            if (o->argname && !o->cvtfunc) {
                 eprint(&clp, "option -%c requires an argument"
                        " but has no conversion function", o->optopt);
                 return EX_DATAERR;
             }
 
-            if (o->convert && !o->cvtdst) {
+            if (o->cvtfunc && !o->cvtdst) {
                 eprint(&clp, "option -%c has a conversion function but no cvtdst ptr",
                        o->optopt);
                 return EX_DATAERR;
@@ -1326,10 +1326,10 @@ clp_parsev(int argc, char **argv,
     /* Validate positional parameters.
      */
     if (paramv) {
-        clp_posparam_t *param;
+        struct clp_posparam *param;
 
         for (param = paramv; param->name > 0; ++param) {
-            if (param->convert && !param->cvtdst) {
+            if (param->cvtfunc && !param->cvtdst) {
                 eprint(&clp, "parameter %s has a conversion function but no cvtdst ptr",
                        param->name);
                 return EX_DATAERR;
@@ -1374,7 +1374,7 @@ clp_parsev(int argc, char **argv,
  *
  *    argc = 6;
  *    argv[0] = ""
- *    argv[1] = "one two"
+ *    argv[1] = "one, two"
  *    argv[2] = ""
  *    argv[3] = " "
  *    argv[4] = " four,five "
@@ -1386,7 +1386,7 @@ clp_parsev(int argc, char **argv,
  * If argvp is not nil then *argvp must always be freed by the
  * caller, even if *argcp is zero.
  *
- * On failue, errno is set and an exit code from sysexits.h
+ * On failure, errno is set and an exit code from sysexits.h
  * is returned.  *argvp is not set and must not be freed
  * in this case.
  *

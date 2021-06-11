@@ -28,7 +28,7 @@ time_t mytime;
 
 CLP_VECTOR(intv, int, 5, ",");
 
-clp_option_t optionv[] = {
+struct clp_option optionv[] = {
     CLP_OPTION_VERBOSE(verbosity),
     CLP_OPTION_VERSION(version),
     CLP_OPTION_DRYRUN(dryrun),
@@ -47,7 +47,7 @@ clp_option_t optionv[] = {
     CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
 
     { .optopt = 'j', .argname = "intv",
-      .convert = clp_cvt_int, .cvtparms = &intv, .cvtdst = intv.data,
+      .cvtfunc = clp_cvt_int, .cvtparms = &intv, .cvtdst = intv.data,
       .help = "specify a vector of ints" },
 
     // Example of a bunch of mutually exclusive boolean options.
@@ -63,7 +63,7 @@ clp_option_t optionv[] = {
 static bool
 given(int c)
 {
-    clp_option_t *opt = clp_option_find(optionv, c);
+    struct clp_option *opt = clp_option_find(optionv, c);
 
     return (opt && opt->given);
 }

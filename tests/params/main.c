@@ -16,12 +16,12 @@ int dryrun;
 FILE *cf;
 char *dst_path;
 
-clp_posparam_cb_t posparamv_default_after;
-clp_posparam_cb_t posparamv_list_after;
+clp_posparam_cb posparamv_default_after;
+clp_posparam_cb posparamv_list_after;
 
 /* Default positional parameters.
  */
-clp_posparam_t posparamv_default[] = {
+struct clp_posparam posparamv_default[] = {
 #if 1
     {
         .name = "[leftmost]",
@@ -79,7 +79,7 @@ clp_posparam_t posparamv_default[] = {
 
 /* Positional parameters for the list option (-l, --list)
  */
-clp_posparam_t posparamv_list[] = {
+struct clp_posparam posparamv_list[] = {
     {
         .name = "[file...]",
         .help = "zero or more files",
@@ -89,7 +89,7 @@ clp_posparam_t posparamv_list[] = {
     { .name = NULL }
 };
 
-clp_option_t optionv[] = {
+struct clp_option optionv[] = {
     CLP_OPTION_VERBOSE(verbosity),
     CLP_OPTION_VERSION(version),
     CLP_OPTION_DRYRUN(dryrun),
@@ -107,7 +107,7 @@ clp_option_t optionv[] = {
 };
 
 void
-posparamv_default_after(struct clp_posparam_s *param)
+posparamv_default_after(struct clp_posparam *param)
 {
     int i;
 
@@ -120,24 +120,22 @@ posparamv_default_after(struct clp_posparam_s *param)
         printf("%s: name=%-12s  argv[%d]=%s\n",
                __func__, param->name, i, param->argv[i]);
     }
-           
 }
 
 void
-posparamv_list_after(struct clp_posparam_s *param)
+posparamv_list_after(struct clp_posparam *param)
 {
     int i;
 
     for (i = 0; i < param->argc; ++i) {
         printf("%s: %s\n", __func__, param->argv[i]);
     }
-           
 }
 
 static bool
 given(int c)
 {
-    clp_option_t *opt = clp_option_find(optionv, c);
+    struct clp_option *opt = clp_option_find(optionv, c);
 
     return (opt && opt->given);
 }

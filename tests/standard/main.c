@@ -13,7 +13,7 @@ int verbosity;
 int dryrun;
 FILE *cf;
 
-clp_option_t optionv[] = {
+struct clp_option optionv[] = {
     CLP_OPTION_VERBOSE(verbosity),
     CLP_OPTION_VERSION(version),
     CLP_OPTION_DRYRUN(dryrun),
@@ -26,7 +26,7 @@ clp_option_t optionv[] = {
 static bool
 given(int c)
 {
-    clp_option_t *opt = clp_option_find(optionv, c);
+    struct clp_option *opt = clp_option_find(optionv, c);
 
     return (opt && opt->given);
 }
