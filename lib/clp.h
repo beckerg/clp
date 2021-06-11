@@ -165,8 +165,8 @@ struct clp_option {
      * fields are supplied by the user.
      */
     struct clp         *clp;            // Not valid when parser returns
-    int                 given;          // Count of times this option was given
     const char         *optarg;         // optarg from getopt()
+    int                 given;          // Count of times this option was given
     int                 longidx;        // Index into cli->longopts[]
 };
 
@@ -174,10 +174,10 @@ struct clp {
     const char          *basename;      // From argv[0] of clp_parsev()
     struct clp_option   *optionv;       // Argument from clp_parsev()
     struct clp_posparam *paramv;        // Argument from clp_parsev()
+    int                  opthelp;       // The option tied to opt_help()
     int                  optionc;       // Count of elements in optionv[]
     char                *optstring;     // The optstring for getopt
     struct option       *longopts;      // Table of long options for getopt_long()
-    int                  opthelp;       // The option tied to opt_help()
     char                *errbuf;
     size_t               errbufsz;
 };

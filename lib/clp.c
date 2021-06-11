@@ -879,7 +879,7 @@ clp_help(struct clp_option *opthelp)
         }
     }
 
-    /* Determine the wdith of the longest positional parameter name.
+    /* Determine the width of the longest positional parameter name.
      */
     if (paramv) {
         width = 0;
@@ -908,19 +908,19 @@ clp_help(struct clp_option *opthelp)
         }
     }
 
+#if 0
     /* Print detailed help if -v was given.
      */
     option = clp_option_find(clp->optionv, 'v');
 
     if (option && option->given == 0) {
-#if 0
         fprintf(fp, "\nUse -%c for more detail", option->optopt);
         if (!longhelp && opthelp->longopt) {
             fprintf(fp, ", use --%s for long help", opthelp->longopt);
         }
         fprintf(fp, "\n");
-#endif
     }
+#endif
 
     fprintf(fp, "\n");
 }
@@ -943,12 +943,12 @@ clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
 
     for (param = paramv; param->name; ++param) {
         char namebuf[128];
-        int isopt;
+        int isoptional;
         int len;
 
-        isopt = clp_unbracket(param->name, namebuf, sizeof(namebuf));
+        isoptional = clp_unbracket(param->name, namebuf, sizeof(namebuf));
 
-        param->posmin = isopt ? 0 : 1;
+        param->posmin = isoptional ? 0 : 1;
 
         len = strlen(namebuf);
         if (len >= 3 && 0 == strncmp(namebuf + len - 3, "...", 3)) {
@@ -997,7 +997,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
 
     pc = clp->optstring;
 
-    *pc++ = '+';    // Enable POSIXLY_CORRECT sematics
+    *pc++ = '+';    // Enable POSIXLY_CORRECT semantics
     *pc++ = ':';    // Disable getopt error reporting
 
     /* Generate the optstring and the long options table from the options vector.
@@ -1052,6 +1052,8 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
     optind = 1; // GNU
 #endif
 
+    int optaftercnt = 0;
+
     while (1) {
         struct clp_option *x;
         int curind = optind;
@@ -1088,6 +1090,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
             return EX_USAGE;
         }
 
+        optaftercnt += !!o->after;
         o->longidx = longidx;
         o->optarg = optarg;
         ++o->given;
@@ -1149,11 +1152,10 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
     /* Call each given option's after() procedure after all options have
      * been processed.
      */
-    if (clp->optionv) {
-        for (o = clp->optionv; o->optopt > 0; ++o) {
-            if (o->given && o->after) {
-                o->after(o);
-            }
+    for (o = clp->optionv; optaftercnt > 0 && o->optopt > 0; ++o) {
+        if (o->given && o->after) {
+            optaftercnt--;
+            o->after(o);
         }
     }
 

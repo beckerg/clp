@@ -96,7 +96,7 @@ struct clp_option optionv[] = {
     CLP_OPTION_CONF(cf),
     CLP_OPTION_HELP,
 
-	// Example of a boolean option that triggers non-default positional parameters.
+    // Example of a boolean option that triggers non-default positional parameters.
     {
         .optopt = 'l', .longopt = "list",
         .help = "list...",
@@ -170,11 +170,11 @@ main(int argc, char **argv)
 
     printf("dryrun is %d %d\n", dryrun, given('n'));
 
-	if (cf) {
+    if (cf) {
         printf("cf is %s %d\n", ferror(cf) ? "in error" : "open", given('C'));
-	} else {
+    } else {
         printf("cf is nil %d\n", given('C'));
-	}
+    }
 
     return 0;
 }

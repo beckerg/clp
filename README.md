@@ -13,32 +13,43 @@ require creating an object for each option).
 By default, clp builds as a static library, but your best bet is to simply
 include clp/lib/clp.[ch] into your project.
 
-## Example
-Here's a simple example that builds a parser which accepts the integer valued
-option -j to specify the number of jobs, two integer valued options -x and -y
-which are mutually exclusive, and several canned options (e.g., -h for help, ...)
+## Examples
+### Options
+Here's a simple example that builds a parser which requires one or more positional
+parameters, accepts an integer valued option -j to specify the number of jobs,
+accepts two boolean options -x and -y which are mutually exclusive, and accepts
+several canned options (e.g., -h for help, ...).  Note that a program can simply
+pass NULL to clp_parse() for the option and/or positional parameter arguments
+if one or the other is not required.
 
 ```
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "clp.h"
 
-char version[] = "1.0";
+char version[] = "1.0.1";
 char *progname;
 int verbosity;
 u_int jobs;
-int xvar, yvar;
+bool xvar, yvar;
 
 struct clp_option optionv[] = {
     CLP_OPTION(u_int, 'j', jobs, "jobs", NULL, "specify max number of jobs"),
-    CLP_OPTION(int, 'x', xvar, NULL, "y", "specify x (excludes -y)"),
-    CLP_OPTION(int, 'y', yvar, NULL, "x", "specify y (excludes -x)"),
+    CLP_OPTION(bool, 'x', xvar, NULL, "y", "enable x feature (excludes -y)"),
+    CLP_OPTION(bool, 'y', yvar, NULL, "x", "enable y feature (excludes -x)"),
     CLP_OPTION_VERBOSE(verbosity),
     CLP_OPTION_VERSION(version),
     CLP_OPTION_HELP,
     CLP_OPTION_END
+};
+
+struct clp_posparam posparamv[] = {
+    { .name = "[left...]", .help = "one or more optional left-justified parameters", },
+    { .name = "right", .help = "mandatory right-justified parameter", },
+    CLP_PARAM_END
 };
 
 int
@@ -50,47 +61,63 @@ main(int argc, char **argv)
     progname = strrchr(argv[0], '/');
     progname = (progname ? progname + 1 : argv[0]);
 
-    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf), &xoptind);
+    rc = clp_parsev(argc, argv, optionv, posparamv, errbuf, sizeof(errbuf), &xoptind);
     if (rc) {
         fprintf(stderr, "%s: %s\n\n", progname, errbuf);
         exit(rc);
     }
 
-    argc -= xoptind;
-    argv += xoptind;
+    if (verbosity > 0) {
+        struct clp_posparam *right = &posparamv[1];
+        struct clp_posparam *left = &posparamv[0];
 
-    /* do stuff... */
+        if (right->argc > 0) {
+            for (int i = 0; i < left->argc; ++i)
+                printf("left param %d: %s\n", i, left->argv[i]);
+
+            printf("right param: %s\n", right->argv[0]);
+        }
+    }
 
     return 0;
 }
 ```
 
 ```
+$ ./a.out
+a.out: mandatory positional parameters required, use -h for help
+
 $ ./a.out -h
-usage: a.out [-v] [-j jobs] [-x | -y]
+usage: a.out [-v] [-j jobs] [-x | -y] [left...] right
 usage: a.out -h [-v]
 usage: a.out -V
 -h       print this help list
 -j jobs  specify max number of jobs
 -V       print version
 -v       increase verbosity
--x xvar  specify x (excludes -y)
--y yvar  specify y (excludes -x)
+-x       enable x feature (excludes -y)
+-y       enable y feature (excludes -x)
+left...  one or more optional left-justified parameters
+right    mandatory right-justified parameter
 
-$ ./a.out --help
-usage: a.out [-v] [-j jobs] [-x | -y]
-usage: a.out -h [-v]
-usage: a.out -V
--h, --help       print this help list
--j, --jobs jobs  specify max number of jobs
--V, --version    print version
--v               increase verbosity
--x xvar          specify x (excludes -y)
--y yvar          specify y (excludes -x)
+$ ./a.out a
 
-$ ./a.out -j7 -x1 -y2
+$ ./a.out -v a
+right param: a
+
+$ ./a.out -v a b
+left param 0: a
+right param: b
+
+$ ./a.out -v a b c
+left param 0: a
+left param 1: b
+right param: c
+
+$ ./a.out -x -y
 a.out: option -x excludes -y, use -h for help
 ```
 
-TODO:
+## TODO
 * Since it leverages getopt_long() it is inherently not thread-safe.
+* Usage output for mutually exclusive options not always correct.
