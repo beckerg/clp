@@ -6,7 +6,7 @@ dryrun is 0 0
 cf is nil 0
 + ./prog -h
 usage: prog [-nv] [-C cf]
-usage: prog -h [-v]
+usage: prog -h
 usage: prog -V
 -C cf  specify a configuration file
 -h     print this help list
@@ -20,20 +20,7 @@ argc=2 xoptind=2
 dryrun is 0 0
 cf is nil 0
 + ./prog -hv
-usage: prog [-nv] [-C cf]
-usage: prog -h [-v]
-usage: prog -V
--C cf  specify a configuration file
--h     print this help list
--n     trace execution but do not change anything
--V     print version
--v     increase verbosity
-
-progname is prog
-verbosity is 1 1
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
+prog: option -h excludes -v, use -h for help
 + ./prog -V
 version...
 progname is prog

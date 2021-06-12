@@ -2,7 +2,7 @@
 prog: mandatory positional parameters required, use -h for help
 + ./prog -h
 usage: prog [-nv] [-C cf] [leftmost [left]] src...
-usage: prog -h [-v]
+usage: prog -h
 usage: prog -l [-nv] [-C cf] [file...]
 usage: prog -V
 -C cf  specify a configuration file
@@ -21,25 +21,7 @@ argc=2 xoptind=2
 dryrun is 0 0
 cf is nil 0
 + ./prog -hv
-usage: prog [-nv] [-C cf] [leftmost [left]] src...
-usage: prog -h [-v]
-usage: prog -l [-nv] [-C cf] [file...]
-usage: prog -V
--C cf  specify a configuration file
--h     print this help list
--l     list...
--n     trace execution but do not change anything
--V     print version
--v     increase verbosity
-leftmost  optional left-most parameter
-left      optional left parameter
-src...    one or more source files
-
-progname is prog
-verbosity is 1 1
-argc=2 xoptind=2
-dryrun is 0 0
-cf is nil 0
+prog: option -h excludes -v, use -h for help
 + ./prog -V
 version...
 progname is prog

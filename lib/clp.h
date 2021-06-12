@@ -65,53 +65,53 @@
  * open         int *           open() flags    -
  */
 
-#define CLP_OPTION(xtype, xoptopt, xargname, xlongopt, xexcl, xhelp) \
-    { CLP_OPTION_TMPL((xoptopt), #xargname, (xexcl), (xlongopt),     \
-                      clp_cvt_ ## xtype, 0, NULL, &(xargname),       \
-                      NULL, NULL, NULL, (xhelp)) }
+#define CLP_OPTION(_xtype, _xoptopt, _xargname, _xlongopt, _xexcl, _xhelp) \
+    { CLP_OPTION_TMPL((_xoptopt), #_xargname, (_xexcl), (_xlongopt),    \
+                      clp_cvt_ ## _xtype, 0, NULL, &(_xargname),        \
+                      NULL, NULL, NULL, (_xhelp)) }
 
-#define CLP_OPTION_VERBOSE(xverbose)                                \
-    CLP_OPTION(incr, 'v', xverbose, NULL, NULL, "increase verbosity")
+#define CLP_OPTION_VERBOSE(_xverbose)                                   \
+    CLP_OPTION(incr, 'v', _xverbose, NULL, NULL, "increase verbosity")
 
-#define CLP_OPTION_HELP                                             \
-    { CLP_OPTION_TMPL('h', NULL, "^v", "help",                      \
-                      NULL, 0, NULL, NULL,                          \
-                      NULL, clp_help, clp_posparam_none,            \
+#define CLP_OPTION_HELP                                         \
+    { CLP_OPTION_TMPL('h', NULL, "*", "help",                   \
+                      NULL, 0, NULL, NULL,                      \
+                      NULL, clp_help, clp_posparam_none,        \
                       "print this help list") }
 
-#define CLP_OPTION_VERSION(xversion)                                \
-    { CLP_OPTION_TMPL('V', NULL, "*", #xversion,                    \
-                      NULL, 0, NULL, &(xversion),                   \
-                      NULL, clp_version, clp_posparam_none,         \
+#define CLP_OPTION_VERSION(_xversion)                           \
+    { CLP_OPTION_TMPL('V', NULL, "*", #_xversion,               \
+                      NULL, 0, NULL, &(_xversion),              \
+                      NULL, clp_version, clp_posparam_none,     \
                       "print version") }
 
-#define CLP_OPTION_DRYRUN(xdryrun)                                  \
-    { CLP_OPTION_TMPL('n', NULL, NULL, #xdryrun,                    \
-                      clp_cvt_incr, 0, NULL, &(xdryrun),            \
-                      NULL, NULL, NULL,                             \
+#define CLP_OPTION_DRYRUN(_xdryrun)                                     \
+    { CLP_OPTION_TMPL('n', NULL, NULL, #_xdryrun,                       \
+                      clp_cvt_incr, 0, NULL, &(_xdryrun),               \
+                      NULL, NULL, NULL,                                 \
                       "trace execution but do not change anything") }
 
-#define CLP_OPTION_CONF(xconf)                                      \
-    { CLP_OPTION_TMPL('C', #xconf, NULL, #xconf,                    \
-                      clp_cvt_fopen, 0, NULL, &(xconf),             \
-                      NULL, NULL, NULL,                             \
+#define CLP_OPTION_CONF(_xconf)                                 \
+    { CLP_OPTION_TMPL('C', #_xconf, NULL, #_xconf,              \
+                      clp_cvt_fopen, 0, NULL, &(_xconf),        \
+                      NULL, NULL, NULL,                         \
                       "specify a configuration file") }
 
-#define CLP_OPTION_TMPL(xoptopt, xargname, xexcludes, xlongopt,     \
-                        xconvert, xcvtflags, xcvtparms, xcvtdst,    \
-                        xbefore, xafter, xparamv, xhelp)            \
-    .optopt = (xoptopt),                                            \
-    .argname = (xargname),                                          \
-    .excludes = (xexcludes),                                        \
-    .longopt = (xlongopt),                                          \
-    .cvtfunc = (xconvert),                                          \
-    .cvtflags = (xcvtflags),                                        \
-    .cvtparms = (xcvtparms),                                        \
-    .cvtdst = (xcvtdst),                                            \
-    .before = (xbefore),                                            \
-    .after = (xafter),                                              \
-    .paramv = (xparamv),                                            \
-    .help = (xhelp),                                                \
+#define CLP_OPTION_TMPL(_xoptopt, _xargname, _xexcludes, _xlongopt,     \
+                        _xconvert, _xcvtflags, _xcvtparms, _xcvtdst,    \
+                        _xbefore, _xafter, _xparamv, _xhelp)            \
+    .optopt = (_xoptopt),                                               \
+    .argname = (_xargname),                                             \
+    .excludes = (_xexcludes),                                           \
+    .longopt = (_xlongopt),                                             \
+    .cvtfunc = (_xconvert),                                             \
+    .cvtflags = (_xcvtflags),                                           \
+    .cvtparms = (_xcvtparms),                                           \
+    .cvtdst = (_xcvtdst),                                               \
+    .before = (_xbefore),                                               \
+    .after = (_xafter),                                                 \
+    .paramv = (_xparamv),                                               \
+    .help = (_xhelp),                                                   \
 
 
 

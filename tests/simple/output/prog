@@ -2,7 +2,7 @@
 
 + ./prog -h
 usage: prog [-nv] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
-usage: prog -h [-v]
+usage: prog -h
 usage: prog -V
 -C cf        specify a configuration file
 -d mydouble  specify a double
@@ -24,28 +24,7 @@ usage: prog -V
 
 
 + ./prog -hv
-usage: prog [-nv] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
-usage: prog -h [-v]
-usage: prog -V
--C cf        specify a configuration file
--d mydouble  specify a double
--f myfloat   specify a float
--h           print this help list
--I myuint    specify a u_int
--i myint     specify an int
--j intv      specify a vector of ints
--L myulong   specify a u_long
--l mylong    specify a long
--n           trace execution but do not change anything
--s mystring  specify a string
--t mytime    specify a time_t
--V           print version
--v           increase verbosity
--x           specify x flag
--y           specify y flag
--z           specify z flag
-
-verbosity is 1 1
+prog: option -h excludes -v, use -h for help
 
 + ./prog -V
 version...
