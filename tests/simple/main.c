@@ -69,24 +69,22 @@ int
 main(int argc, char **argv)
 {
     char errbuf[128];
-    int xoptind;
-    int rc;
-    int i;
+    int rc, i;
 
     progname = strrchr(argv[0], '/');
     progname = (progname ? progname + 1 : argv[0]);
 
-    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf), &xoptind);
+    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf));
     if (rc) {
         fprintf(stderr, "%s: %s\n\n", progname, errbuf);
         exit(rc);
     }
 
-    argc -= xoptind;
-    argv += xoptind;
+    argc -= optind;
+    argv += optind;
 
     if (argc > 0)
-        printf("argc=%d xoptind=%d\n", argc, xoptind);
+        printf("argc=%d optind=%d\n", argc, optind);
 
     if (given('v'))
         printf("verbosity is %d %d\n", verbosity, given('v'));

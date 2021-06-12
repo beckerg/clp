@@ -487,8 +487,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
     /* [opts-with-args]
      */
     for (pc = optarg_buf; *pc; ++pc) {
-        struct clp_option *o = clp_find(*pc, clp->optionv);
-
+        o = clp_find(*pc, clp->optionv);
         if (o) {
             fprintf(fp, " [-%c %s]", o->optopt, o->argname);
         }
@@ -574,12 +573,16 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
          */
         for (i = 0; i < listc; ++i) {
             if (listv[i]) {
-                char *bar = "";
-
-                fprintf(fp, " [");
+                const char *bar = " [";
 
                 for (pc = listv[i]; *pc; ++pc) {
-                    fprintf(fp, "%s-%c", bar, *pc);
+                    o = clp_find(*pc, clp->optionv);
+                    if (o->argname) {
+                        fprintf(fp, "%s-%c %s", bar, *pc, o->argname);
+                    } else {
+                        fprintf(fp, "%s-%c", bar, *pc);
+                    }
+
                     bar = " | ";
                 }
 
@@ -828,7 +831,7 @@ clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
 }
 
 static int
-clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
+clp_parsev_impl(struct clp *clp, int argc, char **argv)
 {
     struct clp_posparam *paramv;
     struct option *longopt;
@@ -851,7 +854,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
     }
     longopt = clp->longopts;
 
-    optstringsz = clp->optionc * 3 + 3;
+    optstringsz = clp->optionc * 2 + 8;
 
     clp->optstring = calloc(1, optstringsz);
     if (!clp->optstring) {
@@ -904,6 +907,9 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
             }
         }
     }
+
+    *pc++ = 'W';
+    *pc++ = ';';
 
     paramv = clp->paramv;
 
@@ -993,9 +999,6 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
         }
     }
 
-    if (optindp) {
-        *optindp = optind;
-    }
     argc -= optind;
     argv += optind;
 
@@ -1108,7 +1111,6 @@ clp_parsel(const char *line, const char *delim,
            char *errbuf, size_t errbufsz)
 {
     char **argv;
-    int optind;
     int argc;
     int rc;
 
@@ -1116,7 +1118,7 @@ clp_parsel(const char *line, const char *delim,
     if (rc)
         return rc;
 
-    rc = clp_parsev(argc, argv, optionv, paramv, errbuf, errbufsz, &optind);
+    rc = clp_parsev(argc, argv, optionv, paramv, errbuf, errbufsz);
 
     free(argv);
 
@@ -1126,8 +1128,7 @@ clp_parsel(const char *line, const char *delim,
 /* Parse a vector of strings as specified by the given option and
  * param vectors (either or both which may be nil).
  *
- * If successful, returns zero and if optindp is not nil returns
- * the index into argv[] at which processng stopped.
+ * If successful, returns zero.
  *
  * On error, returns a suggested exit code from sysexits.h, and
  * an error message in errbuf.  If errbuf is nil, prints the error
@@ -1137,7 +1138,7 @@ int
 clp_parsev(int argc, char **argv,
            struct clp_option *optionv,
            struct clp_posparam *paramv,
-           char *errbuf, size_t errbufsz, int *optindp)
+           char *errbuf, size_t errbufsz)
 {
     char _errbuf[128];
     struct clp clp;
@@ -1209,7 +1210,7 @@ clp_parsev(int argc, char **argv,
         }
     }
 
-    rc = clp_parsev_impl(&clp, argc, argv, optindp);
+    rc = clp_parsev_impl(&clp, argc, argv);
 
     if (rc && !errbuf) {
         fprintf(stderr, "%s: %s\n", clp.basename, clp.errbuf);

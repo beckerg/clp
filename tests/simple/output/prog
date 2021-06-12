@@ -48,16 +48,16 @@ cf is open 1
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 
 + ./prog a
-argc=1 xoptind=1
+argc=1 optind=1
 posparams: 0 a
 
 + ./prog a b
-argc=2 xoptind=1
+argc=2 optind=1
 posparams: 0 a
 posparams: 1 b
 
 + ./prog a b c
-argc=3 xoptind=1
+argc=3 optind=1
 posparams: 0 a
 posparams: 1 b
 posparams: 2 c

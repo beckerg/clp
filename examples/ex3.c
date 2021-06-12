@@ -18,15 +18,14 @@ struct clp_option optionv[] = {
 int
 main(int argc, char **argv)
 {
-    int xoptind;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0, &xoptind);
+    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
     if (rc)
         return rc;
 
     if (verbosity > 0) {
-        for (int i = xoptind; i < argc; ++i)
+        for (int i = optind; i < argc; ++i)
             printf("argv[%d] %s\n", i, argv[i]);
 
         for (int i = 0; i < posparamv[0].argc; ++i)

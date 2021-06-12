@@ -438,12 +438,13 @@ extern int clp_breakargs(const char *src, const char *delim,
 extern int clp_parsev(int argc, char **argv,
                       struct clp_option *optionv,
                       struct clp_posparam *paramv,
-                      char *errbuf, size_t errbufsz,
-                      int *optindp);
+                      char *errbuf, size_t errbufsz);
 
 extern int clp_parsel(const char *line, const char *delim,
                       struct clp_option *optionv,
                       struct clp_posparam *paramv,
                       char *errbuf, size_t errbufsz);
+
+extern int optind;
 
 #endif /* CLP_H */

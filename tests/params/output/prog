@@ -17,7 +17,7 @@ src...    one or more source files
 
 progname is prog
 verbosity is 0 0
-argc=2 xoptind=2
+argc=2 optind=2
 dryrun is 0 0
 cf is nil 0
 + ./prog -hv
@@ -26,7 +26,7 @@ prog: option -h excludes -v, use -h for help
 version...
 progname is prog
 verbosity is 0 0
-argc=2 xoptind=2
+argc=2 optind=2
 dryrun is 0 0
 cf is nil 0
 + ./prog -n
@@ -45,7 +45,7 @@ prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 posparamv_default_after: name=src...        argv[0]=a
 progname is prog
 verbosity is 0 0
-argc=2 xoptind=1
+argc=2 optind=1
 posparams: 0 a
 dryrun is 0 0
 cf is nil 0
@@ -54,7 +54,7 @@ posparamv_default_after: name=[leftmost]    argv[0]=a
 posparamv_default_after: name=src...        argv[0]=b
 progname is prog
 verbosity is 0 0
-argc=3 xoptind=1
+argc=3 optind=1
 posparams: 0 a
 posparams: 1 b
 dryrun is 0 0
@@ -65,7 +65,7 @@ posparamv_default_after: name=[left]        argv[0]=b
 posparamv_default_after: name=src...        argv[0]=c
 progname is prog
 verbosity is 0 0
-argc=4 xoptind=1
+argc=4 optind=1
 posparams: 0 a
 posparams: 1 b
 posparams: 2 c

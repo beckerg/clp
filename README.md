@@ -1,17 +1,18 @@
 # clp
 Command Line Processor
 
-clp is (yet another) command line processor which aims to bring consistency
+**clp** is (yet another) command line processor which aims to bring consistency
 and simplicity command line parsing.  It is a one-pass parser/processor, in
-the sense that you can simply call clp_parsev() to parse and process a given
+the sense that you can simply call _clp_parsev()_ to parse and process a given
 argument vector.
 
-Other than simply compiling clp.c, there are no other external programs
+Other than simply compiling _clp.c_, there are no other external programs
 required to generate the parser, nor is there any run-time initialization
 needed to "set things up".
 
-clp was designed to be embedded directly into an application, but there
-is nothing that prevents one from building a shared or static library.
+**clp** was designed to be embedded directly into an application, but there
+should be nothing that prevents one from building it into a shared or static
+library.
 
 ## Examples
 ### Example 1 - Simple Options
@@ -37,7 +38,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0, NULL);
+    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
     if (rc)
         return rc;
 
@@ -98,18 +99,19 @@ duration is 3600 seconds
 By default, integer option argument conversion accepts a single-letter suffix
 and modifies the result of the conversion by either the IEC or SI multiplier
 as specified by the first letter of the allowed suffixes [kmgtpezyKMGTPEZY]
-(using lower-case for IEC and upper-case for SI suffixes).  Similarly, the
-time_t converter accepts suffixes from the set of [smhwdyc] for seconds,
-minutes, hours, days, years, and centuries.  You can disable this behavior
-by either defining your own option argument conversion functions, or
-compiling with -Dclp_suftab_default=clp_suftab_none.
+(using lower-case for IEC and upper-case for SI suffixes).  You can disable
+this behavior by either defining your own option argument conversion functions,
+or compiling with -Dclp_suftab_default=clp_suftab_none.
+
+Similarly, the time_t converter accepts suffixes from the set of [smhwdyc]
+for seconds, minutes, hours, week, days, years, and centuries.
 ```
 
 ### Example 2 - Semi-Custom Option Argument Conversion
-The simplest way to enforce an upper and lower bound on the jobs variable from
-example one is to leverage the CLP_CVT_XX() macro to generate a named conversion
+The simplest way to enforce an upper and lower bound on the _jobs_ variable from
+example one is to leverage the _CLP_CVT_XX()_ macro to generate a named conversion
 function with the specified bounds.  Here we use it to define a function named
-"clp_cvt_cvtjobs()" which will restrict the value of jobs to the interval [1,10].
+_clp_cvt_cvtjobs()_ which will restrict the value of jobs to the interval [1,10].
 
 
 ```
@@ -131,7 +133,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0, NULL);
+    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
     if (rc)
         return rc;
 
@@ -163,9 +165,11 @@ ex2: unable to convert '-j 4k': Invalid argument
 
 ### Example 3 - Simple Positional Parameters
 A typical tool will often require one or more arguments to be passed on the command
-line after the options.  Here we define a positional parameter named "files..."
-which the parser will use to enforce that one or more files must be given for any
-valid invocation of the command.
+line after the options.  Here we define a positional parameter named _files..._
+which the parser will use to enforce that one or more file names must be given
+for any valid invocation of the command.  Note that enclosing _files..._ within
+square bracets will allow for zero or more files, while removing the ellipsis will
+specify exactly one file (or zero or one if enclosed in square brackets).
 
 ```
 #include <stdio.h>
@@ -187,15 +191,14 @@ struct clp_option optionv[] = {
 int
 main(int argc, char **argv)
 {
-    int xoptind;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0, &xoptind);
+    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
     if (rc)
         return rc;
 
     if (verbosity > 0) {
-        for (int i = xoptind; i < argc; ++i)
+        for (int i = optind; i < argc; ++i)
             printf("argv[%d] %s\n", i, argv[i]);
 
         for (int i = 0; i < posparamv[0].argc; ++i)
@@ -233,11 +236,82 @@ files[0] foo
 files[1] bar
 files[2] baz
 
-Note that we introduced the -v option, and that clp_parsev() returns xoptind
-to indicate where option processing ended (much like how getopt() sets the
-global variable optind).
+Note that we introduced the -v option, and that **getopt(3)'s** _optind_
+indicates where option processing ended.
 ```
 
+### Example 4 - Mutually Exclusive Options
+A typical tool might often have several options which are mutually exclusive.
+
+```
+#include <stdio.h>
+#include "clp.h"
+
+bool xflag, yflag;
+int verbosity;
+int zarg;
+
+struct clp_option optionv[] = {
+    CLP_OPTION('x', xflag, NULL, "yz", bool, NULL, "enable feature x (excludes -yz)"),
+    CLP_OPTION('y', yflag, NULL, "xz", bool, NULL, "enable feature y (excludes -xz)"),
+    CLP_OPTION('z', zarg, NULL, "xy", int, NULL, "enable feature z (excludes -xy)"),
+    CLP_OPTION_VERBOSITY('v', verbosity),
+    CLP_OPTION_HELP('h'),
+    CLP_OPTION_END
+};
+
+int
+main(int argc, char **argv)
+{
+    int rc;
+
+    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    if (rc)
+        return rc;
+
+    if (clp_given('x', optionv))
+        printf("feature x enabled\n");
+
+    if (clp_given('y', optionv))
+        printf("feature y enabled\n");
+
+    if (clp_given('z', optionv))
+        printf("feature z enabled (zarg=%d)\n", zarg);
+
+    /* do something... */
+
+    return 0;
+}
+```
+
+```
+$ ./ex4 -h
+usage: ex4 [-v] [-x | -y | -z zarg]
+usage: ex4 -h
+-h       print this help list
+-v       increase verbosity
+-x       enable feature x (excludes -yz)
+-y       enable feature y (excludes -xz)
+-z zarg  enable feature z (excludes -xy)
+
+$ ./ex4 -x
+feature x enabled
+
+$ ./ex4 -xy
+ex4: option -x excludes -y, use -h for help
+
+$ ./ex4 -y
+feature y enabled
+
+$ ./ex4 -y -x
+ex4: option -y excludes -x, use -h for help
+```
+
+### Example 5 - Complex Positional Parameters
+TODO...
+
+## Developer Notes
+TODO...
 
 ## TODO
-* Since it leverages getopt_long() it is inherently not thread-safe.
+* **clp** leverages _getopt_long(3)_ and hence is inherently not thread-safe.

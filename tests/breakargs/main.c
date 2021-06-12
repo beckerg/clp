@@ -28,15 +28,13 @@ main(int argc, char **argv)
 {
     char errbuf[128];
     char line[1024];
-    int xoptind;
     int lineno;
-    int rc;
-    int i;
+    int rc, i;
 
     progname = strrchr(argv[0], '/');
     progname = (progname ? progname + 1 : argv[0]);
 
-    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf), &xoptind);
+    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf));
     if (rc) {
         fprintf(stderr, "%s: %s\n", progname, errbuf);
         exit(rc);

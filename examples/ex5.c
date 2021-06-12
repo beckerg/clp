@@ -41,7 +41,7 @@ main(int argc, char **argv)
     struct clp_posparam *pp = posparamv;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0, NULL);
+    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
     if (rc)
         return rc;
 

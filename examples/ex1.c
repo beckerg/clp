@@ -17,7 +17,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0, NULL);
+    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
     if (rc)
         return rc;
 
