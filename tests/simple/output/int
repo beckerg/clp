@@ -5,32 +5,32 @@ myint is 1073741824 1
 myint is -1073741824 1
 
 + ./prog -i 2147483648
-prog: unable to convert '-i 2147483648': ERANGE
+prog: unable to convert '-i 2147483648': Numerical argument out of domain
 
 + ./prog -i -2147483648
 myint is -2147483648 1
 
 + ./prog -i 4294967295
-prog: unable to convert '-i 4294967295': ERANGE
+prog: unable to convert '-i 4294967295': Numerical argument out of domain
 
 + ./prog -i -4294967295
-prog: unable to convert '-i -4294967295': ERANGE
+prog: unable to convert '-i -4294967295': Numerical argument out of domain
 
 + ./prog -I 1073741824
 myuint is 1073741824 1
 
 + ./prog -I -1073741824
-prog: unable to convert '-I -1073741824': ERANGE
+prog: unable to convert '-I -1073741824': Numerical argument out of domain
 
 + ./prog -I 2147483648
 myuint is 2147483648 1
 
 + ./prog -I -2147483648
-prog: unable to convert '-I -2147483648': ERANGE
+prog: unable to convert '-I -2147483648': Numerical argument out of domain
 
 + ./prog -I 4294967295
 myuint is 4294967295 1
 
 + ./prog -I -4294967295
-prog: unable to convert '-I -4294967295': ERANGE
+prog: unable to convert '-I -4294967295': Numerical argument out of domain
 

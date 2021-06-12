@@ -4,7 +4,7 @@
 usage: prog [-nv] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
 usage: prog -h
 usage: prog -V
--C cf        specify a configuration file
+-C cf        specify a config file
 -d mydouble  specify a double
 -f myfloat   specify a float
 -h           print this help list
@@ -13,7 +13,7 @@ usage: prog -V
 -j intv      specify a vector of ints
 -L myulong   specify a u_long
 -l mylong    specify a long
--n           trace execution but do not change anything
+-n           trace execution
 -s mystring  specify a string
 -t mytime    specify a time_t
 -V           print version

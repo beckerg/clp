@@ -43,7 +43,7 @@ struct clp_posparam posparamv_default[] = {
         .after = posparamv_default_after,
     },
 
-    CLP_PARAM_END
+    CLP_POSPARAM_END
 };
 
 /* Positional parameters for the list option (-l, --list)
@@ -59,22 +59,22 @@ struct clp_posparam posparamv_list[] = {
 };
 
 struct clp_option optionv[] = {
-    CLP_OPTION_VERBOSE(verbosity),
-    CLP_OPTION_VERSION(version),
-    CLP_OPTION_DRYRUN(dryrun),
-    CLP_OPTION_CONF(cf),
-    CLP_OPTION_HELP,
+    CLP_OPTION_VERBOSITY('v', verbosity),
+    CLP_OPTION_VERSION('V', version),
+    CLP_OPTION_DRYRUN('n', dryrun),
+    CLP_OPTION_CONF('C', cf),
+    CLP_OPTION_HELP('h'),
 
-	// Example of a boolean option that triggers non-default positional parameters.
+    // Example of a boolean option that triggers non-default positional parameters.
     {
         .optopt = 'l', .longopt = "list",
         .help = "list...",
         .paramv = posparamv_list,
     },
 
-    CLP_OPTION(incr, 'L', lcntr, NULL, NULL, "increment a local int counter"),
-    CLP_OPTION(incr, 'G', gcntr, NULL, NULL, "increment a global int counter"),
-    CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
+    CLP_OPTION('L', lcntr, NULL, NULL, incr, NULL, "increment a local int counter"),
+    CLP_OPTION('G', gcntr, NULL, NULL, incr, NULL, "increment a global int counter"),
+    CLP_OPTION('s', mystring, NULL, NULL, string, NULL, "specify a string"),
 
     CLP_OPTION_END
 };
@@ -109,7 +109,7 @@ posparamv_list_after(struct clp_posparam *param)
 static int
 given(int c)
 {
-    struct clp_option *opt = clp_option_find(optionv, c);
+    struct clp_option *opt = clp_given(c, optionv);
 
     return (opt ? opt->given : 0);
 }

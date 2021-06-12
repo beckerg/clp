@@ -29,43 +29,40 @@ time_t mytime;
 CLP_VECTOR(intv, int, 5, ",");
 
 struct clp_option optionv[] = {
-    CLP_OPTION_VERBOSE(verbosity),
-    CLP_OPTION_VERSION(version),
-    CLP_OPTION_DRYRUN(dryrun),
-    CLP_OPTION_CONF(cf),
-    CLP_OPTION_HELP,
+    CLP_OPTION_VERBOSITY('v', verbosity),
+    CLP_OPTION_VERSION('V', version),
+    CLP_OPTION_DRYRUN('n', dryrun),
+    CLP_OPTION_CONF('C', cf),
+    CLP_OPTION_HELP('h'),
 
-    CLP_OPTION(float, 'f', myfloat, NULL, NULL, "specify a float"),
-    CLP_OPTION(double, 'd', mydouble, NULL, NULL, "specify a double"),
+    CLP_OPTION('f', myfloat, NULL, NULL, float, NULL, "specify a float"),
+    CLP_OPTION('d', mydouble, NULL, NULL, double, NULL, "specify a double"),
 
-    CLP_OPTION(int, 'i', myint, NULL, NULL, "specify an int"),
-    CLP_OPTION(u_int, 'I', myuint, NULL, NULL, "specify a u_int"),
+    CLP_OPTION('i', myint, NULL, NULL, int, NULL, "specify an int"),
+    CLP_OPTION('I', myuint, NULL, NULL, u_int, NULL, "specify a u_int"),
 
-    CLP_OPTION(long, 'l', mylong, NULL, NULL, "specify a long"),
-    CLP_OPTION(u_long, 'L', myulong, NULL, NULL, "specify a u_long"),
+    CLP_OPTION('l', mylong, NULL, NULL, long, NULL, "specify a long"),
+    CLP_OPTION('L', myulong, NULL, NULL, u_long, NULL, "specify a u_long"),
 
-    CLP_OPTION(string, 's', mystring, NULL, NULL, "specify a string"),
+    CLP_OPTION('s', mystring, NULL, NULL, string, NULL, "specify a string"),
 
     { .optopt = 'j', .argname = "intv",
       .cvtfunc = clp_cvt_int, .cvtparms = &intv, .cvtdst = intv.data,
       .help = "specify a vector of ints" },
 
     // Example of a bunch of mutually exclusive boolean options.
-    CLP_OPTION(bool, 'x', xflag, NULL, "yz", "specify x flag"),
-    CLP_OPTION(bool, 'y', yflag, NULL, "xz", "specify y flag"),
-    CLP_OPTION(bool, 'z', zflag, NULL, "xy", "specify z flag"),
+    CLP_OPTION('x', xflag, NULL, "yz", bool, NULL, "specify x flag"),
+    CLP_OPTION('y', yflag, NULL, "xz", bool, NULL, "specify y flag"),
+    CLP_OPTION('z', zflag, NULL, "xy", bool, NULL, "specify z flag"),
 
-    CLP_OPTION(time_t, 't', mytime, NULL, NULL, "specify a time_t"),
-
+    CLP_OPTION('t', mytime, NULL, NULL, time_t, NULL, "specify a time_t"),
     CLP_OPTION_END
 };
 
 static bool
 given(int c)
 {
-    struct clp_option *opt = clp_option_find(optionv, c);
-
-    return (opt && opt->given);
+    return !!clp_given(c, optionv);
 }
 
 int

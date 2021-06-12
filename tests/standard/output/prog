@@ -8,9 +8,9 @@ cf is nil 0
 usage: prog [-nv] [-C cf]
 usage: prog -h
 usage: prog -V
--C cf  specify a configuration file
+-C cf  specify a config file
 -h     print this help list
--n     trace execution but do not change anything
+-n     trace execution
 -V     print version
 -v     increase verbosity
 

@@ -26,17 +26,12 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdarg.h>
-#include <stdbool.h>
 #include <inttypes.h>
 #include <float.h>
-#include <string.h>
-#include <errno.h>
 #include <assert.h>
-#include <sysexits.h>
 #include <ctype.h>
 #include <getopt.h>
 #include <math.h>
@@ -45,33 +40,38 @@
 
 #include "clp.h"
 
-#define CLP_DEBUG
+#ifndef clp_suftab_default
+#define clp_suftab_default  clp_suftab_combo
+#endif
 
-struct clp_suftab {
-    const char *list;
-    double mult[];
+/* International System of Units suffixes...
+ */
+struct clp_suftab clp_suftab_si = {
+    .list = "kMGTPEZY",
+    .mult = { 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24 }
 };
 
-#if 0
-static struct clp_suftab clp_suftab_iec = {
-    .list = "kmgtpezy",
+/* International Electrotechnical Commission suffixes...
+ */
+struct clp_suftab clp_suftab_iec = {
+    .list = "KMGTPEZY",
     .mult = { 0x1p10, 0x1p20, 0x1p30, 0x1p40, 0x1p50, 0x1p60, 0x1p70, 0x1p80 }
 };
 
-static struct clp_suftab clp_suftab_si = {
-    .list = "KMGTPEZY",
-    .mult = { 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24 }
-};
-#endif
-
-static struct clp_suftab clp_suftab_combo = {
+struct clp_suftab clp_suftab_combo = {
     .list = "kmgtpezyKMGTPEZYbw",
-    .mult = { 0x1p10, 0x1p20, 0x1p30, 0x1p40, 0x1p50, 0x1p60, 0x1p70, 0x1p80,
-              1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24,
-              512, sizeof(int) }
+    .mult = {
+        0x1p10, 0x1p20, 0x1p30, 0x1p40, 0x1p50, 0x1p60, 0x1p70, 0x1p80,
+        1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24,
+        512, sizeof(int)
+    }
 };
 
-static struct clp_suftab clp_suftab_time_t = {
+struct clp_suftab clp_suftab_none = {
+    .list = ""
+};
+
+struct clp_suftab clp_suftab_time = {
     .list = "smhdwyc",
     .mult = { 1, 60, 3600, 86400, 86400 * 7, 86400 * 365, 86400 * 365 * 100ul }
 };
@@ -129,30 +129,6 @@ eprint(struct clp *clp, const char *fmt, ...)
         va_start(ap, fmt);
         vsnprintf(clp->errbuf, clp->errbufsz, fmt, ap);
         va_end(ap);
-    }
-}
-
-
-struct clp_option *
-clp_option_find(struct clp_option *optionv, int optopt)
-{
-    if (optionv && optopt > 0) {
-        while (optionv->optopt > 0) {
-            if (optionv->optopt == optopt) {
-                return optionv;
-            }
-            ++optionv;
-        }
-    }
-
-    return NULL;
-}
-
-void
-clp_option_priv_set(struct clp_option *option, void *priv)
-{
-    if (option) {
-        option->priv = priv;
     }
 }
 
@@ -232,177 +208,72 @@ clp_cvt_incr(const char *optarg, int flags, void *parms, void *dst)
     return 0;
 }
 
-/* This template produces type-specific functions to convert a string
- * of one or more delimited numbers to a single/vector of integers.
- *
- * Each string to be converted may end in a single character suffix
- * from suftab which modifies the result.
- *
- * Note that we use strtold() to parse each number in order to allow
- * the caller maximum flexibility when specifying number formats.
- * There is the possibility for loss of precision if long double
- * on the target platform doesn't have at least as many bits in the
- * significand as the widest integer type for which this function
- * may be called.
- */
-#define CLP_CVT_XX(_xsuffix, _xtype, _xmin, _xmax, _suftab)             \
-int                                                                     \
-clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
-{                                                                       \
-    const struct clp_suftab *suftab = &(_suftab);                       \
-    CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
-    clp_vector_t *vector;                                               \
-    char *str, *strbase;                                                \
-    _xtype *result;                                                     \
-    bool rangechk;                                                      \
-    int nrange;                                                         \
-    int n;                                                              \
-                                                                        \
-    if (!optarg || !dst) {                                              \
-        errno = EINVAL;                                                 \
-        return EX_DATAERR;                                              \
-    }                                                                   \
-                                                                        \
-    vector = (void *)&vectorbuf;                                        \
-    if (parms) {                                                        \
-        vector = parms;                                                 \
-    }                                                                   \
-                                                                        \
-    /* Only call strdup if there are delimiters in optarg.              \
-     */                                                                 \
-    str = (char *)optarg;                                               \
-    strbase = strpbrk(str, vector->delim);                              \
-    if (strbase) {                                                      \
-        strbase = strdup(optarg);                                       \
-        if (!strbase) {                                                 \
-            errno = ENOMEM;                                             \
-            return EX_DATAERR;                                          \
-        }                                                               \
-        str = strbase;                                                  \
-    }                                                                   \
-                                                                        \
-    rangechk = (_xmin) < (_xmax);                                       \
-    result = dst;                                                       \
-    nrange = 0;                                                         \
-    errno = 0;                                                          \
-                                                                        \
-    for (n = 0; n < vector->size && str; ++n, ++result) {               \
-        char *tok, *end;                                                \
-        long double val;                                                \
-                                                                        \
-        if (strbase) {                                                  \
-            tok = strsep(&str, vector->delim);                          \
-            if (tok && *tok == '\000') {                                \
-                *result = 0;                                            \
-                continue;                                               \
-            }                                                           \
-        } else {                                                        \
-            tok = str;                                                  \
-            str = NULL;                                                 \
-        }                                                               \
-                                                                        \
-        errno = 0;                                                      \
-        val = strtold(tok, &end);                                       \
-                                                                        \
-        if (errno) {                                                    \
-            if (errno != ERANGE) {                                      \
-                *result = (_xtype)val;                                  \
-                break;                                                  \
-            }                                                           \
-            ++nrange;                                                   \
-        }                                                               \
-                                                                        \
-        if (end == tok) {                                               \
-            errno = EINVAL;                                             \
-            *result = 0;                                                \
-            break;                                                      \
-        }                                                               \
-                                                                        \
-        if (*end) {                                                     \
-            const char *pc;                                             \
-                                                                        \
-            pc = strchr(suftab->list, *end);                            \
-            if (!pc) {                                                  \
-                errno = EINVAL;                                         \
-                *result = 0;                                            \
-                break;                                                  \
-            }                                                           \
-                                                                        \
-            val *= *(suftab->mult + (pc - suftab->list));               \
-        }                                                               \
-                                                                        \
-        if (isinf(val) || isnan(val))                                   \
-            ;                                                           \
-        else if (rangechk && (val < (_xmin) || val > (_xmax))) {        \
-            val = (val < (_xmin)) ? (_xmin) : (_xmax);                  \
-            ++nrange;                                                   \
-        }                                                               \
-                                                                        \
-        *result = (_xtype)val;                                          \
-    }                                                                   \
-                                                                        \
-    vector->len = n;                                                    \
-    if (str && vector->len >= vector->size) {                           \
-        errno = E2BIG;                                                  \
-    }                                                                   \
-                                                                        \
-    if (nrange > 0 && !errno) {                                         \
-        errno = ERANGE;                                                 \
-    }                                                                   \
-                                                                        \
-    if (strbase) {                                                      \
-        int save = errno;                                               \
-                                                                        \
-        free(strbase);                                                  \
-        errno = save;                                                   \
-    }                                                                   \
-                                                                        \
-    return errno ? EX_DATAERR : 0;                                      \
+CLP_CVT_TMPL(char,      char,       CHAR_MIN,   CHAR_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(u_char,    u_char,     0,          UCHAR_MAX,  clp_suftab_default);
+
+CLP_CVT_TMPL(short,     short,      SHRT_MIN,   SHRT_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(u_short,   u_short,    0,          USHRT_MAX,  clp_suftab_default);
+
+CLP_CVT_TMPL(int,       int,        INT_MIN,    INT_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(u_int,     u_int,      0,          UINT_MAX,   clp_suftab_default);
+
+CLP_CVT_TMPL(long,      long,       LONG_MIN,   LONG_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(u_long,    u_long,     0,          ULONG_MAX,  clp_suftab_default);
+
+CLP_CVT_TMPL(float,     float,      -FLT_MAX,   FLT_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(double,    double,     -DBL_MAX,   DBL_MAX,    clp_suftab_default);
+
+CLP_CVT_TMPL(int8_t,    int8_t,     INT8_MIN,   INT8_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(uint8_t,   uint8_t,    0,          UINT8_MAX,  clp_suftab_default);
+
+CLP_CVT_TMPL(int16_t,   int16_t,    INT16_MIN,  INT16_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(uint16_t,  uint16_t,   0,          UINT16_MAX, clp_suftab_default);
+
+CLP_CVT_TMPL(int32_t,   int32_t,    INT32_MIN,  INT32_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(uint32_t,  uint32_t,   0,          UINT32_MAX, clp_suftab_default);
+
+CLP_CVT_TMPL(int64_t,   int64_t,    INT64_MIN,  INT64_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(uint64_t,  uint64_t,   0,          UINT64_MAX, clp_suftab_default);
+
+CLP_CVT_TMPL(intmax_t,  intmax_t,   INTMAX_MIN, INTMAX_MAX, clp_suftab_default);
+CLP_CVT_TMPL(uintmax_t, uintmax_t,  0,          UINTMAX_MAX,clp_suftab_default);
+
+CLP_CVT_TMPL(intptr_t,  intptr_t,   INTPTR_MIN, INTPTR_MAX, clp_suftab_default);
+CLP_CVT_TMPL(uintptr_t, uintptr_t,  0,          UINTPTR_MAX,clp_suftab_default);
+
+CLP_CVT_TMPL(size_t,    size_t,     0,          SIZE_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(time_t,    time_t,     0,          LONG_MAX,   clp_suftab_time);
+
+
+struct clp_option *
+clp_find(int c, struct clp_option *optionv)
+{
+    if (optionv && c > 0) {
+        while (optionv->optopt > 0) {
+            if (optionv->optopt == c) {
+                return optionv;
+            }
+            ++optionv;
+        }
+    }
+
+    return NULL;
 }
 
-CLP_CVT_XX(char,        char,       CHAR_MIN,   CHAR_MAX,   clp_suftab_combo);
-CLP_CVT_XX(u_char,      u_char,     0,          UCHAR_MAX,  clp_suftab_combo);
+struct clp_option *
+clp_given(int c, struct clp_option *optionv)
+{
+    struct clp_option *opt = clp_find(c, optionv);
 
-CLP_CVT_XX(short,       short,      SHRT_MIN,   SHRT_MAX,   clp_suftab_combo);
-CLP_CVT_XX(u_short,     u_short,    0,          USHRT_MAX,  clp_suftab_combo);
-
-CLP_CVT_XX(int,         int,        INT_MIN,    INT_MAX,    clp_suftab_combo);
-CLP_CVT_XX(u_int,       u_int,      0,          UINT_MAX,   clp_suftab_combo);
-
-CLP_CVT_XX(long,        long,       LONG_MIN,   LONG_MAX,   clp_suftab_combo);
-CLP_CVT_XX(u_long,      u_long,     0,          ULONG_MAX,  clp_suftab_combo);
-
-CLP_CVT_XX(float,       float,      -FLT_MAX,   FLT_MAX,    clp_suftab_combo);
-CLP_CVT_XX(double,      double,     -DBL_MAX,   DBL_MAX,    clp_suftab_combo);
-
-CLP_CVT_XX(int8_t,      int8_t,     INT8_MIN,   INT8_MAX,   clp_suftab_combo);
-CLP_CVT_XX(uint8_t,     uint8_t,    0,          UINT8_MAX,  clp_suftab_combo);
-
-CLP_CVT_XX(int16_t,     int16_t,    INT16_MIN,  INT16_MAX,  clp_suftab_combo);
-CLP_CVT_XX(uint16_t,    uint16_t,   0,          UINT16_MAX, clp_suftab_combo);
-
-CLP_CVT_XX(int32_t,     int32_t,    INT32_MIN,  INT32_MAX,  clp_suftab_combo);
-CLP_CVT_XX(uint32_t,    uint32_t,   0,          UINT32_MAX, clp_suftab_combo);
-
-CLP_CVT_XX(int64_t,     int64_t,    INT64_MIN,  INT64_MAX,  clp_suftab_combo);
-CLP_CVT_XX(uint64_t,    uint64_t,   0,          UINT64_MAX, clp_suftab_combo);
-
-CLP_CVT_XX(intmax_t,    intmax_t,   INTMAX_MIN, INTMAX_MAX, clp_suftab_combo);
-CLP_CVT_XX(uintmax_t,   uintmax_t,  0,          UINTMAX_MAX,clp_suftab_combo);
-
-CLP_CVT_XX(intptr_t,    intptr_t,   INTPTR_MIN, INTPTR_MAX, clp_suftab_combo);
-CLP_CVT_XX(uintptr_t,   uintptr_t,  0,          UINTPTR_MAX,clp_suftab_combo);
-
-CLP_CVT_XX(size_t,      size_t,     0,          SIZE_MAX,   clp_suftab_combo);
-CLP_CVT_XX(time_t,      time_t,     0,          LONG_MAX,   clp_suftab_time_t);
-
+    return (opt && opt->given) ? opt : NULL;
+}
 
 /* Return true if the two specified options are mutually exclusive.
  */
 int
 clp_excludes2(const struct clp_option *l, const struct clp_option *r)
 {
-    if (l && r) {
+    if (l && r && l != r) {
         if (l->excludes) {
             if (l->excludes[0] == '^') {
                 if (!strchr(l->excludes, r->optopt)) {
@@ -527,11 +398,18 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
     char *pc_opt;
     char *pc;
 
+    bool limit_excl_all = false;
+
     if (limit) {
-        if (!limit->paramv) {
+        limit_excl_all = limit->excludes && !isalnum(limit->excludes[0]);
+
+        if (!limit_excl_all && !limit->paramv) {
             return;
         }
-        paramv = limit->paramv;
+
+        if (limit->paramv) {
+            paramv = limit->paramv;
+        }
     }
 
     pc_excludes = excludes_buf;
@@ -582,10 +460,11 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
     qsort(optarg_buf, strlen(optarg_buf), 1, clp_string_cmp);
     qsort(excludes_buf, strlen(excludes_buf), 1, clp_string_cmp);
 
-    dprint(1, "option -%c:\n", limit ? limit->optopt : '?');
-    dprint(1, "  excludes: %s\n", excludes_buf);
-    dprint(1, "  optarg:   %s\n", optarg_buf);
-    dprint(1, "  opt:      %s\n", opt_buf);
+    if (limit)
+        dprint(1, "  limit -%c:\n", limit->optopt);
+    dprint(1, "  has excludes: %s\n", excludes_buf);
+    dprint(1, "  has optarg:   %s\n", optarg_buf);
+    dprint(1, "  bool opts:    %s\n", opt_buf);
 
     /* Now print out the usage line in the form of:
      *
@@ -608,7 +487,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
     /* [opts-with-args]
      */
     for (pc = optarg_buf; *pc; ++pc) {
-        struct clp_option *o = clp_option_find(clp->optionv, *pc);
+        struct clp_option *o = clp_find(*pc, clp->optionv);
 
         if (o) {
             fprintf(fp, " [-%c %s]", o->optopt, o->argname);
@@ -628,7 +507,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
          * mutually exclusive options.
          */
         for (cur = excludes_buf; *cur; ++cur) {
-            struct clp_option *l = clp_option_find(clp->optionv, *cur);
+            struct clp_option *l = clp_find(*cur, clp->optionv);
             char buf[1024], *pc_buf;
 
             pc_buf = buf;
@@ -637,7 +516,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
                 if (cur == pc) {
                     *pc_buf++ = *pc;
                 } else {
-                    struct clp_option *r = clp_option_find(clp->optionv, *pc);
+                    struct clp_option *r = clp_find(*pc, clp->optionv);
 
                     if (clp_excludes2(l, r)) {
                         *pc_buf++ = *pc;
@@ -670,12 +549,12 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
         for (i = 0; i < listc; ++i) {
             if (listv[i]) {
                 for (pc = listv[i]; *pc; ++pc) {
-                    struct clp_option *l = clp_option_find(clp->optionv, *pc);
+                    struct clp_option *l = clp_find(*pc, clp->optionv);
                     char *pc2;
 
                     for (pc2 = listv[i]; *pc2; ++pc2) {
                         if (pc2 != pc) {
-                            struct clp_option *r = clp_option_find(clp->optionv, *pc2);
+                            struct clp_option *r = clp_find(*pc2, clp->optionv);
 
                             if (!clp_excludes2(l, r)) {
                                 free(listv[i]);
@@ -908,20 +787,6 @@ clp_help(struct clp_option *opthelp)
         }
     }
 
-#if 0
-    /* Print detailed help if -v was given.
-     */
-    option = clp_option_find(clp->optionv, 'v');
-
-    if (option && option->given == 0) {
-        fprintf(fp, "\nUse -%c for more detail", option->optopt);
-        if (!longhelp && opthelp->longopt) {
-            fprintf(fp, ", use --%s for long help", opthelp->longopt);
-        }
-        fprintf(fp, "\n");
-    }
-#endif
-
     fprintf(fp, "\n");
 }
 
@@ -995,6 +860,9 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
         return EX_OSERR;
     }
 
+    int optbeforecnt = 0;
+    int optaftercnt = 0;
+
     pc = clp->optstring;
 
     *pc++ = '+';    // Enable POSIXLY_CORRECT semantics
@@ -1023,12 +891,15 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
 
                 ++longopt;
             }
+
+            optbeforecnt += !!o->before;
         }
 
         /* Call each option's before() procedure before option processing.
          */
-        for (o = clp->optionv; o->optopt > 0; ++o) {
+        for (o = clp->optionv; optbeforecnt > 0 && o->optopt > 0; ++o) {
             if (o->before) {
+                optbeforecnt--;
                 o->before(o);
             }
         }
@@ -1052,8 +923,6 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
     optind = 1; // GNU
 #endif
 
-    int optaftercnt = 0;
-
     while (1) {
         struct clp_option *x;
         int curind = optind;
@@ -1075,7 +944,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv, int *optindp)
         /* Look up the option.  This should not fail unless someone perturbs
          * the option vector that was passed in to us.
          */
-        o = clp_option_find(clp->optionv, c);
+        o = clp_find(c, clp->optionv);
         if (!o) {
             eprint(clp, "+%d %s: program error: unexpected option %s",
                    __LINE__, __FILE__, argv[curind]);

@@ -5,10 +5,10 @@ usage: prog [-nv] [-C cf] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-nv] [-C cf] [file...]
 usage: prog -V
--C cf  specify a configuration file
+-C cf  specify a config file
 -h     print this help list
 -l     list...
--n     trace execution but do not change anything
+-n     trace execution
 -V     print version
 -v     increase verbosity
 leftmost  optional left-most parameter

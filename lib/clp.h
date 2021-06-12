@@ -27,14 +27,23 @@
 #ifndef CLP_H
 #define CLP_H
 
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <errno.h>
+#include <math.h>
+#include <sysexits.h>
 #include <sys/types.h>
 
 #define CLP_OPTION_END      { .optopt = 0 }
-#define CLP_PARAM_END       { .name = NULL }
+#define CLP_POSPARAM_END    { .name = NULL }
 
-/* List of conversion routines provided by clp.
+/* List of conversion routines provided by clp.  The name from the "_xtype"
+ * column can be given as the fifth argument to CLP_OPTION(), or appended
+ * to "clp_cvt_" and either assigned to .cvtfunc or given as the fifth
+ * argument to CLP_OPTION_TMPL().
  *
- * xtype        .cvtdst         .cvtflags       .cvtparms
+ * _xtype       .cvtdst         .cvtflags       .cvtparms
  *
  * bool         bool *
  * char         char *
@@ -65,55 +74,67 @@
  * open         int *           open() flags    -
  */
 
-#define CLP_OPTION(_xtype, _xoptopt, _xargname, _xlongopt, _xexcl, _xhelp) \
-    { CLP_OPTION_TMPL((_xoptopt), #_xargname, (_xexcl), (_xlongopt),    \
-                      clp_cvt_ ## _xtype, 0, NULL, &(_xargname),        \
-                      NULL, NULL, NULL, (_xhelp)) }
+#define CLP_OPTION(_xoptopt, _xargname, _xlongopt, _xexcl, _xtype, _xparamv, _xhelp) \
+    {                                                                   \
+        .optopt = (_xoptopt),                                           \
+        .argname = #_xargname,                                          \
+        .excludes = (_xexcl),                                           \
+        .longopt = _xlongopt,                                           \
+        .cvtfunc = clp_cvt_ ## _xtype,                                  \
+        .cvtdst = &(_xargname),                                         \
+        .paramv = (_xparamv),                                           \
+        .help = (_xhelp),                                               \
+    }
 
-#define CLP_OPTION_VERBOSE(_xverbose)                                   \
-    CLP_OPTION(incr, 'v', _xverbose, NULL, NULL, "increase verbosity")
+#define CLP_OPTION_HELP(_xoptopt)                                       \
+    {                                                                   \
+        .optopt = (_xoptopt), .excludes = "*", .longopt = "help",       \
+        .after = clp_help, .paramv = clp_posparam_none,                 \
+        .help = "print this help list",                                 \
+    }
 
-#define CLP_OPTION_HELP                                         \
-    { CLP_OPTION_TMPL('h', NULL, "*", "help",                   \
-                      NULL, 0, NULL, NULL,                      \
-                      NULL, clp_help, clp_posparam_none,        \
-                      "print this help list") }
+#define CLP_OPTION_VERSION(_xoptopt, _xversion)                         \
+    {                                                                   \
+        .optopt = (_xoptopt), .excludes = "*", .longopt = "version",    \
+        .after = clp_version, .paramv = clp_posparam_none,              \
+        .cvtdst = &(_xversion), .help = "print version",                \
+    }
 
-#define CLP_OPTION_VERSION(_xversion)                           \
-    { CLP_OPTION_TMPL('V', NULL, "*", #_xversion,               \
-                      NULL, 0, NULL, &(_xversion),              \
-                      NULL, clp_version, clp_posparam_none,     \
-                      "print version") }
+#define CLP_OPTION_VERBOSITY(_xoptopt, _xverbose)                       \
+    CLP_OPTION((_xoptopt), _xverbose, NULL, NULL, incr, NULL, "increase verbosity")
 
-#define CLP_OPTION_DRYRUN(_xdryrun)                                     \
-    { CLP_OPTION_TMPL('n', NULL, NULL, #_xdryrun,                       \
-                      clp_cvt_incr, 0, NULL, &(_xdryrun),               \
-                      NULL, NULL, NULL,                                 \
-                      "trace execution but do not change anything") }
+#define CLP_OPTION_DRYRUN(_xoptopt, _xdryrun)                           \
+    CLP_OPTION((_xoptopt), _xdryrun, NULL, NULL, incr, NULL, "trace execution")
 
-#define CLP_OPTION_CONF(_xconf)                                 \
-    { CLP_OPTION_TMPL('C', #_xconf, NULL, #_xconf,              \
-                      clp_cvt_fopen, 0, NULL, &(_xconf),        \
-                      NULL, NULL, NULL,                         \
-                      "specify a configuration file") }
+#define CLP_OPTION_CONF(_xoptopt, _xconf)                               \
+    CLP_OPTION((_xoptopt), _xconf, NULL, NULL, fopen, NULL, "specify a config file")
 
-#define CLP_OPTION_TMPL(_xoptopt, _xargname, _xexcludes, _xlongopt,     \
+#define CLP_OPTION_TMPL(_xoptopt, _xargname, _xlongopt, _xexcl,         \
                         _xconvert, _xcvtflags, _xcvtparms, _xcvtdst,    \
                         _xbefore, _xafter, _xparamv, _xhelp)            \
-    .optopt = (_xoptopt),                                               \
-    .argname = (_xargname),                                             \
-    .excludes = (_xexcludes),                                           \
-    .longopt = (_xlongopt),                                             \
-    .cvtfunc = (_xconvert),                                             \
-    .cvtflags = (_xcvtflags),                                           \
-    .cvtparms = (_xcvtparms),                                           \
-    .cvtdst = (_xcvtdst),                                               \
-    .before = (_xbefore),                                               \
-    .after = (_xafter),                                                 \
-    .paramv = (_xparamv),                                               \
-    .help = (_xhelp),                                                   \
+    {                                                                   \
+        .optopt = (_xoptopt),                                           \
+        .argname = (_xargname),                                         \
+        .excludes = (_xexcludes),                                       \
+        .longopt = (_xlongopt),                                         \
+        .cvtfunc = (_xconvert),                                         \
+        .cvtflags = (_xcvtflags),                                       \
+        .cvtparms = (_xcvtparms),                                       \
+        .cvtdst = (_xcvtdst),                                           \
+        .before = (_xbefore),                                           \
+        .after = (_xafter),                                             \
+        .paramv = (_xparamv),                                           \
+        .help = (_xhelp),                                               \
+    }
 
 
+#define CLP_POSPARAM(_xppname, _xpphelp, _xppbefore, _xppafter) \
+    {                                                           \
+        .name = (_xppname),                                     \
+        .help = (_xpphelp),                                     \
+        .before = (_xppbefore),                                 \
+        .after = (_xppafter),                                   \
+    }
 
 struct clp;
 struct clp_option;
@@ -182,6 +203,10 @@ struct clp {
     size_t               errbufsz;
 };
 
+struct clp_suftab {
+    const char *list;
+    double mult[];
+};
 
 /* Declare a type-specific vector.
  */
@@ -204,11 +229,148 @@ struct clp {
 
 typedef CLP_VECTOR_DECL(clp_vector, char, 0) clp_vector_t;
 
+/* This template produces type-specific functions to convert a string
+ * of one or more delimited numbers to a single/vector of integers.
+ *
+ * Each string to be converted may end in a single character suffix
+ * from suftab which modifies the result.
+ *
+ * Note that we use strtold() to parse each number in order to allow
+ * the caller maximum flexibility when specifying number formats.
+ * There is the possibility for loss of precision if long double
+ * on the target platform doesn't have at least as many bits in the
+ * significand as the widest integer type for which this function
+ * may be called.
+ */
+#define CLP_CVT_TMPL(_xsuffix, _xtype, _xmin, _xmax, _xsuftab)          \
+int                                                                     \
+clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
+{                                                                       \
+    const struct clp_suftab *suftab = &(_xsuftab);                      \
+    CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
+    clp_vector_t *vector;                                               \
+    char *str, *strbase;                                                \
+    _xtype *result;                                                     \
+    bool domainchk;                                                     \
+    int ndomain, nrange;                                                \
+    int n;                                                              \
+                                                                        \
+    if (!optarg || !dst) {                                              \
+        errno = EINVAL;                                                 \
+        return EX_DATAERR;                                              \
+    }                                                                   \
+                                                                        \
+    vector = (void *)&vectorbuf;                                        \
+    if (parms) {                                                        \
+        vector = parms;                                                 \
+    }                                                                   \
+                                                                        \
+    /* Only call strdup if there are delimiters in optarg.              \
+     */                                                                 \
+    str = (char *)optarg;                                               \
+    strbase = strpbrk(str, vector->delim);                              \
+    if (strbase) {                                                      \
+        strbase = strdup(optarg);                                       \
+        if (!strbase) {                                                 \
+            errno = ENOMEM;                                             \
+            return EX_DATAERR;                                          \
+        }                                                               \
+        str = strbase;                                                  \
+    }                                                                   \
+                                                                        \
+    domainchk = (_xmin) < (_xmax);                                      \
+    result = dst;                                                       \
+    ndomain = 0;                                                        \
+    nrange = 0;                                                         \
+    errno = 0;                                                          \
+                                                                        \
+    for (n = 0; n < vector->size && str; ++n, ++result) {               \
+        char *tok, *end;                                                \
+        long double val;                                                \
+                                                                        \
+        if (strbase) {                                                  \
+            tok = strsep(&str, vector->delim);                          \
+            if (tok && *tok == '\000') {                                \
+                *result = 0;                                            \
+                continue;                                               \
+            }                                                           \
+        } else {                                                        \
+            tok = str;                                                  \
+            str = NULL;                                                 \
+        }                                                               \
+                                                                        \
+        errno = 0;                                                      \
+        val = strtold(tok, &end);                                       \
+                                                                        \
+        if (errno) {                                                    \
+            if (errno != ERANGE) {                                      \
+                *result = (_xtype)val;                                  \
+                break;                                                  \
+            }                                                           \
+            ++nrange;                                                   \
+        }                                                               \
+                                                                        \
+        if (end == tok) {                                               \
+            errno = EINVAL;                                             \
+            *result = 0;                                                \
+            break;                                                      \
+        }                                                               \
+                                                                        \
+        if (*end) {                                                     \
+            const char *pc;                                             \
+                                                                        \
+            pc = strchr(suftab->list, *end);                            \
+            if (!pc) {                                                  \
+                errno = EINVAL;                                         \
+                *result = 0;                                            \
+                break;                                                  \
+            }                                                           \
+                                                                        \
+            val *= *(suftab->mult + (pc - suftab->list));               \
+        }                                                               \
+                                                                        \
+        if (isinf(val) || isnan(val))                                   \
+            ;                                                           \
+        else if (domainchk && (val < (_xmin) || val > (_xmax))) {       \
+            val = (val < (_xmin)) ? (_xmin) : (_xmax);                  \
+            ++ndomain;                                                  \
+        }                                                               \
+                                                                        \
+        *result = (_xtype)val;                                          \
+    }                                                                   \
+                                                                        \
+    vector->len = n;                                                    \
+    if (str && vector->len >= vector->size) {                           \
+        errno = E2BIG;                                                  \
+    }                                                                   \
+                                                                        \
+    if (ndomain > 0 && !errno) {                                        \
+        errno = EDOM;                                                   \
+    }                                                                   \
+    else if (nrange > 0 && !errno) {                                    \
+        errno = ERANGE;                                                 \
+    }                                                                   \
+                                                                        \
+    if (strbase) {                                                      \
+        int save = errno;                                               \
+                                                                        \
+        free(strbase);                                                  \
+        errno = save;                                                   \
+    }                                                                   \
+                                                                        \
+    return errno ? EX_DATAERR : 0;                                      \
+}
+
 extern struct clp_posparam clp_posparam_none[];
 
-extern struct clp_option *clp_option_find(struct clp_option *optionv, int optopt);
+extern struct clp_option *clp_find(int optopt, struct clp_option *optionv);
+extern struct clp_option *clp_given(int optopt, struct clp_option *optionv);
 
-extern void clp_option_priv1_set(struct clp_option *option, void *priv1);
+extern struct clp_suftab clp_suftab_si;
+extern struct clp_suftab clp_suftab_iec;
+extern struct clp_suftab clp_suftab_combo;
+extern struct clp_suftab clp_suftab_none;
+extern struct clp_suftab clp_suftab_time;
 
 extern clp_cvt_cb clp_cvt_bool;
 
