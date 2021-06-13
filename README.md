@@ -1,23 +1,25 @@
 # clp
 Command Line Processor
 
-**clp** is (yet another) command line processor which aims to bring consistency
-and simplicity command line parsing.  It is a one-pass parser/processor, in
-the sense that you can simply call _clp_parsev()_ to parse and process a given
-argument vector.
+_**clp**_ is command line processor which aims to bring simple consistency
+to command line parsing.  It is a one-pass parser/processor, in the sense
+that you can simply call _**clp_parsev()**_ or _**clp_parsel()**_ to parse
+and process a given argument vector or argument string, respectively.
 
-Other than simply compiling _clp.c_, there are no other external programs
+Other than compiling _**clp.c**_, there are no other external programs
 required to generate the parser, nor is there any run-time initialization
 needed to "set things up".
 
-**clp** was designed to be embedded directly into an application, but there
+_**clp**_ was designed to be embedded directly into an application, but there
 should be nothing that prevents one from building it into a shared or static
 library.
 
 ## Examples
 ### Example 1 - Simple Options
-Here's a simple example that builds a parser expecting three options and
-no positional parameters.
+Here's a very simple example that builds a parser expecting three options and
+no positional parameters.  The parameters of the _**CLP_OPTION()**_ macro are:
+_option-letter, option-variable, long-name, excludes-string,
+conversion-function-suffix, positional-parameters, option-help-string_.
 
 ```
 #include <stdio.h>
@@ -95,23 +97,27 @@ duration is 1 seconds
 
 $ ./ex1 -d1h
 duration is 3600 seconds
-
-By default, integer option argument conversion accepts a single-letter suffix
-and modifies the result of the conversion by either the IEC or SI multiplier
-as specified by the first letter of the allowed suffixes [kmgtpezyKMGTPEZY]
-(using lower-case for IEC and upper-case for SI suffixes).  You can disable
-this behavior by either defining your own option argument conversion functions,
-or compiling with -Dclp_suftab_default=clp_suftab_none.
-
-Similarly, the time_t converter accepts suffixes from the set of [smhwdyc]
-for seconds, minutes, hours, week, days, years, and centuries.
 ```
 
+By default, integer option argument conversion accepts a single-letter
+suffix and modifies the result of the conversion by either the
+[IEC](https://en.wikipedia.org/wiki/Binary_prefix)
+or
+[SI](https://en.wikipedia.org/wiki/Binary_prefix)
+multiplier as specified by the first letter of the allowed suffixes
+**[kmgtpezyKMGTPEZY]**
+(using lower-case for IEC and upper-case for SI suffixes).  You can disable
+this behavior by either defining your own option argument conversion functions,
+or compiling with **-Dclp_suftab_default=clp_suftab_none**.
+
+Similarly, the `time_t` converter accepts suffixes from the set of
+**[smhwdyc]** for seconds, minutes, hours, week, days, years, and centuries.
+
 ### Example 2 - Semi-Custom Option Argument Conversion
-The simplest way to enforce an upper and lower bound on the _jobs_ variable from
-example one is to leverage the _CLP_CVT_XX()_ macro to generate a named conversion
-function with the specified bounds.  Here we use it to define a function named
-_clp_cvt_cvtjobs()_ which will restrict the value of jobs to the interval [1,10].
+The simplest way to enforce an upper and lower bound on the _**jobs**_ variable from
+example one is to leverage the _**CLP_CVT_XX()**_ macro to generate a named conversion
+function with the specified bounds.  Here we use it to instantiate a function named
+_**clp_cvt_cvtjobs()**_ which will restrict the value of jobs to the interval [1,10].
 
 
 ```
@@ -165,11 +171,11 @@ ex2: unable to convert '-j 4k': Invalid argument
 
 ### Example 3 - Simple Positional Parameters
 A typical tool will often require one or more arguments to be passed on the command
-line after the options.  Here we define a positional parameter named _files..._
+line after the options.  Here we define a positional parameter named _**files...**_
 which the parser will use to enforce that one or more file names must be given
-for any valid invocation of the command.  Note that enclosing _files..._ within
+for any valid invocation of the command.  Note that enclosing _**files...**_ within
 square bracets will allow for zero or more files, while removing the ellipsis will
-specify exactly one file (or zero or one if enclosed in square brackets).
+specify exactly one file (or zero-or-one if enclosed in square brackets).
 
 ```
 #include <stdio.h>
@@ -235,10 +241,10 @@ argv[4] baz
 files[0] foo
 files[1] bar
 files[2] baz
-
-Note that we introduced the -v option, and that **getopt(3)'s** _optind_
-indicates where option processing ended.
 ```
+
+Note that we introduced the **-v** option, and that _**getopt(3)'s**_
+_**optind**_ indicates where option processing ended.
 
 ### Example 4 - Mutually Exclusive Options
 A typical tool might often have several options which are mutually exclusive.
@@ -314,4 +320,4 @@ TODO...
 TODO...
 
 ## TODO
-* **clp** leverages _getopt_long(3)_ and hence is inherently not thread-safe.
+* _**clp**_ leverages _getopt_long(3)_ and hence is inherently not thread-safe.

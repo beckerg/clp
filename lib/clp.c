@@ -82,9 +82,9 @@ struct clp_posparam clp_posparam_none[] = {
 };
 
 
+#ifdef CLP_DEBUG
 static int clp_debug;
 
-#ifdef CLP_DEBUG
 /* dprint() prints a debug message to stdout if (clp_debug >= lvl).
  */
 #define dprint(lvl, ...)                                                \
@@ -838,13 +838,17 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
     struct clp_option *o;
     size_t optstringsz;
     int posmin, posmax;
-    char *env, *pc;
+    char *pc;
     int rc;
+
+#ifdef CLP_DEBUG
+    char *env;
 
     env = getenv("CLP_DEBUG");
     if (env) {
         clp_debug = strtol(env, NULL, 0);
     }
+#endif
 
     clp->longopts = calloc(clp->optionc + 1, sizeof(*clp->longopts));
     if (!clp->longopts) {
