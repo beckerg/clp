@@ -83,20 +83,26 @@ jobs is 1
 $ ./ex1 --j2
 ex1: invalid option --j2, use -h for help
 
-$ ./ex1 --j 2
-jobs is 2
-
-$ ./ex1 --jo 3
+$ ./ex1 --j 3
 jobs is 3
 
-$ ./ex1 -Wj4
-ex1: invalid option -Wj4, use -h for help
+$ ./ex1 --jo 4
+jobs is 4
 
-$ ./ex1 -Wj 5
+$ ./ex1 --jobs 5
 jobs is 5
 
-$ ./ex1 -Wjobs=6
+$ ./ex1 --jobs=6
 jobs is 6
+
+$ ./ex1 -Wj7
+ex1: invalid option -Wj7, use -h for help
+
+$ ./ex1 -Wj 8
+jobs is 8
+
+$ ./ex1 -Wjobs=9
+jobs is 9
 
 $ ./ex1 -j $((1<<31))
 ex1: unable to convert '-j 2147483648': Numerical argument out of domain
@@ -110,8 +116,8 @@ jobs is 1024
 $ ./ex1 -j 1K
 jobs is 1000
 
-$ ./ex1 -d1
-duration is 1 seconds
+$ ./ex1 -d3
+duration is 3 seconds
 
 $ ./ex1 -d1h
 duration is 3600 seconds
