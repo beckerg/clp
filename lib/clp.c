@@ -1057,7 +1057,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
      */
     while (options_head) {
         options_head->after(options_head);
-        options_head = o->next;
+        options_head = options_head->next;
     }
 
     if (paramv) {

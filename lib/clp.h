@@ -215,8 +215,8 @@ struct clp_suftab {
  */
 #define CLP_VECTOR_DECL(_xname, _xtype, _xsize)                         \
     struct _xname {                                                     \
-        u_int            len;                                           \
-        u_int            size;                                          \
+        unsigned int     len;                                           \
+        unsigned int     size;                                          \
         const char      *delim;                                         \
         void            *priv;                                          \
         _xtype           data[(_xsize)];                                \

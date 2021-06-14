@@ -1,9 +1,6 @@
 + ./prog -f nan
 f is nan
 
-+ ./prog -f -nan
-f is nan
-
 + ./prog -f inf
 f is inf
 

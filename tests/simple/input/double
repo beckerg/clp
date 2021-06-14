@@ -1,5 +1,4 @@
 ./prog -d nan
-./prog -d -nan
 ./prog -d inf
 ./prog -d -inf
 ./prog -d infinity
