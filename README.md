@@ -80,6 +80,24 @@ ex1: option -j requires a parameter, use -h for help
 $ ./ex1 -j1
 jobs is 1
 
+$ ./ex1 --j2
+ex1: invalid option --j2, use -h for help
+
+$ ./ex1 --j 2
+jobs is 2
+
+$ ./ex1 --jo 3
+jobs is 3
+
+$ ./ex1 -Wj4
+ex1: invalid option -Wj4, use -h for help
+
+$ ./ex1 -Wj 5
+jobs is 5
+
+$ ./ex1 -Wjobs=6
+jobs is 6
+
 $ ./ex1 -j $((1<<31))
 ex1: unable to convert '-j 2147483648': Numerical argument out of domain
 
@@ -97,6 +115,7 @@ duration is 1 seconds
 
 $ ./ex1 -d1h
 duration is 3600 seconds
+
 ```
 
 By default, integer option argument conversion accepts a single-letter

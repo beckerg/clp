@@ -648,14 +648,14 @@ clp_help_cmp(const void *lhs, const void *rhs)
 /* Print the entire help message, for example:
  *
  * usage: prog [-v] [-i intarg] src... dst
- * usage: prog -h [-v]
+ * usage: prog -h
  * usage: prog -V
  * -h         print this help list
  * -i intarg  specify an integer argument
  * -V         print version
  * -v         increase verbosity
- * dst     specify destination directory
  * src...  specify one or more source files
+ * dst     specify destination directory
  */
 void
 clp_help(struct clp_option *opthelp)
@@ -763,9 +763,8 @@ clp_help(struct clp_option *opthelp)
 
     /* Determine the width of the longest positional parameter name.
      */
-    if (paramv) {
-        width = 0;
-
+    width = 0;
+    for (paramv = clp->params; paramv; paramv = paramv->next) {
         for (param = paramv; param->name; ++param) {
             char namebuf[32];
             int namelen;
@@ -833,6 +832,8 @@ clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
 static int
 clp_parsev_impl(struct clp *clp, int argc, char **argv)
 {
+    struct clp_option *options_head, **options_tail;
+    struct clp_posparam **params_tail;
     struct clp_posparam *paramv;
     struct option *longopt;
     struct clp_option *o;
@@ -840,6 +841,16 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
     int posmin, posmax;
     char *pc;
     int rc;
+
+    params_tail = &clp->params;
+    *params_tail = clp->paramv;
+    if (*params_tail) {
+        params_tail = &(*params_tail)->next;
+        *params_tail = NULL;
+    }
+
+    options_tail = &options_head;
+    *options_tail = NULL;
 
 #ifdef CLP_DEBUG
     char *env;
@@ -860,20 +871,18 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
 
     optstringsz = clp->optionc * 2 + 8;
 
-    clp->optstring = calloc(1, optstringsz);
+    clp->optstring = malloc(optstringsz);
     if (!clp->optstring) {
-        eprint(clp, "+%d %s: unable to calloc optstring (%zu bytes)",
+        eprint(clp, "+%d %s: unable to malloc optstring (%zu bytes)",
                __LINE__, __FILE__, optstringsz);
         return EX_OSERR;
     }
-
-    int optbeforecnt = 0;
-    int optaftercnt = 0;
 
     pc = clp->optstring;
 
     *pc++ = '+';    // Enable POSIXLY_CORRECT semantics
     *pc++ = ':';    // Disable getopt error reporting
+    *pc = '\000';
 
     /* Generate the optstring and the long options table from the options vector.
      */
@@ -899,23 +908,32 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
                 ++longopt;
             }
 
-            optbeforecnt += !!o->before;
+            if (o->paramv) {
+                *params_tail = o->paramv;
+                params_tail = &o->paramv->next;
+                *params_tail = NULL;
+            }
+
+            if (o->before) {
+                *options_tail = o;
+                options_tail = &o->next;
+                *options_tail = NULL;
+            }
         }
+
+        if (longopt > clp->longopts) {
+            *pc++ = 'W';
+            *pc++ = ';';
+        }
+        *pc = '\000';
 
         /* Call each option's before() procedure before option processing.
          */
-        for (o = clp->optionv; optbeforecnt > 0 && o->optopt > 0; ++o) {
-            if (o->before) {
-                optbeforecnt--;
-                o->before(o);
-            }
+        while (options_head) {
+            options_head->before(options_head);
+            options_head = o->next;
         }
     }
-
-    *pc++ = 'W';
-    *pc++ = ';';
-
-    paramv = clp->paramv;
 
     char usehelp[] = ", use -h for help";
     if (clp->opthelp > 0) {
@@ -924,8 +942,12 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         usehelp[0] = '\000';
     }
 
+    options_tail = &options_head;
+    *options_tail = NULL;
+
+    paramv = clp->paramv;
+
     /* Reset getopt_long().
-     * TODO: Create getopt_long_r() for MT goodness.
      */
 #ifdef optreset
     optreset = 1; // FreeBSD
@@ -969,7 +991,12 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
             return EX_USAGE;
         }
 
-        optaftercnt += !!o->after;
+        if (o->after) {
+            o->next = NULL;
+            *options_tail = o;
+            options_tail = &o->next;
+        }
+
         o->longidx = longidx;
         o->optarg = optarg;
         ++o->given;
@@ -1028,11 +1055,9 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
     /* Call each given option's after() procedure after all options have
      * been processed.
      */
-    for (o = clp->optionv; optaftercnt > 0 && o->optopt > 0; ++o) {
-        if (o->given && o->after) {
-            optaftercnt--;
-            o->after(o);
-        }
+    while (options_head) {
+        options_head->after(options_head);
+        options_head = o->next;
     }
 
     if (paramv) {

@@ -17,7 +17,7 @@ CPPFLAGS  := ${CDEFS}
 
 CFLAGS    += -std=c11 -Wall -O2 -g ${INCLUDE}
 CFLAGS    += -march=native
-DEBUG     := -O0 -DDEBUG -UNDEBUG -fno-omit-frame-pointer
+DEBUG     := -O0 -DCLP_DEBUG -UNDEBUG -fno-omit-frame-pointer
 
 VPATH := ../lib
 
@@ -26,7 +26,7 @@ VPATH := ../lib
 .DELETE_ON_ERROR:
 .NOTPARALLEL:
 
-.PHONY:	all clean clobber debug distclean maintainer-clean
+.PHONY:	all clean clobber debug distclean maintainer-clean test
 
 
 all: ${PROGS}
@@ -39,6 +39,9 @@ cleandir clobber distclean maintainer-clean: clean
 
 debug: CFLAGS += ${DEBUG}
 debug: ${PROGS}
+
+test: ${PROGS}
+	for p in $^ ; do ./$$p -h; done
 
 # Use gmake's link rule to produce the target.
 #

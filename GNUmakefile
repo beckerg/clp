@@ -1,4 +1,4 @@
-SUBDIRS = lib tests
+SUBDIRS = lib tests examples
 
 .PHONY: all check ${SUBDIRS} ${MAKECMDGOALS}
 

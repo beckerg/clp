@@ -147,24 +147,25 @@ typedef void clp_option_cb(struct clp_option *option);
 typedef void clp_posparam_cb(struct clp_posparam *param);
 
 struct clp_posparam {
-    const char         *name;           // Name shown by help for the parameter
-    const char         *help;           // One line that descibes this parameter
-    clp_cvt_cb         *cvtfunc;        // Called for each positional argument
-    int                 cvtflags;       // Arg 2 to cvtfunc()
-    void               *cvtparms;       // Arg 3 to cvtfunc()
-    void               *cvtdst;         // Where cvtfunc() stores its output
-    clp_posparam_cb    *before;         // Called before positional argument distribution
-    clp_posparam_cb    *after;          // Called after positional argument distribution
-    void               *priv;           // Free for use by caller of clp_parse()
+    const char          *name;          // Name shown by help for the parameter
+    const char          *help;          // One line that descibes this parameter
+    clp_cvt_cb          *cvtfunc;       // Called for each positional argument
+    int                  cvtflags;      // Arg 2 to cvtfunc()
+    void                *cvtparms;      // Arg 3 to cvtfunc()
+    void                *cvtdst;        // Where cvtfunc() stores its output
+    clp_posparam_cb     *before;        // Called before positional argument distribution
+    clp_posparam_cb     *after;         // Called after positional argument distribution
+    void                *priv;          // Free for use by caller of clp_parse()
 
     /* The following fields are used by the option parser, whereas the above
      * fields are supplied by the user.
      */
-    struct clp         *clp;
-    int                 posmin;         // Min number of positional parameters
-    int                 posmax;         // Max number of positional parameters
-    int                 argc;           // Number of arguments assigned to this parameter
-    char              **argv;           // Ptr to arguments assigned to this parameter
+    struct clp_posparam *next;          // posparam list linkage
+    struct clp          *clp;
+    int                  posmin;        // Min number of positional parameters
+    int                  posmax;        // Max number of positional parameters
+    int                  argc;          // Number of arguments assigned to this parameter
+    char               **argv;          // Ptr to arguments assigned to this parameter
 };
 
 struct clp_option {
@@ -185,10 +186,11 @@ struct clp_option {
     /* The following fields are used by the option parser, whereas the above
      * fields are supplied by the user.
      */
-    struct clp         *clp;            // Not valid when parser returns
-    const char         *optarg;         // optarg from getopt()
-    int                 given;          // Count of times this option was given
-    int                 longidx;        // Index into cli->longopts[]
+    struct clp_option   *next;          // option list linkage
+    struct clp          *clp;           // Not valid when parser returns
+    const char          *optarg;        // optarg from getopt()
+    int                  given;         // Count of times this option was given
+    int                  longidx;       // Index into cli->longopts[]
 };
 
 struct clp {
@@ -201,6 +203,7 @@ struct clp {
     struct option       *longopts;      // Table of long options for getopt_long()
     char                *errbuf;
     size_t               errbufsz;
+    struct clp_posparam *params;        // posparam list head
 };
 
 struct clp_suftab {
