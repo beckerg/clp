@@ -11,8 +11,8 @@ char *progname;
 char *delim;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('d', delim, NULL, NULL, string, NULL, "specify a delimiter"),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('d', string, delim, NULL, NULL, "specify a delimiter"),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -20,7 +20,7 @@ struct clp_option optionv[] = {
 static bool
 given(int c)
 {
-    return !!clp_given(c, optionv);
+    return !!clp_given(c, optionv, NULL);
 }
 
 int

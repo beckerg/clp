@@ -66,58 +66,91 @@
  * size_t       size_t *
  * time_t       time_t *
  *
- * The above conversion functions accept an clp_cvtparms_t pointer
+ * The above conversion functions accept a clp_cvtparms_t pointer
  * in the cvtparms parameter in order to process a list of integers.
  *
  * string       char *
- * fopen        FILE **         -               fopen() mode arg
- * open         int *           open() flags    -
+ * fp           FILE **         -               fopen() mode arg
+ * fd           int *           open() flags    -
  */
 
-#define CLP_OPTION(_xoptopt, _xargname, _xlongopt, _xexcl, _xtype, _xparamv, _xhelp) \
+/* _xoptopt    option letter for getopt (e.g., 'x')
+ * _xtype      option type (e.g., int, long, ...)
+ * _xvarname   name of variable in which to store converted optarg (e.g., xarg)
+ * _xexcludes  list of mutually exclusive options (e.g., "yz")
+ * _xparamv    ptr to posparam vector unique to this option
+ * _xhelp      help string for -h (e.g. "specify x coordinate")
+ *
+ * CLP_OPTION() is used to define simple options for which _xvarname
+ * is statically defined.  The type of _xvarname must match _xtype.
+ */
+#define CLP_OPTION(_xoptopt, _xtype, _xvarname, _xexcludes, _xparamv, _xhelp) \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
-        .argname = #_xargname,                                          \
-        .excludes = (_xexcl),                                           \
-        .longopt = _xlongopt,                                           \
+        .argname = #_xvarname,                                          \
+        .excludes = (_xexcludes),                                       \
+        .getfunc = clp_get_ ## _xtype,                                  \
         .cvtfunc = clp_cvt_ ## _xtype,                                  \
-        .cvtdst = &(_xargname),                                         \
+        .cvtdst = &(_xvarname),                                         \
         .paramv = (_xparamv),                                           \
         .help = (_xhelp),                                               \
     }
 
-#define CLP_OPTION_HELP(_xoptopt)                                       \
+/* Like CLP_OPTION() but required for thread-local or dynamically created
+ * option variables (i.e., _xvarname is not statically defined).
+ * Converted optarg is only available via the last argument to clp_given()
+ * (e.g., given '__thread int x' call clp_given('x', optionv, &x) to
+ * retrieve the converted optarg if -x was given on the command line).
+ */
+#define CLP_OPTION_TLS(_xoptopt, _xtype, _xvarname, _xexcludes, _xparamv, _xhelp) \
     {                                                                   \
-        .optopt = (_xoptopt), .excludes = "*", .longopt = "help",       \
+        .optopt = (_xoptopt),                                           \
+        .argname = #_xvarname,                                          \
+        .excludes = (_xexcludes),                                       \
+        .getfunc = clp_get_ ## _xtype,                                  \
+        .cvtfunc = clp_cvt_ ## _xtype,                                  \
+        .paramv = (_xparamv),                                           \
+        .help = (_xhelp),                                               \
+    }
+
+/* Use the HELP, VERSION, VERBOSITY, DRYRUN, and CONF templates to ensure
+ * a consistent look-and-free across all tools built with clp.
+ */
+#define CLP_OPTION_HELP()                                               \
+    {                                                                   \
+        .optopt = 'h', .excludes = "*", .longopt = "help",              \
         .after = clp_help, .paramv = clp_posparam_none,                 \
         .help = "print this help list",                                 \
     }
 
-#define CLP_OPTION_VERSION(_xoptopt, _xversion)                         \
+#define CLP_OPTION_VERSION(_xversion)                                   \
     {                                                                   \
-        .optopt = (_xoptopt), .excludes = "*", .longopt = "version",    \
+        .optopt = 'V', .excludes = "*", .longopt = "version",           \
         .after = clp_version, .paramv = clp_posparam_none,              \
         .cvtdst = &(_xversion), .help = "print version",                \
     }
 
-#define CLP_OPTION_VERBOSITY(_xoptopt, _xverbose)                       \
-    CLP_OPTION((_xoptopt), _xverbose, NULL, NULL, incr, NULL, "increase verbosity")
+#define CLP_OPTION_VERBOSITY(_xverbosity)                               \
+    CLP_OPTION('v', incr, _xverbosity, NULL, NULL, "increase verbosity")
 
-#define CLP_OPTION_DRYRUN(_xoptopt, _xdryrun)                           \
-    CLP_OPTION((_xoptopt), _xdryrun, NULL, NULL, incr, NULL, "trace execution")
+#define CLP_OPTION_DRYRUN(_xdryrun)                                     \
+    CLP_OPTION('n', incr, _xdryrun, NULL, NULL, "trace execution")
 
-#define CLP_OPTION_CONF(_xoptopt, _xconf)                               \
-    CLP_OPTION((_xoptopt), _xconf, NULL, NULL, fopen, NULL, "specify a config file")
+#define CLP_OPTION_CONF(_xconf)                                         \
+    CLP_OPTION('C', fp, _xconf, NULL, NULL, "specify a config file")
 
-#define CLP_OPTION_TMPL(_xoptopt, _xargname, _xlongopt, _xexcl,         \
-                        _xconvert, _xcvtflags, _xcvtparms, _xcvtdst,    \
+/* Use CLP_OPTION_TMPL() to generate options with custom optarg converters
+ * and/or to specify callbacks to be called before/after option processing.
+ */
+#define CLP_OPTION_TMPL(_xoptopt, _xvarname, _xexcludes, _xlongopt,     \
+                        _xcvtfunc, _xcvtflags, _xcvtparms, _xcvtdst,    \
                         _xbefore, _xafter, _xparamv, _xhelp)            \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
-        .argname = (_xargname),                                         \
+        .argname = (_xvarname),                                         \
         .excludes = (_xexcludes),                                       \
         .longopt = (_xlongopt),                                         \
-        .cvtfunc = (_xconvert),                                         \
+        .cvtfunc = (_xcvtfunc),                                         \
         .cvtflags = (_xcvtflags),                                       \
         .cvtparms = (_xcvtparms),                                       \
         .cvtdst = (_xcvtdst),                                           \
@@ -141,6 +174,7 @@ struct clp_option;
 struct clp_posparam;
 
 typedef int clp_cvt_cb(const char *str, int flags, void *parms, void *dst);
+typedef void clp_get_cb(struct clp_option *option, void *dst);
 
 typedef void clp_option_cb(struct clp_option *option);
 
@@ -166,6 +200,7 @@ struct clp_posparam {
     int                  posmax;        // Max number of positional parameters
     int                  argc;          // Number of arguments assigned to this parameter
     char               **argv;          // Ptr to arguments assigned to this parameter
+    unsigned char        cvtdstbuf[16] __aligned(16);
 };
 
 struct clp_option {
@@ -174,6 +209,7 @@ struct clp_option {
     const char          *excludes;      // List of options excluded by optopt
     const char          *longopt;       // Long option name for getopt
     const char          *help;          // One line that describes this option
+    clp_get_cb          *getfunc;       // Function to retrieve converted argument
     clp_cvt_cb          *cvtfunc;       // Function to convert optarg
     int                  cvtflags;      // Arg 2 to cvtfunc()
     void                *cvtparms;      // Arg 3 to cvtfunc()
@@ -191,6 +227,7 @@ struct clp_option {
     const char          *optarg;        // optarg from getopt()
     int                  given;         // Count of times this option was given
     int                  longidx;       // Index into cli->longopts[]
+    unsigned char        cvtdstbuf[16] __aligned(16);
 };
 
 struct clp {
@@ -246,6 +283,7 @@ typedef CLP_VECTOR_DECL(clp_vector, char, 0) clp_vector_t;
  * may be called.
  */
 #define CLP_CVT_TMPL(_xsuffix, _xtype, _xmin, _xmax, _xsuftab)          \
+__attribute__((__visibility__("hidden")))                               \
 int                                                                     \
 clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
@@ -362,12 +400,39 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     }                                                                   \
                                                                         \
     return errno ? EX_DATAERR : 0;                                      \
+}                                                                       \
+                                                                        \
+__attribute__((__visibility__("hidden")))                               \
+void                                                                    \
+clp_get_ ## _xsuffix(struct clp_option *option, void *dst)              \
+{                                                                       \
+    _xtype *src = (_xtype *)option->cvtdst;                             \
+                                                                        \
+    if (!src)                                                           \
+        src = (_xtype *)option->cvtdstbuf;                              \
+                                                                        \
+    *(_xtype *)dst = *src;                                              \
 }
+
+
+#define CLP_GET_TMPL(_xsuffix, _xtype)                                  \
+__attribute__((__visibility__("hidden")))                               \
+void                                                                    \
+clp_get_ ## _xsuffix(struct clp_option *option, void *dst)              \
+{                                                                       \
+    _xtype *src = (_xtype *)option->cvtdst;                             \
+                                                                        \
+    if (!src)                                                           \
+        src = (_xtype *)option->cvtdstbuf;                              \
+                                                                        \
+    *(_xtype *)dst = *src;                                              \
+}
+
 
 extern struct clp_posparam clp_posparam_none[];
 
 extern struct clp_option *clp_find(int optopt, struct clp_option *optionv);
-extern struct clp_option *clp_given(int optopt, struct clp_option *optionv);
+extern struct clp_option *clp_given(int optopt, struct clp_option *optionv, void *dst);
 
 extern struct clp_suftab clp_suftab_si;
 extern struct clp_suftab clp_suftab_iec;
@@ -375,60 +440,65 @@ extern struct clp_suftab clp_suftab_combo;
 extern struct clp_suftab clp_suftab_none;
 extern struct clp_suftab clp_suftab_time;
 
+extern clp_cvt_cb clp_cvt_fp;
+extern clp_cvt_cb clp_cvt_fd;
 extern clp_cvt_cb clp_cvt_bool;
-
-extern clp_cvt_cb clp_cvt_string;
-extern clp_cvt_cb clp_cvt_fopen;
-extern clp_cvt_cb clp_cvt_open;
 extern clp_cvt_cb clp_cvt_incr;
+extern clp_cvt_cb clp_cvt_string;
 
-extern clp_cvt_cb clp_cvt_char;
-extern clp_cvt_cb clp_cvt_uchar;
-extern clp_cvt_cb clp_cvt_u_char;
+extern clp_cvt_cb clp_cvt_char, clp_cvt_u_char;
+extern clp_cvt_cb clp_cvt_short, clp_cvt_u_short;
+extern clp_cvt_cb clp_cvt_int, clp_cvt_u_int;
+extern clp_cvt_cb clp_cvt_long, clp_cvt_u_long;
+extern clp_cvt_cb clp_cvt_float, clp_cvt_double;
 
-extern clp_cvt_cb clp_cvt_int;
-extern clp_cvt_cb clp_cvt_uint;
-extern clp_cvt_cb clp_cvt_u_int;
+extern clp_cvt_cb clp_cvt_int8, clp_cvt_int8_t;
+extern clp_cvt_cb clp_cvt_uint8, clp_cvt_uint8_t;
 
-extern clp_cvt_cb clp_cvt_long;
-extern clp_cvt_cb clp_cvt_ulong;
-extern clp_cvt_cb clp_cvt_u_long;
+extern clp_cvt_cb clp_cvt_int16, clp_cvt_int16_t;
+extern clp_cvt_cb clp_cvt_uint16, clp_cvt_uint16_t;
 
-extern clp_cvt_cb clp_cvt_float;
-extern clp_cvt_cb clp_cvt_double;
+extern clp_cvt_cb clp_cvt_int32, clp_cvt_int32_t;
+extern clp_cvt_cb clp_cvt_uint32, clp_cvt_uint32_t;
 
-extern clp_cvt_cb clp_cvt_int8;
-extern clp_cvt_cb clp_cvt_int8_t;
+extern clp_cvt_cb clp_cvt_int64, clp_cvt_int64_t;
+extern clp_cvt_cb clp_cvt_uint64, clp_cvt_uint64_t;
 
-extern clp_cvt_cb clp_cvt_uint8;
-extern clp_cvt_cb clp_cvt_uint8_t;
-
-extern clp_cvt_cb clp_cvt_int16;
-extern clp_cvt_cb clp_cvt_int16_t;
-
-extern clp_cvt_cb clp_cvt_uint16;
-extern clp_cvt_cb clp_cvt_uint16_t;
-
-extern clp_cvt_cb clp_cvt_int32;
-extern clp_cvt_cb clp_cvt_int32_t;
-
-extern clp_cvt_cb clp_cvt_uint32;
-extern clp_cvt_cb clp_cvt_uint32_t;
-
-extern clp_cvt_cb clp_cvt_int64;
-extern clp_cvt_cb clp_cvt_int64_t;
-
-extern clp_cvt_cb clp_cvt_uint64;
-extern clp_cvt_cb clp_cvt_uint64_t;
-
-extern clp_cvt_cb clp_cvt_intmax_t;
-extern clp_cvt_cb clp_cvt_uintmax_t;
-
-extern clp_cvt_cb clp_cvt_intptr_t;
-extern clp_cvt_cb clp_cvt_uintptr_t;
+extern clp_cvt_cb clp_cvt_intmax_t, clp_cvt_uintmax_t;
+extern clp_cvt_cb clp_cvt_intptr_t, clp_cvt_uintptr_t;
 
 extern clp_cvt_cb clp_cvt_size_t;
 extern clp_cvt_cb clp_cvt_time_t;
+
+extern clp_get_cb clp_get_fp;
+extern clp_get_cb clp_get_fd;
+extern clp_get_cb clp_get_bool;
+extern clp_get_cb clp_get_incr;
+extern clp_get_cb clp_get_string;
+
+extern clp_get_cb clp_get_char, clp_get_u_char;
+extern clp_get_cb clp_get_short, clp_get_u_short;
+extern clp_get_cb clp_get_int, clp_get_u_int;
+extern clp_get_cb clp_get_long, clp_get_u_long;
+extern clp_get_cb clp_get_float, clp_get_double;
+
+extern clp_get_cb clp_get_int8, clp_get_int8_t;
+extern clp_get_cb clp_get_uint8, clp_get_uint8_t;
+
+extern clp_get_cb clp_get_int16, clp_get_int16_t;
+extern clp_get_cb clp_get_uint16, clp_get_uint16_t;
+
+extern clp_get_cb clp_get_int32, clp_get_int32_t;
+extern clp_get_cb clp_get_uint32, clp_get_uint32_t;
+
+extern clp_get_cb clp_get_int64, clp_get_int64_t;
+extern clp_get_cb clp_get_uint64, clp_get_uint64_t;
+
+extern clp_get_cb clp_get_intmax_t, clp_get_uintmax_t;
+extern clp_get_cb clp_get_intptr_t, clp_get_uintptr_t;
+
+extern clp_get_cb clp_get_size_t;
+extern clp_get_cb clp_get_time_t;
 
 
 extern clp_option_cb clp_help;

@@ -90,11 +90,11 @@ struct clp_posparam posparamv_list[] = {
 };
 
 struct clp_option optionv[] = {
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_VERSION('V', version),
-    CLP_OPTION_DRYRUN('n', dryrun),
-    CLP_OPTION_CONF('C', cf),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_VERSION(version),
+    CLP_OPTION_DRYRUN(dryrun),
+    CLP_OPTION_CONF(cf),
+    CLP_OPTION_HELP(),
 
     // Example of a boolean option that triggers non-default positional parameters.
     {
@@ -135,7 +135,7 @@ posparamv_list_after(struct clp_posparam *param)
 static bool
 given(int c)
 {
-    return !!clp_given(c, optionv);
+    return !!clp_given(c, optionv, NULL);
 }
 
 int

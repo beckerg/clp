@@ -14,18 +14,18 @@ int dryrun;
 FILE *cf;
 
 struct clp_option optionv[] = {
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_VERSION('V', version),
-    CLP_OPTION_DRYRUN('n', dryrun),
-    CLP_OPTION_CONF('C', cf),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_VERSION(version),
+    CLP_OPTION_DRYRUN(dryrun),
+    CLP_OPTION_CONF(cf),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
 static bool
 given(int c)
 {
-    return !!clp_given(c, optionv);
+    return !!clp_given(c, optionv, NULL);
 }
 
 int

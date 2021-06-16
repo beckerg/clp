@@ -59,11 +59,11 @@ struct clp_posparam posparamv_list[] = {
 };
 
 struct clp_option optionv[] = {
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_VERSION('V', version),
-    CLP_OPTION_DRYRUN('n', dryrun),
-    CLP_OPTION_CONF('C', cf),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_VERSION(version),
+    CLP_OPTION_DRYRUN(dryrun),
+    CLP_OPTION_CONF(cf),
+    CLP_OPTION_HELP(),
 
     // Example of a boolean option that triggers non-default positional parameters.
     {
@@ -72,9 +72,9 @@ struct clp_option optionv[] = {
         .paramv = posparamv_list,
     },
 
-    CLP_OPTION('L', lcntr, NULL, NULL, incr, NULL, "increment a local int counter"),
-    CLP_OPTION('G', gcntr, NULL, NULL, incr, NULL, "increment a global int counter"),
-    CLP_OPTION('s', mystring, NULL, NULL, string, NULL, "specify a string"),
+    CLP_OPTION('L', incr, lcntr, NULL, NULL, "increment a local int counter"),
+    CLP_OPTION('G', incr, gcntr, NULL, NULL, "increment a global int counter"),
+    CLP_OPTION('s', string, mystring, NULL, NULL, "specify a string"),
 
     CLP_OPTION_END
 };
@@ -109,7 +109,7 @@ posparamv_list_after(struct clp_posparam *param)
 static int
 given(int c)
 {
-    struct clp_option *opt = clp_given(c, optionv);
+    struct clp_option *opt = clp_given(c, optionv, NULL);
 
     return (opt ? opt->given : 0);
 }

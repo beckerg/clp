@@ -1,6 +1,6 @@
 # Copyright (c) 2021 Greg Becker.  All rights reserved.
 
-PROGS := ex1 ex2 ex3 ex4 ex5
+PROGS := ex1 ex2 ex3 ex4 ex5 ex6
 
 SRC := ${patsubst %,%.c,${PROGS}} clp.c
 OBJ := ${SRC:.c=.o}

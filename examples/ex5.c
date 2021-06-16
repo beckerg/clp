@@ -18,9 +18,9 @@ struct clp_posparam posparamv_r[] = {
 };
 
 struct clp_option optionv[] = {
-    CLP_OPTION('r', rflag, NULL, "^v", bool, posparamv_r, "remove files"),
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('r', bool, rflag, "^v", posparamv_r, "remove files"),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -34,7 +34,7 @@ main(int argc, char **argv)
     if (rc)
         return rc;
 
-    if (clp_given('r', optionv))
+    if (clp_given('r', optionv, NULL))
         paramv = posparamv_r;
 
     for (param = paramv; param->name; ++param) {

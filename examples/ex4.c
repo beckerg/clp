@@ -7,11 +7,11 @@ int verbosity;
 int zarg;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('x', xflag, NULL, "yz", bool, NULL, "enable feature x (excludes -yz)"),
-    CLP_OPTION('y', yflag, NULL, "xz", bool, NULL, "enable feature y (excludes -xz)"),
-    CLP_OPTION('z', zarg, NULL, "xy", int, NULL, "enable feature z (excludes -xy)"),
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('x', bool, xflag, "yz", NULL, "enable feature x (excludes -yz)"),
+    CLP_OPTION('y', bool, yflag, "xz", NULL, "enable feature y (excludes -xz)"),
+    CLP_OPTION('z', int, zarg, "xy", NULL, "enable feature z (excludes -xy)"),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -24,13 +24,13 @@ main(int argc, char **argv)
     if (rc)
         return rc;
 
-    if (clp_given('x', optionv))
+    if (clp_given('x', optionv, NULL))
         printf("feature x enabled\n");
 
-    if (clp_given('y', optionv))
+    if (clp_given('y', optionv, NULL))
         printf("feature y enabled\n");
 
-    if (clp_given('z', optionv))
+    if (clp_given('z', optionv, NULL))
         printf("feature z enabled (zarg=%d)\n", zarg);
 
     /* do something... */

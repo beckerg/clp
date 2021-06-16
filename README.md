@@ -2,9 +2,9 @@
 Command Line Processor
 
 _**clp**_ is command line processor which aims to bring simple consistency
-to command line parsing.  It is a one-pass parser/processor, in the sense
-that you can simply call _**clp_parsev()**_ or _**clp_parsel()**_ to parse
-and process a given argument vector or argument string, respectively.
+to command line processing.  It is a one-pass parser/processor, in the sense
+that you need only call _**clp_parsev()**_ or _**clp_parsel()**_ to process
+a given argument vector or argument string, respectively.
 
 Other than compiling _**clp.c**_, there are no other external programs
 required to generate the parser, nor is there any run-time initialization
@@ -17,9 +17,7 @@ library.
 ## Examples
 ### Example 1 - Simple Options
 Here's a very simple example that builds a parser expecting three options and
-no positional parameters.  The parameters of the _**CLP_OPTION()**_ macro are:
-_option-letter, option-variable, long-name, excludes-string,
-conversion-function-suffix, positional-parameters, option-help-string_.
+no positional parameters.
 
 ```
 #include <stdio.h>
@@ -29,9 +27,9 @@ time_t duration;
 int jobs;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('d', duration, "duration", NULL, time_t, NULL, "specify max duration (seconds)"),
-    CLP_OPTION('j', jobs, "jobs", NULL, int, NULL, "specify max number of jobs"),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('d', time_t, duration, NULL, NULL, "specify max duration (seconds)"),
+    CLP_OPTION('j', int, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -44,10 +42,10 @@ main(int argc, char **argv)
     if (rc)
         return rc;
 
-    if (clp_given('d', optionv))
+    if (clp_given('d', optionv, NULL))
         printf("duration is %ld seconds\n", duration);
 
-    if (clp_given('j', optionv))
+    if (clp_given('j', optionv, NULL))
         printf("jobs is %d\n", jobs);
 
     /* do something... */
@@ -154,8 +152,8 @@ int jobs;
 CLP_CVT_TMPL(cvtjobs, int, 1, 10, clp_suftab_none);
 
 struct clp_option optionv[] = {
-    CLP_OPTION('j', jobs, "jobs", NULL, cvtjobs, NULL, "specify max number of jobs"),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('j', cvtjobs, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -168,7 +166,7 @@ main(int argc, char **argv)
     if (rc)
         return rc;
 
-    if (clp_given('j', optionv))
+    if (clp_given('j', optionv, NULL))
         printf("jobs is %d\n", jobs);
 
     /* do something... */
@@ -214,8 +212,8 @@ struct clp_posparam posparamv[] = {
 };
 
 struct clp_option optionv[] = {
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -283,11 +281,11 @@ int verbosity;
 int zarg;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('x', xflag, NULL, "yz", bool, NULL, "enable feature x (excludes -yz)"),
-    CLP_OPTION('y', yflag, NULL, "xz", bool, NULL, "enable feature y (excludes -xz)"),
-    CLP_OPTION('z', zarg, NULL, "xy", int, NULL, "enable feature z (excludes -xy)"),
-    CLP_OPTION_VERBOSITY('v', verbosity),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('x', bool, xflag, "yz", NULL, "enable feature x (excludes -yz)"),
+    CLP_OPTION('y', bool, yflag, "xz", NULL, "enable feature y (excludes -xz)"),
+    CLP_OPTION('z', int, zarg, "xy", NULL, "enable feature z (excludes -xy)"),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -300,13 +298,13 @@ main(int argc, char **argv)
     if (rc)
         return rc;
 
-    if (clp_given('x', optionv))
+    if (clp_given('x', optionv, NULL))
         printf("feature x enabled\n");
 
-    if (clp_given('y', optionv))
+    if (clp_given('y', optionv, NULL))
         printf("feature y enabled\n");
 
-    if (clp_given('z', optionv))
+    if (clp_given('z', optionv, NULL))
         printf("feature z enabled (zarg=%d)\n", zarg);
 
     /* do something... */
@@ -339,7 +337,151 @@ ex4: option -y excludes -x, use -h for help
 ```
 
 ### Example 5 - Complex Positional Parameters
-TODO...
+This example illustrate a more complicated arrangement of positional parameters,
+with an option (-r) that has a different posparam syntax than the default.
+
+```
+#include <stdio.h>
+#include "clp.h"
+
+int verbosity;
+bool rflag;
+
+struct clp_posparam posparamv[] = {
+    CLP_POSPARAM("[left]", "optional left justified positional parameter", NULL, NULL),
+    CLP_POSPARAM("[middle...]", "zero or more params", NULL, NULL),
+    CLP_POSPARAM("right", "right justified positional parameter", NULL, NULL),
+    CLP_POSPARAM_END
+};
+
+struct clp_posparam posparamv_r[] = {
+    CLP_POSPARAM("files...", "one or more files", NULL, NULL),
+    CLP_POSPARAM_END
+};
+
+struct clp_option optionv[] = {
+    CLP_OPTION('r', bool, rflag, "^v", posparamv_r, "remove files"),
+    CLP_OPTION_VERBOSITY(verbosity),
+    CLP_OPTION_HELP(),
+    CLP_OPTION_END
+};
+
+int
+main(int argc, char **argv)
+{
+    struct clp_posparam *paramv = posparamv, *param;
+    int rc;
+
+    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
+    if (rc)
+        return rc;
+
+    if (clp_given('r', optionv, NULL))
+        paramv = posparamv_r;
+
+    for (param = paramv; param->name; ++param) {
+        for (int i = 0; i < param->argc; ++i)
+            printf("%s[%d] %s\n", param->name, i, param->argv[i]);
+    }
+
+    /* do something... */
+
+    return 0;
+}
+```
+
+```
+$ ./examples/ex5 -h
+usage: ex5 [-v] [left [middle...]] right
+usage: ex5 -h
+usage: ex5 -r [-v] files...
+-h  print this help list
+-r  remove files
+-v  increase verbosity
+left       optional left justified positional parameter
+middle...  zero or more params
+right      right justified positional parameter
+files...   one or more files
+
+$ ./examples/ex5 a
+right[0] a
+
+$ ./examples/ex5 a b
+[left][0] a
+right[0] b
+
+$ ./examples/ex5 a b c
+[left][0] a
+[middle...][0] b
+right[0] c
+
+$ ./examples/ex5 a b c d
+[left][0] a
+[middle...][0] b
+[middle...][1] c
+right[0] d
+
+$ ./examples/ex5 -r a b c
+files...[0] a
+files...[1] b
+files...[2] c
+```
+
+### Example 6 - Thread-local variables
+The following example illustrates how to specify that the option
+option arguments reside in **thread-local**, **stack**, or
+**dynamically allocated memory**.  In these cases _**clp**_
+will stash the converted option argument into a private buffer
+from which it may be obtained by calling _***clp_given()***_.
+
+```
+#include <stdio.h>
+#include "clp.h"
+
+static __thread time_t duration;
+
+static __thread struct clp_option optionv[] = {
+    CLP_OPTION_TLS('d', time_t, duration, NULL, NULL, "specify max duration (seconds)"),
+    CLP_OPTION_TLS('j', int, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION_TLS('C', fp, conf, NULL, NULL, "specify config file"),
+    CLP_OPTION_HELP(),
+    CLP_OPTION_END
+};
+
+int
+main(int argc, char **argv)
+{
+    struct clp_option *o;
+    int *jobs;
+    FILE *fp;
+    int rc;
+
+    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    if (rc)
+        return rc;
+
+    o = clp_given('d', optionv, &duration);
+    if (o)
+        printf("duration is %ld seconds\n", duration);
+
+    o = clp_given('C', optionv, &fp);
+    if (o)
+        printf("conf fp is %p, fd %d\n", fp, fileno(fp));
+
+    jobs = calloc(1, sizeof(*jobs));
+    if (jobs) {
+        o = clp_given('j', optionv, jobs);
+        if (o)
+            printf("jobs is %d\n", *jobs);
+
+        free(jobs);
+    }
+
+    /* do something... */
+
+    return 0;
+}
+```
 
 ## Developer Notes
 TODO...

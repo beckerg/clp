@@ -186,15 +186,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -204,15 +204,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -222,15 +222,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -240,15 +240,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -258,15 +258,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -276,15 +276,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -294,15 +294,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -312,15 +312,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -330,15 +330,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
@@ -348,15 +348,15 @@ usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
 usage: prog -V
--C cf          specify a config file
--G             increment a global int counter
--h, --help     print this help list
--L             increment a local int counter
--l, --list     list...
--n             trace execution
--s mystring    specify a string
--V, --version  print version
--v             increase verbosity
+-C, --cf cf              specify a config file
+-G                       increment a global int counter
+-h, --help               print this help list
+-L                       increment a local int counter
+-l, --list               list...
+-n                       trace execution
+-s, --mystring mystring  specify a string
+-V, --version            print version
+-v                       increase verbosity
 leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files

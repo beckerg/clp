@@ -6,9 +6,9 @@ time_t duration;
 int jobs;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('d', duration, "duration", NULL, time_t, NULL, "specify max duration (seconds)"),
-    CLP_OPTION('j', jobs, "jobs", NULL, int, NULL, "specify max number of jobs"),
-    CLP_OPTION_HELP('h'),
+    CLP_OPTION('d', time_t, duration, NULL, NULL, "specify max duration (seconds)"),
+    CLP_OPTION('j', int, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
 
@@ -21,10 +21,10 @@ main(int argc, char **argv)
     if (rc)
         return rc;
 
-    if (clp_given('d', optionv))
+    if (clp_given('d', optionv, NULL))
         printf("duration is %ld seconds\n", duration);
 
-    if (clp_given('j', optionv))
+    if (clp_given('j', optionv, NULL))
         printf("jobs is %d\n", jobs);
 
     /* do something... */
