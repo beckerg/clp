@@ -5,31 +5,29 @@ PROGS := ex1 ex2 ex3 ex4 ex5 ex6
 SRC := ${patsubst %,%.c,${PROGS}} clp.c
 OBJ := ${SRC:.c=.o}
 
-#LDLIBS := -pthread
-
 PROG_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
-PLATFORM     := $(shell uname -s | tr 'a-z' 'A-Z')
 
-INCLUDE   := -I. -I../lib
-CDEFS     := -DPROG_VERSION=\"${PROG_VERSION}\"
-CDEFS     += -DNDEBUG
-CPPFLAGS  := ${CDEFS}
-
-CFLAGS    += -std=c11 -Wall -O2 -g ${INCLUDE}
-CFLAGS    += -march=native
-DEBUG     := -O0 -DCLP_DEBUG -UNDEBUG -fno-omit-frame-pointer
-
-VPATH := ../lib
+INCLUDE  := -I. -I../lib
+CFLAGS   += -std=c11 -Wall -O2 -g ${INCLUDE}
+CFLAGS   += -march=native
+CPPFLAGS += -DPROG_VERSION=\"${PROG_VERSION}\" -DNDEBUG
+VPATH    := ../lib
 
 # Always delete partially built targets.
 #
 .DELETE_ON_ERROR:
 .NOTPARALLEL:
 
-.PHONY:	all clean clobber debug distclean maintainer-clean test
+.PHONY:	all asan check clean clobber debug distclean maintainer-clean test
 
 
 all: ${PROGS}
+
+asan: CPPFLAGS += -UNDEBUG -DCLP_DEBUG
+asan: CFLAGS += -O0 -fno-omit-frame-pointer
+asan: CFLAGS += -fsanitize=address -fsanitize=undefined
+asan: LDLIBS += -fsanitize=address -fsanitize=undefined
+asan: ${PROGS}
 
 clean:
 	rm -f ${PROGS} ${OBJ} *.core
@@ -37,7 +35,8 @@ clean:
 
 cleandir clobber distclean maintainer-clean: clean
 
-debug: CFLAGS += ${DEBUG}
+debug: CPPFLAGS += -UNDEBUG -DCLP_DEBUG
+debug: CFLAGS += -O0 -fno-omit-frame-pointer
 debug: ${PROGS}
 
 test: ${PROGS}

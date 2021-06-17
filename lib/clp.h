@@ -134,7 +134,7 @@
     CLP_OPTION('v', incr, _xverbosity, NULL, NULL, "increase verbosity")
 
 #define CLP_OPTION_DRYRUN(_xdryrun)                                     \
-    CLP_OPTION('n', incr, _xdryrun, NULL, NULL, "trace execution")
+    CLP_OPTION('n', incr, _xdryrun, NULL, NULL, "dry run")
 
 #define CLP_OPTION_CONF(_xconf)                                         \
     CLP_OPTION('C', fp, _xconf, NULL, NULL, "specify a config file")

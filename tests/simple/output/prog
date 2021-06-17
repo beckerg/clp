@@ -13,7 +13,7 @@ usage: prog -V
 -j intv      specify a vector of ints
 -L myulong   specify a u_long
 -l mylong    specify a long
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -t mytime    specify a time_t
 -V           print version

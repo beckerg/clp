@@ -10,7 +10,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -28,7 +28,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -46,7 +46,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -64,7 +64,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -82,7 +82,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -100,7 +100,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -118,7 +118,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -136,7 +136,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -154,7 +154,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -172,7 +172,7 @@ usage: prog -V
 -h           print this help list
 -L           increment a local int counter
 -l           list...
--n           trace execution
+-n           dry run
 -s mystring  specify a string
 -V           print version
 -v           increase verbosity
@@ -191,7 +191,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -209,7 +209,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -227,7 +227,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -245,7 +245,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -263,7 +263,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -281,7 +281,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -299,7 +299,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -317,7 +317,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -335,7 +335,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity
@@ -353,7 +353,7 @@ usage: prog -V
 -h, --help               print this help list
 -L                       increment a local int counter
 -l, --list               list...
--n                       trace execution
+-n                       dry run
 -s, --mystring mystring  specify a string
 -V, --version            print version
 -v                       increase verbosity

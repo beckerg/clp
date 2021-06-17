@@ -433,7 +433,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
     /* Build three lists of option characters:
      *
      * 1) excludes_buf[] contains all the options that might exclude
-     * or be excluded by another option.
+     * or be excluded by another option that share the same parameter vector.
      *
      * 2) optarg_buf[] contains all the options not in (1) that require
      * an argument.
@@ -453,9 +453,13 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
             continue;
         }
 
-        if (o != limit) {
-            if (isprint(o->optopt)) {
-                if (o->excludes) {
+        if (o != limit && o->help && isprint(o->optopt)) {
+            if (o->excludes) {
+                *pc_excludes++ = o->optopt;
+            } else {
+                struct clp_option *x = clp_excludes(clp->optionv, o, 0);
+
+                if (x && x->paramv == o->paramv) {
                     *pc_excludes++ = o->optopt;
                 } else if (o->argname) {
                     *pc_optarg++ = o->optopt;
@@ -1054,7 +1058,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         }
     }
 
-    /* Call each given option's after() procedure after all options have
+    /* Call each given option's after() procedure now that all options have
      * been processed.
      */
     while (options_head) {
@@ -1227,6 +1231,16 @@ clp_parsev(int argc, char **argv,
 
             if (o->after == clp_help) {
                 clp.opthelp = o->optopt;
+            }
+
+            /* Trim leading whitespace from excludes string and set
+             * to NULL if empty.
+             */
+            if (o->excludes) {
+                while (isspace(o->excludes[0]))
+                    ++o->excludes;
+                if (!o->excludes[0])
+                    o->excludes = NULL;
             }
 
             ++clp.optionc;

@@ -10,7 +10,7 @@ usage: prog -h
 usage: prog -V
 -C cf  specify a config file
 -h     print this help list
--n     trace execution
+-n     dry run
 -V     print version
 -v     increase verbosity
 

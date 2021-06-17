@@ -17,7 +17,10 @@ library.
 ## Examples
 ### Example 1 - Simple Options
 Here's a very simple example that builds a parser expecting three options and
-no positional parameters.
+zero or more positional parameters.  Note that since the parser is based upon
+_**getopt_long(3)**_ there are many valid ways in which to specify an option.
+Note also that the calls to _**clp_given()**_ are merely illustrative and not
+required to parse and process the command line.
 
 ```
 #include <stdio.h>
@@ -47,6 +50,12 @@ main(int argc, char **argv)
 
     if (clp_given('j', optionv, NULL))
         printf("jobs is %d\n", jobs);
+
+    argc -= optind;
+    argv += optind;
+
+    for (int i = 0; i < argc; ++i)
+        printf("argv[%d] %s\n", i, argv[i]);
 
     /* do something... */
 
@@ -120,6 +129,11 @@ duration is 3 seconds
 $ ./ex1 -d1h
 duration is 3600 seconds
 
+$ ./ex1 -j1 a b c
+jobs is 1
+argv[0] a
+argv[1] b
+argv[2] c
 ```
 
 By default, integer option argument conversion accepts a single-letter
@@ -133,15 +147,15 @@ multiplier as specified by the first letter of the allowed suffixes
 this behavior by either defining your own option argument conversion functions,
 or compiling with **-Dclp_suftab_default=clp_suftab_none**.
 
-Similarly, the `time_t` converter accepts suffixes from the set of
+Similarly, the default `time_t` converter accepts suffixes from the set of
 **[smhwdyc]** for seconds, minutes, hours, week, days, years, and centuries.
 
 ### Example 2 - Semi-Custom Option Argument Conversion
-The simplest way to enforce an upper and lower bound on the _**jobs**_ variable from
-example one is to leverage the _**CLP_CVT_XX()**_ macro to generate a named conversion
-function with the specified bounds.  Here we use it to instantiate a function named
-_**clp_cvt_cvtjobs()**_ which will restrict the value of jobs to the interval [1,10].
-
+The simplest way to enforce an upper and lower bound on the _**jobs**_ variable
+from example one is to leverage the _**CLP_CVT_XX()**_ macro to generate a named
+conversion function with the specified bounds.  Here we use it to instantiate
+a function named _**clp_cvt_cvtjobs()**_ which will restrict the value of jobs
+to the interval [1,10] if and when the option is given.
 
 ```
 #include <stdio.h>
@@ -266,7 +280,7 @@ files[1] bar
 files[2] baz
 ```
 
-Note that we introduced the **-v** option, and that _**getopt(3)'s**_
+Note that we introduced the **-v** option, and that _**getopt_long(3)'s**_
 _**optind**_ indicates where option processing ended.
 
 ### Example 4 - Mutually Exclusive Options
@@ -487,4 +501,5 @@ main(int argc, char **argv)
 TODO...
 
 ## TODO
-* _**clp**_ leverages _getopt_long(3)_ and hence is inherently not thread-safe.
+* _**clp**_ leverages _**getopt_long(3)**_ and hence is inherently not thread-safe
+nor re-entrant.

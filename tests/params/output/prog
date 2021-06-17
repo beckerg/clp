@@ -8,7 +8,7 @@ usage: prog -V
 -C cf  specify a config file
 -h     print this help list
 -l     list...
--n     trace execution
+-n     dry run
 -V     print version
 -v     increase verbosity
 leftmost  optional left-most parameter
