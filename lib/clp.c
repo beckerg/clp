@@ -129,6 +129,12 @@ eprint(struct clp *clp, const char *fmt, ...)
     va_end(ap);
 }
 
+static bool
+clp_optopt_valid(int c)
+{
+    return isgraph(c) && !strchr(":?-", c);
+}
+
 /* An option's conversion procedure is called each time the option is seen
  * on the command line.  The conversions for bool, string, fd, fp, and incr
  * require special handling, while those for simple integer types (int, long,
@@ -256,12 +262,12 @@ CLP_GET_TMPL(incr,      int);
 struct clp_option *
 clp_find(int c, struct clp_option *optionv)
 {
-    if (optionv && c > 0) {
-        while (optionv->optopt > 0) {
-            if (optionv->optopt == c) {
-                return optionv;
-            }
-            ++optionv;
+    if (optionv) {
+        struct clp_option *o;
+
+        for (o = optionv; o->optopt > 0; ++o) {
+            if (o->optopt == c)
+                return o;
         }
     }
 
@@ -271,15 +277,16 @@ clp_find(int c, struct clp_option *optionv)
 struct clp_option *
 clp_given(int c, struct clp_option *optionv, void *dst)
 {
-    struct clp_option *option = clp_find(c, optionv);
+    struct clp_option *o = clp_find(c, optionv);
 
-    if (!option || !option->given)
-        return NULL;
+    if (o && o->given) {
+        if (dst && o->getfunc)
+            o->getfunc(o, dst);
 
-    if (dst)
-        option->getfunc(option, dst);
+        return o;
+    }
 
-    return option;
+    return NULL;
 }
 
 /* Return true if the two specified options are mutually exclusive.
@@ -384,7 +391,6 @@ clp_string_cmp(const void *lhs, const void *rhs)
 {
     const char *l = (const char *)lhs;
     const char *r = (const char *)rhs;
-
     int lc = tolower(*l);
     int rc = tolower(*r);
 
@@ -412,10 +418,8 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
     char *pc_opt;
     char *pc;
 
-    bool limit_excl_all = false;
-
     if (limit) {
-        limit_excl_all = limit->excludes && !isalnum(limit->excludes[0]);
+        bool limit_excl_all = limit->excludes && strchr("*^", limit->excludes[0]);
 
         if (!limit_excl_all && !limit->paramv) {
             return;
@@ -445,6 +449,9 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
      * the three lists.
      */
     for (o = clp->optionv; o->optopt > 0; ++o) {
+        if (!clp_optopt_valid(o->optopt))
+            continue;
+
         if (limit) {
             if (clp_excludes2(limit, o)) {
                 continue;
@@ -453,7 +460,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
             continue;
         }
 
-        if (o != limit && o->help && isprint(o->optopt)) {
+        if (o != limit && o->help) {
             if (o->excludes) {
                 *pc_excludes++ = o->optopt;
             } else {
@@ -686,7 +693,6 @@ clp_help(struct clp_option *opthelp)
     int optionc;
     int width;
     FILE *fp;
-    int i;
 
     /* opthelp is the option that triggered clp into calling clp_help().
      * Ususally -h, but the user could have changed it...
@@ -695,24 +701,25 @@ clp_help(struct clp_option *opthelp)
         return;
     }
 
-    fp = opthelp->priv ? opthelp->priv : stdout;
-    longhelp = (opthelp->longidx >= 0);
-
     clp = opthelp->clp;
-    optionc = clp->optionc;
-    paramv = clp->paramv;
 
     /* Create an array of pointers to options and sort it.
      */
-    struct clp_option *optionv[optionc];
+    struct clp_option *optionv[clp->optionc];
+    int i;
 
-    for (i = 0; i < optionc; ++i) {
-        optionv[i] = clp->optionv + i;
+    for (i = optionc = 0; i < clp->optionc; ++i) {
+        struct clp_option *o = clp->optionv + i;
+
+        if (clp_optopt_valid(o->optopt))
+            optionv[optionc++] = o;
     }
+
     qsort(optionv, optionc, sizeof(optionv[0]), clp_help_cmp);
 
     /* Print the default usage line.
      */
+    fp = opthelp->priv ? opthelp->priv : stdout;
     clp_usage(clp, NULL, fp);
 
     /* Print usage lines for each option that has positional parameters
@@ -720,7 +727,9 @@ clp_help(struct clp_option *opthelp)
      * Also, determine the width of the longest combination of option
      * argument and long option names.
      */
+    longhelp = (opthelp->longidx >= 0);
     width = 0;
+
     for (i = 0; i < optionc; ++i) {
         int len = 0;
 
@@ -754,17 +763,10 @@ clp_help(struct clp_option *opthelp)
             continue;
         }
 
-        if (!isprint(option->optopt) && !longhelp) {
-            continue;
-        }
-
         buf[0] = '\000';
 
         if (longhelp && option->longopt) {
-            if (isprint(option->optopt)) {
-                strcat(buf, ",");
-            }
-            strcat(buf, " --");
+            strcat(buf, ", --");
             strcat(buf, option->longopt);
         }
         if (option->argname) {
@@ -772,11 +774,7 @@ clp_help(struct clp_option *opthelp)
             strcat(buf, option->argname);
         }
 
-        if (isprint(option->optopt)) {
-            fprintf(fp, "-%c%-*s  %s\n", option->optopt, width, buf, option->help);
-        } else {
-            fprintf(fp, "   %-*s  %s\n", width, buf, option->help);
-        }
+        fprintf(fp, "-%c%-*s  %s\n", option->optopt, width, buf, option->help);
     }
 
     /* Determine the width of the longest positional parameter name.
@@ -853,9 +851,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
     struct clp_option *options_head, **options_tail;
     struct clp_posparam **params_tail;
     struct clp_posparam *paramv;
-    struct option *longopt;
     struct clp_option *o;
-    size_t optstringsz;
     int posmin, posmax;
     char *pc;
     int rc;
@@ -868,49 +864,41 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
     options_tail = &options_head;
     *options_tail = NULL;
 
-    clp->longopts = calloc(clp->optionc + 1, sizeof(*clp->longopts));
-    if (!clp->longopts) {
-        eprint(clp, "+%d %s: unable to calloc longopts (%zu bytes)",
-               __LINE__, __FILE__, sizeof(*clp->longopts) * (clp->optionc + 1));
-        return EX_OSERR;
-    }
-    longopt = clp->longopts;
-
-    optstringsz = clp->optionc * 2 + 8;
-
-    clp->optstring = malloc(optstringsz);
-    if (!clp->optstring) {
-        eprint(clp, "+%d %s: unable to malloc optstring (%zu bytes)",
-               __LINE__, __FILE__, optstringsz);
-        return EX_OSERR;
-    }
+    memset(clp->longopts, 0, sizeof(*clp->longopts));
 
     pc = clp->optstring;
-
     *pc++ = '+';    // Enable POSIXLY_CORRECT semantics
     *pc++ = ':';    // Disable getopt error reporting
     *pc = '\000';
 
-    /* Generate the optstring and the long options table from the options vector.
+    /* Generate the optstring and the long options table
+     * from the given vector of options.
      */
     if (clp->optionv) {
-        for (o = clp->optionv; o->optopt > 0; ++o) {
-            if (isprint(o->optopt)) {
-                *pc++ = o->optopt;
+        struct option *longopt = clp->longopts;
 
-                if (o->argname) {
-                    *pc++ = ':';
-                }
+        for (o = clp->optionv; o->optopt > 0; ++o) {
+            if (!clp_optopt_valid(o->optopt)) {
+                dprint(1, "invalid option %d (index %ld) ignored\n",
+                       o->optopt, o - clp->optionv);
+                continue;
             }
+
+            if (strchr(clp->optstring + 2, o->optopt)) {
+                dprint(1, "duplicate option %d (index %ld) ignored\n",
+                       o->optopt, o - clp->optionv);
+                continue;
+            }
+
+            *pc++ = o->optopt;
+            if (o->argname)
+                *pc++ = ':';
+            *pc = '\000';
 
             if (o->longopt) {
                 longopt->name = o->longopt;
-                longopt->has_arg = no_argument;
                 longopt->val = o->optopt;
-
-                if (o->argname) {
-                    longopt->has_arg = required_argument;
-                }
+                longopt->has_arg = o->argname ? required_argument : no_argument;
 
                 ++longopt;
             }
@@ -929,10 +917,11 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         }
 
         if (longopt > clp->longopts) {
+            memset(longopt, 0, sizeof(*longopt));
             *pc++ = 'W';
             *pc++ = ';';
+            *pc = '\000';
         }
-        *pc = '\000';
 
         /* Call each option's before() procedure prior to option processing.
          */
@@ -954,13 +943,13 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
 
     paramv = clp->paramv;
 
-    /* Reset getopt_long().
+    /* Reset getopt_long()...
      */
-#ifdef optreset
-    optreset = 1; // FreeBSD
-#else
-    optind = 1; // GNU
+#ifdef _OPTRESET_DECLARED
+    optreset = 1;
 #endif
+
+    optind = 1;
 
     while (1) {
         struct clp_option *x;
@@ -998,7 +987,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
             return EX_USAGE;
         }
 
-        if (o->after) {
+        if (o->after && !o->given) {
             o->next = NULL;
             *options_tail = o;
             options_tail = &o->next;
@@ -1008,39 +997,37 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         o->optarg = optarg;
         ++o->given;
 
-        if (o->paramv) {
+        if (o->paramv)
             paramv = o->paramv;
+
+        if (!o->cvtfunc)
+            continue;
+
+        if (o->given > 1 && o->cvtdst) {
+            if (o->cvtfunc == clp_cvt_string) {
+                free(*(void **)o->cvtdst);
+                *(void **)o->cvtdst = NULL;
+            }
         }
 
-        if (o->cvtfunc) {
-            if (o->given > 1 && o->cvtdst) {
-                if (o->cvtfunc == clp_cvt_string) {
-                    free(*(void **)o->cvtdst);
-                    *(void **)o->cvtdst = NULL;
-                }
-            }
+        rc = o->cvtfunc(optarg, o->cvtflags, o->cvtparms, o->cvtdst);
+        if (rc) {
+            char optstr[] = { o->optopt, '\000' };
 
-            rc = o->cvtfunc(optarg, o->cvtflags, o->cvtparms, o->cvtdst);
-            if (rc) {
-                char optbuf[] = { o->optopt, '\000' };
+            eprint(clp, "unable to convert '%s%s %s'%s%s",
+                   (longidx >= 0) ? "--" : "-",
+                   (longidx >= 0) ? o->longopt : optstr,
+                   optarg,
+                   errno ? ": " : "",
+                   errno ? strerror(errno) : "");
 
-                eprint(clp, "unable to convert '%s%s %s'%s%s",
-                       (longidx >= 0) ? "--" : "-",
-                       (longidx >= 0) ? o->longopt : optbuf,
-                       optarg,
-                       errno ? ": " : "",
-                       errno ? strerror(errno) : "");
-
-                return rc;
-            }
+            return rc;
         }
     }
 
+    posmin = posmax = 0;
     argc -= optind;
     argv += optind;
-
-    posmin = 0;
-    posmax = 0;
 
     /* Only check positional parameter counts if paramv is not NULL.
      * This allows the caller to prevent parameter processing by clp
@@ -1059,7 +1046,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
     }
 
     /* Call each given option's after() procedure now that all options have
-     * been processed.
+     * been processed and the command line syntax has been verified.
      */
     while (options_head) {
         options_head->after(options_head);
@@ -1160,6 +1147,17 @@ clp_parsel(const char *line, const char *delim,
     return rc;
 }
 
+static const char *
+clp_trim(const char *str)
+{
+    while (str && isspace(str[0])) {
+        ++str;
+    }
+
+    return (str && !str[0] ? NULL : str);
+}
+
+
 /* Parse a vector of strings as specified by the given option and
  * param vectors (either or both which may be nil).
  *
@@ -1173,8 +1171,9 @@ clp_parsev(int argc, char **argv,
            struct clp_posparam *paramv,
            char *errbuf, size_t errbufsz)
 {
-    char _errbuf[128], *env;
+    char xerrbuf[128], *env;
     struct clp clp;
+    size_t sz;
     int rc;
 
     if (argc < 1 || !argv)
@@ -1188,8 +1187,8 @@ clp_parsev(int argc, char **argv,
     }
 
     memset(&clp, 0, sizeof(clp));
-    clp.errbuf = _errbuf;
-    clp.errbufsz = sizeof(_errbuf);
+    clp.errbuf = xerrbuf;
+    clp.errbufsz = sizeof(xerrbuf);
 
     if (errbuf && errbufsz > 0) {
         clp.errbuf = errbuf;
@@ -1213,41 +1212,33 @@ clp_parsev(int argc, char **argv,
             o->clp = &clp;
             o->given = 0;
             o->optarg = NULL;
+            o->next = NULL;
 
-            if (o->cvtfunc == clp_cvt_bool || o->cvtfunc == clp_cvt_incr) {
-                o->argname = NULL;
-            } else if (!o->longopt && strlen(o->argname) > 1) {
-                o->longopt = o->argname;
-            }
-
-            if (o->argname && !o->cvtfunc) {
-                eprint(&clp, "option -%c requires a conversion function", o->optopt);
-                return EX_DATAERR;
-            }
+            /* Trim leading whitespace and set to NULL if empty.
+             */
+            o->help = clp_trim(o->help);
+            o->argname = clp_trim(o->argname);
+            o->excludes = clp_trim(o->excludes);
 
             if (o->cvtfunc && !o->cvtdst) {
                 o->cvtdst = memset(o->cvtdstbuf, 0, sizeof(o->cvtdstbuf));
+            }
+
+            if (o->cvtfunc == clp_cvt_bool || o->cvtfunc == clp_cvt_incr) {
+                o->argname = NULL;
+            } else if (!o->longopt && o->argname && strlen(o->argname) > 1) {
+                o->longopt = o->argname;
             }
 
             if (o->after == clp_help) {
                 clp.opthelp = o->optopt;
             }
 
-            /* Trim leading whitespace from excludes string and set
-             * to NULL if empty.
-             */
-            if (o->excludes) {
-                while (isspace(o->excludes[0]))
-                    ++o->excludes;
-                if (!o->excludes[0])
-                    o->excludes = NULL;
-            }
-
             ++clp.optionc;
         }
     }
 
-    /* Validate positional parameters.
+    /* Validate positional parameters and initialize/reset from previous run.
      */
     if (paramv) {
         struct clp_posparam *param;
@@ -1269,13 +1260,28 @@ clp_parsev(int argc, char **argv,
         }
     }
 
+    /* Allocate a single chunk of memory to hold all the long options
+     * and the getopt option string.
+     */
+    sz = (clp.optionc + 1) * sizeof(*clp.longopts);
+    sz += clp.optionc * 2 + 8;
+
+    clp.longopts = malloc(sz);
+    if (!clp.longopts) {
+        eprint(&clp, "+%d %s: malloc(%zu) longopts failed",
+               __LINE__, __FILE__, sz);
+        return EX_OSERR;
+    }
+
+    clp.optstring = (char *)(clp.longopts + clp.optionc + 1);
+    clp.optstring[0] = '\000';
+
     rc = clp_parsev_impl(&clp, argc, argv);
 
     if (rc && !errbuf) {
         fprintf(stderr, "%s: %s\n", clp.basename, clp.errbuf);
     }
 
-    free(clp.optstring);
     free(clp.longopts);
 
     return rc;

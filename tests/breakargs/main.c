@@ -11,7 +11,7 @@ char *progname;
 char *delim;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('d', string, delim, NULL, NULL, "specify a delimiter"),
+    CLP_OPTION('d', string, delim, "", "specify a delimiter"),
     CLP_OPTION_HELP(),
     CLP_OPTION_END
 };

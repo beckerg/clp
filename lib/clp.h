@@ -35,9 +35,6 @@
 #include <sysexits.h>
 #include <sys/types.h>
 
-#define CLP_OPTION_END      { .optopt = 0 }
-#define CLP_POSPARAM_END    { .name = NULL }
-
 /* List of conversion routines provided by clp.  The name from the "_xtype"
  * column can be given as the fifth argument to CLP_OPTION(), or appended
  * to "clp_cvt_" and either assigned to .cvtfunc or given as the fifth
@@ -78,22 +75,35 @@
  * _xtype      option type (e.g., int, long, ...)
  * _xvarname   name of variable in which to store converted optarg (e.g., xarg)
  * _xexcludes  list of mutually exclusive options (e.g., "yz")
- * _xparamv    ptr to posparam vector unique to this option
  * _xhelp      help string for -h (e.g. "specify x coordinate")
  *
  * CLP_OPTION() is used to define simple options for which _xvarname
  * is statically defined.  The type of _xvarname must match _xtype.
  */
-#define CLP_OPTION(_xoptopt, _xtype, _xvarname, _xexcludes, _xparamv, _xhelp) \
+#define CLP_OPTION(_xoptopt, _xtype, _xvarname, _xexcludes, _xhelp)     \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
         .argname = #_xvarname,                                          \
         .excludes = (_xexcludes),                                       \
+        .help = (_xhelp),                                               \
         .getfunc = clp_get_ ## _xtype,                                  \
         .cvtfunc = clp_cvt_ ## _xtype,                                  \
         .cvtdst = &(_xvarname),                                         \
-        .paramv = (_xparamv),                                           \
+    }
+
+#define CLP_XOPTION(_xoptopt, _xtype, _xvarname, _xexcludes, _xhelp, \
+                    _xlongopt, _xafter, _xparamv)                       \
+    {                                                                   \
+        .optopt = (_xoptopt),                                           \
+        .argname = #_xvarname,                                          \
+        .excludes = (_xexcludes),                                       \
+        .longopt = (_xlongopt),                                         \
         .help = (_xhelp),                                               \
+        .getfunc = clp_get_ ## _xtype,                                  \
+        .cvtfunc = clp_cvt_ ## _xtype,                                  \
+        .cvtdst = &(_xvarname),                                         \
+        .after = (_xafter),                                             \
+        .paramv = (_xparamv),                                           \
     }
 
 /* Like CLP_OPTION() but required for thread-local or dynamically created
@@ -102,14 +112,13 @@
  * (e.g., given '__thread int x' call clp_given('x', optionv, &x) to
  * retrieve the converted optarg if -x was given on the command line).
  */
-#define CLP_OPTION_TLS(_xoptopt, _xtype, _xvarname, _xexcludes, _xparamv, _xhelp) \
+#define CLP_OPTION_TLS(_xoptopt, _xtype, _xvarname, _xexcludes, _xhelp) \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
         .argname = #_xvarname,                                          \
         .excludes = (_xexcludes),                                       \
         .getfunc = clp_get_ ## _xtype,                                  \
         .cvtfunc = clp_cvt_ ## _xtype,                                  \
-        .paramv = (_xparamv),                                           \
         .help = (_xhelp),                                               \
     }
 
@@ -131,20 +140,21 @@
     }
 
 #define CLP_OPTION_VERBOSITY(_xverbosity)                               \
-    CLP_OPTION('v', incr, _xverbosity, NULL, NULL, "increase verbosity")
+    CLP_OPTION('v', incr, _xverbosity, NULL, "increase verbosity")
 
 #define CLP_OPTION_DRYRUN(_xdryrun)                                     \
-    CLP_OPTION('n', incr, _xdryrun, NULL, NULL, "dry run")
+    CLP_OPTION('n', incr, _xdryrun, NULL, "dry run")
 
 #define CLP_OPTION_CONF(_xconf)                                         \
-    CLP_OPTION('C', fp, _xconf, NULL, NULL, "specify a config file")
+    CLP_OPTION('C', fp, _xconf, NULL, "specify a config file")
 
 /* Use CLP_OPTION_TMPL() to generate options with custom optarg converters
  * and/or to specify callbacks to be called before/after option processing.
  */
-#define CLP_OPTION_TMPL(_xoptopt, _xvarname, _xexcludes, _xlongopt,     \
-                        _xcvtfunc, _xcvtflags, _xcvtparms, _xcvtdst,    \
-                        _xbefore, _xafter, _xparamv, _xhelp)            \
+#define CLP_OPTION_TMPL(_xoptopt, _xvarname, _xexcludes, _xhelp,        \
+                        _xparamv, _xcvtfunc, _xcvtflags,                \
+                        _xcvtparms, _xcvtdst,                           \
+                        _xbefore, _xafter, _xlongopt)                   \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
         .argname = (_xvarname),                                         \
@@ -168,6 +178,9 @@
         .before = (_xppbefore),                                 \
         .after = (_xppafter),                                   \
     }
+
+#define CLP_OPTION_END      { .optopt = 0 }
+#define CLP_POSPARAM_END    { .name = NULL }
 
 struct clp;
 struct clp_option;
@@ -200,7 +213,7 @@ struct clp_posparam {
     int                  posmax;        // Max number of positional parameters
     int                  argc;          // Number of arguments assigned to this parameter
     char               **argv;          // Ptr to arguments assigned to this parameter
-    unsigned char        cvtdstbuf[16] __aligned(16);
+    unsigned char        cvtdstbuf[16] __attribute__((__aligned__(16)));
 };
 
 struct clp_option {
@@ -227,7 +240,7 @@ struct clp_option {
     const char          *optarg;        // optarg from getopt()
     int                  given;         // Count of times this option was given
     int                  longidx;       // Index into cli->longopts[]
-    unsigned char        cvtdstbuf[16] __aligned(16);
+    unsigned char        cvtdstbuf[16] __attribute__((__aligned__(16)));
 };
 
 struct clp {

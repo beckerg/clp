@@ -9,7 +9,7 @@ int jobs;
 CLP_CVT_TMPL(cvtjobs, int, 1, 10, clp_suftab_none);
 
 struct clp_option optionv[] = {
-    CLP_OPTION('j', cvtjobs, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION('j', cvtjobs, jobs, NULL, "specify max number of jobs"),
     CLP_OPTION_HELP(),
     CLP_OPTION_END
 };

@@ -7,9 +7,9 @@ int verbosity;
 int zarg;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('x', bool, xflag, "yz", NULL, "enable feature x (excludes -yz)"),
-    CLP_OPTION('y', bool, yflag, "xz", NULL, "enable feature y (excludes -xz)"),
-    CLP_OPTION('z', int, zarg, "xy", NULL, "enable feature z (excludes -xy)"),
+    CLP_OPTION('x', bool, xflag, "yz", "enable feature x (excludes -yz)"),
+    CLP_OPTION('y', bool, yflag, "xz", "enable feature y (excludes -xz)"),
+    CLP_OPTION('z', int, zarg, "xy", "enable feature z (excludes -xy)"),
     CLP_OPTION_VERBOSITY(verbosity),
     CLP_OPTION_HELP(),
     CLP_OPTION_END

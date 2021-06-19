@@ -35,27 +35,27 @@ struct clp_option optionv[] = {
     CLP_OPTION_CONF(cf),
     CLP_OPTION_HELP(),
 
-    CLP_OPTION('f', float, myfloat, NULL, NULL, "specify a float"),
-    CLP_OPTION('d', double, mydouble, NULL, NULL, "specify a double"),
+    CLP_OPTION('f', float, myfloat, "", "specify a float"),
+    CLP_OPTION('d', double, mydouble, "", "specify a double"),
 
-    CLP_OPTION('i', int, myint, NULL, NULL, "specify an int"),
-    CLP_OPTION('I', u_int, myuint, NULL, NULL, "specify a u_int"),
+    CLP_OPTION('i', int, myint, "", "specify an int"),
+    CLP_OPTION('I', u_int, myuint, "", "specify a u_int"),
 
-    CLP_OPTION('l', long, mylong, NULL, NULL, "specify a long"),
-    CLP_OPTION('L', u_long, myulong, NULL, NULL, "specify a u_long"),
+    CLP_OPTION('l', long, mylong, "", "specify a long"),
+    CLP_OPTION('L', u_long, myulong, NULL, "specify a u_long"),
 
-    CLP_OPTION('s', string, mystring, NULL, NULL, "specify a string"),
+    CLP_OPTION('s', string, mystring, NULL, "specify a string"),
 
     { .optopt = 'j', .argname = "intv",
       .cvtfunc = clp_cvt_int, .cvtparms = &intv, .cvtdst = intv.data,
       .help = "specify a vector of ints" },
 
     // Example of a bunch of mutually exclusive boolean options.
-    CLP_OPTION('x', bool, xflag, "yz", NULL, "specify x flag"),
-    CLP_OPTION('y', bool, yflag, "xz", NULL, "specify y flag"),
-    CLP_OPTION('z', bool, zflag, "xy", NULL, "specify z flag"),
+    CLP_OPTION('x', bool, xflag, "yz", "specify x flag"),
+    CLP_OPTION('y', bool, yflag, "xz", "specify y flag"),
+    CLP_OPTION('z', bool, zflag, "xy", "specify z flag"),
 
-    CLP_OPTION('t', time_t, mytime, NULL, NULL, "specify a time_t"),
+    CLP_OPTION('t', time_t, mytime, NULL, "specify a time_t"),
     CLP_OPTION_END
 };
 

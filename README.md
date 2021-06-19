@@ -30,8 +30,8 @@ time_t duration;
 int jobs;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('d', time_t, duration, NULL, NULL, "specify max duration (seconds)"),
-    CLP_OPTION('j', int, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION('d', time_t, duration, "", "specify max duration (seconds)"),
+    CLP_OPTION('j', int, jobs, "", "specify max number of jobs"),
     CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
@@ -166,7 +166,7 @@ int jobs;
 CLP_CVT_TMPL(cvtjobs, int, 1, 10, clp_suftab_none);
 
 struct clp_option optionv[] = {
-    CLP_OPTION('j', cvtjobs, jobs, NULL, NULL, "specify max number of jobs"),
+    CLP_OPTION('j', cvtjobs, jobs, "", "specify max number of jobs"),
     CLP_OPTION_HELP(),
     CLP_OPTION_END
 };
@@ -295,9 +295,9 @@ int verbosity;
 int zarg;
 
 struct clp_option optionv[] = {
-    CLP_OPTION('x', bool, xflag, "yz", NULL, "enable feature x (excludes -yz)"),
-    CLP_OPTION('y', bool, yflag, "xz", NULL, "enable feature y (excludes -xz)"),
-    CLP_OPTION('z', int, zarg, "xy", NULL, "enable feature z (excludes -xy)"),
+    CLP_OPTION('x', bool, xflag, "yz", "enable feature x (excludes -yz)"),
+    CLP_OPTION('y', bool, yflag, "xz", "enable feature y (excludes -xz)"),
+    CLP_OPTION('z', int, zarg, "xy", "enable feature z (excludes -xy)"),
     CLP_OPTION_VERBOSITY(verbosity),
     CLP_OPTION_HELP(),
     CLP_OPTION_END
@@ -374,7 +374,7 @@ struct clp_posparam posparamv_r[] = {
 };
 
 struct clp_option optionv[] = {
-    CLP_OPTION('r', bool, rflag, "^v", posparamv_r, "remove files"),
+    CLP_XOPTION('r', bool, rflag, "^v", "remove files", NULL, NULL, posparamv_r),
     CLP_OPTION_VERBOSITY(verbosity),
     CLP_OPTION_HELP(),
     CLP_OPTION_END
@@ -498,7 +498,9 @@ main(int argc, char **argv)
 ```
 
 ## Developer Notes
-TODO...
+_**clp**_ always builds a "posixly correct" parser, and requires that all options
+have a single-letter option allowed by _**isgraph(3)**_ and excludes the **':'**
+and **'?'** characters as the latter are produced by _**getopt_long(3)**_.
 
 ## TODO
 * _**clp**_ leverages _**getopt_long(3)**_ and hence is inherently not thread-safe

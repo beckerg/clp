@@ -72,9 +72,9 @@ struct clp_option optionv[] = {
         .paramv = posparamv_list,
     },
 
-    CLP_OPTION('L', incr, lcntr, NULL, NULL, "increment a local int counter"),
-    CLP_OPTION('G', incr, gcntr, NULL, NULL, "increment a global int counter"),
-    CLP_OPTION('s', string, mystring, NULL, NULL, "specify a string"),
+    CLP_OPTION('L', incr, lcntr, "", "increment a local int counter"),
+    CLP_OPTION('G', incr, gcntr, "", "increment a global int counter"),
+    CLP_OPTION('s', string, mystring, "", "specify a string"),
 
     CLP_OPTION_END
 };
