@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Greg Becker.  All rights reserved.
  */
 #if __linux__
-#define _POSIX_C_SOURCE 200809
+#define _DEFAULT_SOURCE
 #endif
 
 #include <errno.h>

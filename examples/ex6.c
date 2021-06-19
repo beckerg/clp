@@ -1,4 +1,8 @@
 
+#if __linux__
+#define _DEFAULT_SOURCE
+#endif
+
 #include <stdio.h>
 #include "clp.h"
 
