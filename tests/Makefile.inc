@@ -2,7 +2,7 @@
 
 PROG := prog
 
-HDR := main.h clp.h
+HDR := clp.h
 SRC := main.c ../strerror.c
 OBJ := ${SRC:.c=.o}
 
@@ -66,6 +66,6 @@ ${PROG}: ${OBJ}
 ${OBJ}: GNUmakefile
 
 
-main.o: main.c main.h ../../lib/libclp.a
+main.o: main.c ../../lib/libclp.a
 main.c: ../../lib/clp.h
 

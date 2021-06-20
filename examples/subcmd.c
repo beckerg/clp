@@ -1,7 +1,8 @@
 
 #include <stdio.h>
-#include <getopt.h>
+#include <strings.h>
 #include <sysexits.h>
+#include <getopt.h>
 
 #include "clp.h"
 

@@ -5,7 +5,6 @@
 #include <string.h>
 #include <getopt.h>
 
-#include "main.h"
 #include "clp.h"
 
 char version[] = "version...";
