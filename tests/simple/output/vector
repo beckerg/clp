@@ -1,6 +1,5 @@
 + ./prog -j
 prog: option -j requires a parameter, use -h for help
-
 + ./prog -j,
 intv is:  0 0
 
@@ -21,7 +20,5 @@ intv is:  1 2 3 4 5
 
 + ./prog -j 1,2,3,4,5,6
 prog: unable to convert '-j 1,2,3,4,5,6': Argument list too long
-
 + ./prog -j 1:2
 prog: unable to convert '-j 1:2': Invalid argument
-

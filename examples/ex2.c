@@ -2,6 +2,8 @@
 #define _GNU_SOURCE
 
 #include <stdio.h>
+#include <getopt.h>
+
 #include "clp.h"
 
 int jobs;
@@ -19,7 +21,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, NULL);
     if (rc)
         return rc;
 

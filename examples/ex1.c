@@ -1,5 +1,7 @@
 
 #include <stdio.h>
+#include <getopt.h>
+
 #include "clp.h"
 
 char version[] = "1.2.3";
@@ -28,7 +30,7 @@ main(int argc, char **argv)
     struct clp_option *o;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, NULL);
     if (rc)
         return rc;
 

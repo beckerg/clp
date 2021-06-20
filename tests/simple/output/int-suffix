@@ -9,7 +9,6 @@ myint is 1073741824 1
 
 + ./prog -i 1t
 prog: unable to convert '-i 1t': Numerical argument out of domain
-
 + ./prog -i -1b
 myint is -512 1
 
@@ -21,4 +20,3 @@ myint is -1073741824 1
 
 + ./prog -i -1t
 prog: unable to convert '-i -1t': Numerical argument out of domain
-

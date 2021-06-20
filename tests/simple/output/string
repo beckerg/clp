@@ -1,6 +1,5 @@
 + ./prog -s
 prog: option -s requires a parameter, use -h for help
-
 + ./prog -s foo
 mystring is foo 1
 

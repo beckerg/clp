@@ -3,8 +3,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
+#include <getopt.h>
 
-#include "main.h"
 #include "clp.h"
 
 char *progname;
@@ -26,7 +26,6 @@ given(int c)
 int
 main(int argc, char **argv)
 {
-    char errbuf[128];
     char line[1024];
     int lineno;
     int rc, i;
@@ -34,11 +33,9 @@ main(int argc, char **argv)
     progname = strrchr(argv[0], '/');
     progname = (progname ? progname + 1 : argv[0]);
 
-    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf));
-    if (rc) {
-        fprintf(stderr, "%s: %s\n", progname, errbuf);
-        exit(rc);
-    }
+    rc = clp_parsev(argc, argv, optionv, NULL);
+    if (rc)
+        return rc;
 
     if (given('h'))
         exit(0);
@@ -59,9 +56,9 @@ main(int argc, char **argv)
 
         line[--len] = '\000';
 
-        rc = clp_breakargs(line, delim, errbuf, sizeof(errbuf), &nargc, &nargv);
+        rc = clp_breakargs(line, delim, &nargc, &nargv);
         if (rc) {
-            printf("%4d: rc=%d %s\n", lineno, rc, errbuf);
+            printf("%4d: rc=%d %s\n", lineno, rc, strerror(errno));
             continue;
         }
 

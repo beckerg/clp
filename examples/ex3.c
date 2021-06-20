@@ -1,5 +1,7 @@
 
 #include <stdio.h>
+#include <getopt.h>
+
 #include "clp.h"
 
 int verbosity;
@@ -20,7 +22,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, posparamv);
     if (rc)
         return rc;
 

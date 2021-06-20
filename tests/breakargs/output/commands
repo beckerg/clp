@@ -62,10 +62,10 @@
 
   22: delim=[] nargc=0 []
 
-  25: rc=65 unterminated single quote
-  26: rc=65 unterminated double quote
-  27: rc=65 unterminated double quote
-  28: rc=65 unterminated single quote
+  25: rc=65 Bad message
+  26: rc=65 Bad message
+  27: rc=65 Bad message
+  28: rc=65 Bad message
 + ./prog -d,
    3: delim=[,] nargc=1 [a]
    3:    0 [a]
@@ -152,8 +152,8 @@
   21: delim=[,] nargc=1 []
   21:    0 []
 
-  24: rc=65 unterminated double quote
-  25: rc=65 unterminated single quote
+  24: rc=65 Bad message
+  25: rc=65 Bad message
 + ./prog -d,:
    1: delim=[,:] nargc=6 [:one\, two,, , "four,five" :]
    1:    0 []

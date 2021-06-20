@@ -117,7 +117,6 @@ given(int c)
 int
 main(int argc, char **argv)
 {
-    char errbuf[128];
     int rc, i, j;
 
     progname = strrchr(argv[0], '/');
@@ -126,11 +125,9 @@ main(int argc, char **argv)
     for (i = 0; i < 10; ++i) {
         lcntr = 0;
 
-        rc = clp_parsev(argc, argv, optionv, posparamv_default, errbuf, sizeof(errbuf));
-        if (rc) {
-            fprintf(stderr, "%s: %s\n", progname, errbuf);
-            exit(rc);
-        }
+        rc = clp_parsev(argc, argv, optionv, posparamv_default);
+        if (rc)
+           return rc;
 
         if (given('v'))
             printf("verbosity is %d %d\n", verbosity, given('v'));

@@ -179,6 +179,12 @@
         .after = (_xppafter),                                   \
     }
 
+#define CLP_OPTION_STD(_xverbosity, _xversion, _xdryrun)        \
+    CLP_OPTION_VERBOSITY(verbosity),                            \
+    CLP_OPTION_VERSION(version),                                \
+    CLP_OPTION_DRYRUN(dryrun),                                  \
+    CLP_OPTION_HELP()                                           \
+
 #define CLP_OPTION_END      { .optopt = 0 }
 #define CLP_POSPARAM_END    { .name = NULL }
 
@@ -186,11 +192,19 @@ struct clp;
 struct clp_option;
 struct clp_posparam;
 
+/* Conversion callback functions convert the given string 'str' according
+ * to the callback function type and store the result into '*dst'.
+ *
+ * Returns 0 if successful.
+ * Returns -1 if successful but option or param parsing should cease.
+ * On error, sets errno accordingly and returns a positive integer
+ * suitable for use as an exit code (e.g., something from sysexits.h).
+ */
 typedef int clp_cvt_cb(const char *str, int flags, void *parms, void *dst);
+
 typedef void clp_get_cb(struct clp_option *option, void *dst);
 
 typedef void clp_option_cb(struct clp_option *option);
-
 typedef void clp_posparam_cb(struct clp_posparam *param);
 
 struct clp_posparam {
@@ -251,9 +265,8 @@ struct clp {
     int                  optionc;       // Count of elements in optionv[]
     char                *optstring;     // The optstring for getopt
     struct option       *longopts;      // Table of long options for getopt_long()
-    char                *errbuf;
-    size_t               errbufsz;
     struct clp_posparam *params;        // posparam list head
+    char                 errbuf[128];
 };
 
 struct clp_suftab {
@@ -296,7 +309,6 @@ typedef CLP_VECTOR_DECL(clp_vector, char, 0) clp_vector_t;
  * may be called.
  */
 #define CLP_CVT_TMPL(_xsuffix, _xtype, _xmin, _xmax, _xsuftab)          \
-__attribute__((__visibility__("hidden")))                               \
 int                                                                     \
 clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
@@ -415,7 +427,6 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     return errno ? EX_DATAERR : 0;                                      \
 }                                                                       \
                                                                         \
-__attribute__((__visibility__("hidden")))                               \
 void                                                                    \
 clp_get_ ## _xsuffix(struct clp_option *option, void *dst)              \
 {                                                                       \
@@ -429,7 +440,6 @@ clp_get_ ## _xsuffix(struct clp_option *option, void *dst)              \
 
 
 #define CLP_GET_TMPL(_xsuffix, _xtype)                                  \
-__attribute__((__visibility__("hidden")))                               \
 void                                                                    \
 clp_get_ ## _xsuffix(struct clp_option *option, void *dst)              \
 {                                                                       \
@@ -517,20 +527,14 @@ extern clp_get_cb clp_get_time_t;
 extern clp_option_cb clp_help;
 extern clp_option_cb clp_version;
 
-extern int clp_breakargs(const char *src, const char *delim,
-                         char *errbuf, size_t errbufsz,
-                         int *argcp, char ***argvp);
+extern int clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp);
 
 extern int clp_parsev(int argc, char **argv,
                       struct clp_option *optionv,
-                      struct clp_posparam *paramv,
-                      char *errbuf, size_t errbufsz);
+                      struct clp_posparam *paramv);
 
 extern int clp_parsel(const char *line, const char *delim,
                       struct clp_option *optionv,
-                      struct clp_posparam *paramv,
-                      char *errbuf, size_t errbufsz);
-
-extern int optind;
+                      struct clp_posparam *paramv);
 
 #endif /* CLP_H */

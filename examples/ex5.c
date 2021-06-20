@@ -30,7 +30,7 @@ main(int argc, char **argv)
     struct clp_posparam *paramv = posparamv, *param;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, posparamv);
     if (rc)
         return rc;
 

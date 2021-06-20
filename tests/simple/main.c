@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <float.h>
 #include <string.h>
+#include <getopt.h>
 
-#include "main.h"
 #include "clp.h"
 
 char version[] = "version...";
@@ -68,17 +68,14 @@ given(int c)
 int
 main(int argc, char **argv)
 {
-    char errbuf[128];
     int rc, i;
 
     progname = strrchr(argv[0], '/');
     progname = (progname ? progname + 1 : argv[0]);
 
-    rc = clp_parsev(argc, argv, optionv, NULL, errbuf, sizeof(errbuf));
-    if (rc) {
-        fprintf(stderr, "%s: %s\n\n", progname, errbuf);
-        exit(rc);
-    }
+    rc = clp_parsev(argc, argv, optionv, NULL);
+    if (rc)
+        return rc;
 
     argc -= optind;
     argv += optind;
