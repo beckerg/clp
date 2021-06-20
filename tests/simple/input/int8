@@ -1,0 +1,8 @@
+./prog -8 128
+./prog -8 127
+./prog -8 1
+./prog -8 0
+./prog -8 -0
+./prog -8 -1
+./prog -8 -128
+./prog -8 -129

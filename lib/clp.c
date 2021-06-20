@@ -115,15 +115,35 @@ clp_dprint_impl(const char *file, int line, const char *func, const char *fmt, .
 #endif /* CLP_DEBUG */
 
 /* Render an error message for retrieval by the caller of clp_parsev().
+ *
+ * If on entry clp->errbuf[0] is a punctuation character (e.g., ",")
+ * then clp->errbuf will be saved and then appended to the string
+ * produced by the given format.  If on entry clp->errbuf[0] is nul
+ * and errno is set then strerror() will be appended to the string
+ * produced by the given format.
  */
 void
 clp_eprint(struct clp *clp, const char *fmt, ...)
 {
+    int xerrno = errno;
+    char suffix[128];
     va_list ap;
+
+    if (clp->errbuf[0] && !ispunct(clp->errbuf[0]))
+        return;
+
+    strlcpy(suffix, clp->errbuf, sizeof(suffix));
 
     va_start(ap, fmt);
     vsnprintf(clp->errbuf, sizeof(clp->errbuf), fmt, ap);
     va_end(ap);
+
+    if (xerrno && !*suffix) {
+        strcat(suffix, ": ");
+        strcat(suffix, strerror(xerrno));
+    }
+    strcat(clp->errbuf, suffix);
+    errno = xerrno;
 }
 
 static bool
@@ -140,7 +160,7 @@ clp_optopt_valid(int c)
  * Note:  These functions are not type safe.
  */
 int
-clp_cvt_bool(const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_bool(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     bool *result = dst;
 
@@ -150,7 +170,7 @@ clp_cvt_bool(const char *optarg, int flags, void *parms, void *dst)
 }
 
 int
-clp_cvt_string(const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_string(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     char **result = dst;
 
@@ -165,7 +185,7 @@ clp_cvt_string(const char *optarg, int flags, void *parms, void *dst)
 }
 
 int
-clp_cvt_fd(const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_fd(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     int *result = dst;
 
@@ -180,7 +200,7 @@ clp_cvt_fd(const char *optarg, int flags, void *parms, void *dst)
 }
 
 int
-clp_cvt_fp(const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_fp(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     const char *mode = parms ? parms : "r";
     FILE **result = dst;
@@ -196,7 +216,7 @@ clp_cvt_fp(const char *optarg, int flags, void *parms, void *dst)
 }
 
 int
-clp_cvt_incr(const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_incr(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     int *result = dst;
 
@@ -213,41 +233,41 @@ clp_cvt_incr(const char *optarg, int flags, void *parms, void *dst)
 /* The following macros will explode into a bunch of conversion functions.
  * With any luck the unused functions will be eliminated by the linker.
  */
-CLP_CVT_TMPL(char,      char,       CHAR_MIN,   CHAR_MAX,   clp_suftab_default);
-CLP_CVT_TMPL(u_char,    u_char,     0,          UCHAR_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(char,      char,       CHAR_MIN,   CHAR_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(u_char,    u_char,     0,          UCHAR_MAX,   clp_suftab_default);
 
-CLP_CVT_TMPL(short,     short,      SHRT_MIN,   SHRT_MAX,   clp_suftab_default);
-CLP_CVT_TMPL(u_short,   u_short,    0,          USHRT_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(short,     short,      SHRT_MIN,   SHRT_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(u_short,   u_short,    0,          USHRT_MAX,   clp_suftab_default);
 
-CLP_CVT_TMPL(int,       int,        INT_MIN,    INT_MAX,    clp_suftab_default);
-CLP_CVT_TMPL(u_int,     u_int,      0,          UINT_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(int,       int,        INT_MIN,    INT_MAX,     clp_suftab_default);
+CLP_CVT_TMPL(u_int,     u_int,      0,          UINT_MAX,    clp_suftab_default);
 
-CLP_CVT_TMPL(long,      long,       LONG_MIN,   LONG_MAX,   clp_suftab_default);
-CLP_CVT_TMPL(u_long,    u_long,     0,          ULONG_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(long,      long,       LONG_MIN,   LONG_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(u_long,    u_long,     0,          ULONG_MAX,   clp_suftab_default);
 
-CLP_CVT_TMPL(float,     float,      -FLT_MAX,   FLT_MAX,    clp_suftab_default);
-CLP_CVT_TMPL(double,    double,     -DBL_MAX,   DBL_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(float,     float,      -FLT_MAX,   FLT_MAX,     clp_suftab_default);
+CLP_CVT_TMPL(double,    double,     -DBL_MAX,   DBL_MAX,     clp_suftab_default);
 
-CLP_CVT_TMPL(int8_t,    int8_t,     INT8_MIN,   INT8_MAX,   clp_suftab_default);
-CLP_CVT_TMPL(uint8_t,   uint8_t,    0,          UINT8_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(int8_t,    int8_t,     INT8_MIN,   INT8_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(uint8_t,   uint8_t,    0,          UINT8_MAX,   clp_suftab_default);
 
-CLP_CVT_TMPL(int16_t,   int16_t,    INT16_MIN,  INT16_MAX,  clp_suftab_default);
-CLP_CVT_TMPL(uint16_t,  uint16_t,   0,          UINT16_MAX, clp_suftab_default);
+CLP_CVT_TMPL(int16_t,   int16_t,    INT16_MIN,  INT16_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(uint16_t,  uint16_t,   0,          UINT16_MAX,  clp_suftab_default);
 
-CLP_CVT_TMPL(int32_t,   int32_t,    INT32_MIN,  INT32_MAX,  clp_suftab_default);
-CLP_CVT_TMPL(uint32_t,  uint32_t,   0,          UINT32_MAX, clp_suftab_default);
+CLP_CVT_TMPL(int32_t,   int32_t,    INT32_MIN,  INT32_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(uint32_t,  uint32_t,   0,          UINT32_MAX,  clp_suftab_default);
 
-CLP_CVT_TMPL(int64_t,   int64_t,    INT64_MIN,  INT64_MAX,  clp_suftab_default);
-CLP_CVT_TMPL(uint64_t,  uint64_t,   0,          UINT64_MAX, clp_suftab_default);
+CLP_CVT_TMPL(int64_t,   int64_t,    INT64_MIN,  INT64_MAX,   clp_suftab_default);
+CLP_CVT_TMPL(uint64_t,  uint64_t,   0,          UINT64_MAX,  clp_suftab_default);
 
-CLP_CVT_TMPL(intmax_t,  intmax_t,   INTMAX_MIN, INTMAX_MAX, clp_suftab_default);
-CLP_CVT_TMPL(uintmax_t, uintmax_t,  0,          UINTMAX_MAX,clp_suftab_default);
+CLP_CVT_TMPL(intmax_t,  intmax_t,   INTMAX_MIN, INTMAX_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(uintmax_t, uintmax_t,  0,          UINTMAX_MAX, clp_suftab_default);
 
-CLP_CVT_TMPL(intptr_t,  intptr_t,   INTPTR_MIN, INTPTR_MAX, clp_suftab_default);
-CLP_CVT_TMPL(uintptr_t, uintptr_t,  0,          UINTPTR_MAX,clp_suftab_default);
+CLP_CVT_TMPL(intptr_t,  intptr_t,   INTPTR_MIN, INTPTR_MAX,  clp_suftab_default);
+CLP_CVT_TMPL(uintptr_t, uintptr_t,  0,          UINTPTR_MAX, clp_suftab_default);
 
-CLP_CVT_TMPL(size_t,    size_t,     0,          SIZE_MAX,   clp_suftab_default);
-CLP_CVT_TMPL(time_t,    time_t,     0,          LONG_MAX,   clp_suftab_time);
+CLP_CVT_TMPL(size_t,    size_t,     0,          SIZE_MAX,    clp_suftab_default);
+CLP_CVT_TMPL(time_t,    time_t,     0,          LONG_MAX,    clp_suftab_time);
 
 CLP_GET_TMPL(bool,      bool);
 CLP_GET_TMPL(string,    char *);
@@ -1007,17 +1027,14 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
             }
         }
 
-        rc = o->cvtfunc(optarg, o->cvtflags, o->cvtparms, o->cvtdst);
+        rc = o->cvtfunc(clp, optarg, o->cvtflags, o->cvtparms, o->cvtdst);
         if (rc) {
             char optstr[] = { o->optopt, '\000' };
 
-            clp_eprint(clp, "unable to convert '%s%s %s'%s%s",
+            clp_eprint(clp, "unable to convert '%s%s %s'",
                        (longidx >= 0) ? "--" : "-",
                        (longidx >= 0) ? o->longopt : optstr,
-                       optarg,
-                       errno ? ": " : "",
-                       errno ? strerror(errno) : "");
-
+                       optarg);
             return rc;
         }
     }
@@ -1104,17 +1121,13 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
                 continue;
 
             for (i = 0; i < param->argc; ++i) {
-                rc = param->cvtfunc(param->argv[i], param->cvtflags,
+                rc = param->cvtfunc(clp, param->argv[i], param->cvtflags,
                                     param->cvtparms, param->cvtdst);
                 if (rc < 0)
                     break;
 
                 if (rc) {
-                    clp_eprint(clp, "unable to convert '%s'%s%s",
-                               param->argv[i],
-                               errno ? ": " : "",
-                               errno ? strerror(errno) : "");
-
+                    clp_eprint(clp, "unable to convert '%s'", param->argv[i]);
                     return rc;
                 }
             }

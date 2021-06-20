@@ -6,7 +6,7 @@
 ./prog -v
 ./prog -vvv
 ./prog -C -
-./prog -C main.h
+./prog -C main.c
 ./prog -C file-that-does-not-exist
 ./prog a
 ./prog a b

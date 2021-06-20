@@ -48,7 +48,7 @@ dryrun is 0 0
 cf is nil 0
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
-+ ./prog -C main.h
++ ./prog -C main.c
 progname is prog
 verbosity is 0 0
 argc=3 optind=3

@@ -24,6 +24,7 @@ bool xflag = false;
 bool yflag = false;
 bool zflag = true;
 time_t mytime;
+int8_t myint8;
 
 
 CLP_VECTOR(intv, int, 5, ",");
@@ -37,6 +38,8 @@ struct clp_option optionv[] = {
 
     CLP_OPTION('f', float, myfloat, "", "specify a float"),
     CLP_OPTION('d', double, mydouble, "", "specify a double"),
+
+    CLP_OPTION('8', int8_t, myint8, "", "specify an int8_t"),
 
     CLP_OPTION('i', int, myint, "", "specify an int"),
     CLP_OPTION('I', u_int, myuint, "", "specify a u_int"),
@@ -95,6 +98,9 @@ main(int argc, char **argv)
 
     if (cf || given('C'))
         printf("cf is %s %d\n", ferror(cf) ? "in error" : "open", given('C'));
+
+    if (given('8'))
+        printf("myint8 is %d %d\n", myint8, given('8'));
 
     if (given('i'))
         printf("myint is %d %d\n", myint, given('i'));

@@ -8,6 +8,7 @@
 
 char version[] = "1.2.3";
 int verbosity, dryrun;
+int foo, bar, baz;
 
 struct subcmd {
     const char *name;
@@ -34,6 +35,7 @@ struct clp_posparam posparamv_foo[] = {
     CLP_POSPARAM_END
 };
 struct clp_option optionv_foo[] = {
+    CLP_OPTION('c', int, foo, "", "specify foo count"),
     CLP_OPTION_STD(verbosity, version, dryrun),
     CLP_OPTION_END
 };
@@ -43,6 +45,7 @@ struct clp_posparam posparamv_bar[] = {
     CLP_POSPARAM_END
 };
 struct clp_option optionv_bar[] = {
+    CLP_OPTION('c', int, bar, "", "specify bar count"),
     CLP_OPTION_STD(verbosity, version, dryrun),
     CLP_OPTION_END
 };
@@ -52,6 +55,7 @@ struct clp_posparam posparamv_baz[] = {
     CLP_POSPARAM_END
 };
 struct clp_option optionv_baz[] = {
+    CLP_OPTION('c', int, baz, "", "specify baz count"),
     CLP_OPTION_STD(verbosity, version, dryrun),
     CLP_OPTION_END
 };
@@ -67,7 +71,7 @@ struct subcmd subcmdv[] = {
 };
 
 int
-subcmd_cvt(const char *str, int flags, void *parms, void *dst)
+subcmd_cvt(struct clp *clp, const char *str, int flags, void *parms, void *dst)
 {
     int i;
 
@@ -77,6 +81,7 @@ subcmd_cvt(const char *str, int flags, void *parms, void *dst)
     }
 
     if (!subcmdv[i].name) {
+        clp_eprint(clp, "invalid subcommand '%s', use -h for help", str);
         errno = EINVAL;
         return EX_USAGE;
     }

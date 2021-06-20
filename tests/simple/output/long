@@ -35,11 +35,11 @@ mylong is -9223372036854775807 1
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -l 18446744073709551615
-prog: unable to convert '-l 18446744073709551615': Numerical argument out of domain
+prog: unable to convert '-l 18446744073709551615': argument not within the interval [LONG_MIN, LONG_MAX]
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -l -18446744073709551615
-prog: unable to convert '-l -18446744073709551615': Numerical argument out of domain
+prog: unable to convert '-l -18446744073709551615': argument not within the interval [LONG_MIN, LONG_MAX]
 + ./prog -L 0
 myulong is 0 1
 
@@ -50,16 +50,16 @@ myulong is 1 1
 myulong is 2 1
 
 + ./prog -L -1
-prog: unable to convert '-L -1': Numerical argument out of domain
+prog: unable to convert '-L -1': argument not within the interval [0, ULONG_MAX]
 + ./prog -L -2
-prog: unable to convert '-L -2': Numerical argument out of domain
+prog: unable to convert '-L -2': argument not within the interval [0, ULONG_MAX]
 + ./prog -L -3
-prog: unable to convert '-L -3': Numerical argument out of domain
+prog: unable to convert '-L -3': argument not within the interval [0, ULONG_MAX]
 + ./prog -L 0 -L 1 -L 2
 myulong is 2 1
 
 + ./prog -L -1 -L -2 -L -3
-prog: unable to convert '-L -1': Numerical argument out of domain
+prog: unable to convert '-L -1': argument not within the interval [0, ULONG_MAX]
 ++ echo '2^63 - 1'
 ++ bc
 + ./prog -l 9223372036854775807
@@ -78,4 +78,4 @@ myulong is 18446744073709551615 1
 ++ echo '2^64 - 1'
 ++ bc
 + ./prog -L -18446744073709551615
-prog: unable to convert '-L -18446744073709551615': Numerical argument out of domain
+prog: unable to convert '-L -18446744073709551615': argument not within the interval [0, ULONG_MAX]

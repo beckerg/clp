@@ -1,0 +1,22 @@
++ ./prog -8 128
+prog: unable to convert '-8 128': argument not within the interval [INT8_MIN, INT8_MAX]
++ ./prog -8 127
+myint8 is 127 1
+
++ ./prog -8 1
+myint8 is 1 1
+
++ ./prog -8 0
+myint8 is 0 1
+
++ ./prog -8 -0
+myint8 is 0 1
+
++ ./prog -8 -1
+myint8 is -1 1
+
++ ./prog -8 -128
+myint8 is -128 1
+
++ ./prog -8 -129
+prog: unable to convert '-8 -129': argument not within the interval [INT8_MIN, INT8_MAX]

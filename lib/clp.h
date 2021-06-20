@@ -200,7 +200,7 @@ struct clp_posparam;
  * On error, sets errno accordingly and returns a positive integer
  * suitable for use as an exit code (e.g., something from sysexits.h).
  */
-typedef int clp_cvt_cb(const char *str, int flags, void *parms, void *dst);
+typedef int clp_cvt_cb(struct clp *clp, const char *str, int flags, void *parms, void *dst);
 
 typedef void clp_get_cb(struct clp_option *option, void *dst);
 
@@ -310,7 +310,7 @@ typedef CLP_VECTOR_DECL(clp_vector, char, 0) clp_vector_t;
  */
 #define CLP_CVT_TMPL(_xsuffix, _xtype, _xmin, _xmax, _xsuftab)          \
 int                                                                     \
-clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
+clp_cvt_ ## _xsuffix(struct clp *clp, const char *optarg, int flags, void *parms, void *dst) \
 {                                                                       \
     const struct clp_suftab *suftab = &(_xsuftab);                      \
     CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
@@ -319,7 +319,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     _xtype *result;                                                     \
     bool domainchk;                                                     \
     int ndomain, nrange;                                                \
-    int n;                                                              \
+    int xerrno, n;                                                      \
                                                                         \
     if (!optarg || !dst) {                                              \
         errno = EINVAL;                                                 \
@@ -348,6 +348,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
     result = dst;                                                       \
     ndomain = 0;                                                        \
     nrange = 0;                                                         \
+    xerrno = 0;                                                         \
     errno = 0;                                                          \
                                                                         \
     for (n = 0; n < vector->size && str; ++n, ++result) {               \
@@ -377,7 +378,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
         }                                                               \
                                                                         \
         if (end == tok) {                                               \
-            errno = EINVAL;                                             \
+            xerrno = EINVAL;                                            \
             *result = 0;                                                \
             break;                                                      \
         }                                                               \
@@ -387,7 +388,7 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
                                                                         \
             pc = strchr(suftab->list, *end);                            \
             if (!pc) {                                                  \
-                errno = EINVAL;                                         \
+                xerrno = EINVAL;                                        \
                 *result = 0;                                            \
                 break;                                                  \
             }                                                           \
@@ -395,10 +396,13 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
             val *= *(suftab->mult + (pc - suftab->list));               \
         }                                                               \
                                                                         \
-        if (isinf(val) || isnan(val))                                   \
+        if (isinf(val) || isnan(val)) {                                 \
             ;                                                           \
-        else if (domainchk && (val < (_xmin) || val > (_xmax))) {       \
-            val = (val < (_xmin)) ? (_xmin) : (_xmax);                  \
+        } else if (domainchk && val < (_xmin)) {                        \
+            val = (_xmin);                                              \
+            ++ndomain;                                                  \
+        } else if (domainchk && val > (_xmax)) {                        \
+            val = (_xmax);                                              \
             ++ndomain;                                                  \
         }                                                               \
                                                                         \
@@ -407,24 +411,25 @@ clp_cvt_ ## _xsuffix(const char *optarg, int flags, void *parms, void *dst) \
                                                                         \
     vector->len = n;                                                    \
     if (str && vector->len >= vector->size) {                           \
-        errno = E2BIG;                                                  \
+        xerrno = E2BIG;                                                 \
     }                                                                   \
                                                                         \
-    if (ndomain > 0 && !errno) {                                        \
-        errno = EDOM;                                                   \
+    if (ndomain > 0 && !xerrno) {                                       \
+        snprintf(clp->errbuf, sizeof(clp->errbuf),                      \
+                 ": argument not within the interval ["                 \
+                 #_xmin ", " #_xmax "]");                               \
+        xerrno = EDOM;                                                  \
     }                                                                   \
-    else if (nrange > 0 && !errno) {                                    \
-        errno = ERANGE;                                                 \
+    else if (nrange > 0 && !xerrno) {                                   \
+        snprintf(clp->errbuf, sizeof(clp->errbuf), ": %s", strerror(ERANGE)); \
+        xerrno = ERANGE;                                                \
+    } else if (xerrno) {                                                \
+        snprintf(clp->errbuf, sizeof(clp->errbuf), ": %s", strerror(xerrno)); \
     }                                                                   \
                                                                         \
-    if (strbase) {                                                      \
-        int save = errno;                                               \
+    free(strbase);                                                      \
                                                                         \
-        free(strbase);                                                  \
-        errno = save;                                                   \
-    }                                                                   \
-                                                                        \
-    return errno ? EX_DATAERR : 0;                                      \
+    return xerrno ? (errno = xerrno), EX_DATAERR : 0;                   \
 }                                                                       \
                                                                         \
 void                                                                    \
@@ -536,5 +541,7 @@ extern int clp_parsev(int argc, char **argv,
 extern int clp_parsel(const char *line, const char *delim,
                       struct clp_option *optionv,
                       struct clp_posparam *paramv);
+
+extern void clp_eprint(struct clp *clp, const char *fmt, ...);
 
 #endif /* CLP_H */

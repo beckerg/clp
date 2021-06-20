@@ -38,7 +38,7 @@ prog: mandatory positional parameters required, use -h for help
 prog: mandatory positional parameters required, use -h for help
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
-+ ./prog -C main.h
++ ./prog -C main.c
 prog: mandatory positional parameters required, use -h for help
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory

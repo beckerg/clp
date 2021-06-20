@@ -8,7 +8,7 @@ myint is 1024 1
 myint is 1073741824 1
 
 + ./prog -i 1t
-prog: unable to convert '-i 1t': Numerical argument out of domain
+prog: unable to convert '-i 1t': argument not within the interval [INT_MIN, INT_MAX]
 + ./prog -i -1b
 myint is -512 1
 
@@ -19,4 +19,4 @@ myint is -1024 1
 myint is -1073741824 1
 
 + ./prog -i -1t
-prog: unable to convert '-i -1t': Numerical argument out of domain
+prog: unable to convert '-i -1t': argument not within the interval [INT_MIN, INT_MAX]

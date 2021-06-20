@@ -1,9 +1,10 @@
 + ./prog
 
 + ./prog -h
-usage: prog [-nv] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
+usage: prog [-nv] [-8 myint8] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z]
 usage: prog -h
 usage: prog -V
+-8 myint8    specify an int8_t
 -C cf        specify a config file
 -d mydouble  specify a double
 -f myfloat   specify a float
@@ -39,7 +40,7 @@ verbosity is 3 1
 
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
-+ ./prog -C main.h
++ ./prog -C main.c
 cf is open 1
 
 + ./prog -C file-that-does-not-exist
