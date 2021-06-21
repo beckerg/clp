@@ -11,7 +11,7 @@ struct clp_option optionv[] = {
     CLP_OPTION('y', bool, yflag, "xz", "enable feature y (excludes -xz)"),
     CLP_OPTION('z', int, zarg, "xy", "enable feature z (excludes -xy)"),
     CLP_OPTION_VERBOSITY(verbosity),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 

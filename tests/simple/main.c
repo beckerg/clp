@@ -34,7 +34,7 @@ struct clp_option optionv[] = {
     CLP_OPTION_VERSION(version),
     CLP_OPTION_DRYRUN(dryrun),
     CLP_OPTION_CONF(cf),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
 
     CLP_OPTION('f', float, myfloat, "", "specify a float"),
     CLP_OPTION('d', double, mydouble, "", "specify a double"),

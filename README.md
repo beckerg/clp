@@ -16,11 +16,13 @@ library.
 
 ## Examples
 ### Example 1 - Simple Options
-Here's a very simple example that builds a parser expecting three options and
-zero or more positional parameters.  Note that since the parser is based upon
-_**getopt_long(3)**_ there are many valid ways in which to specify an option.
-Note also that the calls to _**clp_given()**_ are merely illustrative and not
-required to parse and process the command line.
+Here's a very simple example that builds a parser expecting three options
+(-d and -j are explicitly defined, while -h is instantiated via the
+_**CLP_OPTION_HELP**_ macro).
+Note that since the parser is based upon _**getopt_long(3)**_ there are
+many valid ways in which to specify an option on the command line.
+Note also that the calls to _**clp_given()**_ are merely illustrative
+and not otherwise required.
 
 ```
 #include <stdio.h>
@@ -32,7 +34,7 @@ int jobs;
 struct clp_option optionv[] = {
     CLP_OPTION('d', time_t, duration, "", "specify max duration (seconds)"),
     CLP_OPTION('j', int, jobs, "", "specify max number of jobs"),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
@@ -41,7 +43,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, NULL);
     if (rc)
         return rc;
 
@@ -65,18 +67,20 @@ main(int argc, char **argv)
 
 ```
 $ ./ex1 -h
-usage: ex1 [-d duration] [-j jobs]
+usage: ex1 [-d duration] [-j jobs] [params...]
 usage: ex1 -h
 -d duration  specify max duration (seconds)
 -h           print this help list
 -j jobs      specify max number of jobs
+params...  zero or more positional arguments
 
 $ ./ex1 --help
-usage: ex1 [-d duration] [-j jobs]
+usage: ex1 [-d duration] [-j jobs] [params...]
 usage: ex1 -h
 -d, --duration duration  specify max duration (seconds)
 -h, --help               print this help list
 -j, --jobs jobs          specify max number of jobs
+params...  zero or more positional arguments
 
 $ ./ex1 -q
 ex1: invalid option -q, use -h for help
@@ -112,7 +116,7 @@ $ ./ex1 -Wjobs=9
 jobs is 9
 
 $ ./ex1 -j $((1<<31))
-ex1: unable to convert '-j 2147483648': Numerical argument out of domain
+ex1: unable to convert '-j 2147483648': argument not within the interval [INT_MIN, INT_MAX]
 
 $ ./ex1 -j $(((1<<31) - 1))
 jobs is 2147483647
@@ -134,6 +138,9 @@ jobs is 1
 argv[0] a
 argv[1] b
 argv[2] c
+
+$ ./ex1
+
 ```
 
 By default, integer option argument conversion accepts a single-letter
@@ -154,8 +161,10 @@ Similarly, the default `time_t` converter accepts suffixes from the set of
 The simplest way to enforce an upper and lower bound on the _**jobs**_ variable
 from example one is to leverage the _**CLP_CVT_XX()**_ macro to generate a named
 conversion function with the specified bounds.  Here we use it to instantiate
-a function named _**clp_cvt_cvtjobs()**_ which will restrict the value of jobs
+a function named _**clp_cvt_jobsfn()**_ which will restrict the value of jobs
 to the interval [1,10] if and when the option is given.
+Note how we disable the use of option argument suffixes by specifying
+_**clp_suftab_none**_ to the conversion template.
 
 ```
 #include <stdio.h>
@@ -163,11 +172,11 @@ to the interval [1,10] if and when the option is given.
 
 int jobs;
 
-CLP_CVT_TMPL(cvtjobs, int, 1, 10, clp_suftab_none);
+CLP_CVT_TMPL(jobsfn, int, 1, 10, clp_suftab_none);
 
 struct clp_option optionv[] = {
-    CLP_OPTION('j', cvtjobs, jobs, "", "specify max number of jobs"),
-    CLP_OPTION_HELP(),
+    CLP_OPTION('j', jobs, jobsfn, "", "specify max number of jobs"),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
@@ -176,7 +185,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, NULL);
     if (rc)
         return rc;
 
@@ -191,7 +200,7 @@ main(int argc, char **argv)
 
 ```
 $ ./ex2 -j0
-ex2: unable to convert '-j 0': Numerical argument out of domain
+ex2: unable to convert '-j 0': argument not within the interval [1, 10]
 
 $ ./ex2 -j1
 jobs is 1
@@ -200,7 +209,7 @@ $ ./ex2 -j10
 jobs is 10
 
 $ ./ex2 -j11
-ex2: unable to convert '-j 11': Numerical argument out of domain
+ex2: unable to convert '-j 11': argument not within the interval [1, 10]
 
 $ ./ex2 -j4k
 ex2: unable to convert '-j 4k': Invalid argument
@@ -213,9 +222,12 @@ which the parser will use to enforce that one or more file names must be given
 for any valid invocation of the command.  Note that enclosing _**files...**_ within
 square bracets will allow for zero or more files, while removing the ellipsis will
 specify exactly one file (or zero-or-one if enclosed in square brackets).
+Note that we introduce the **-v** option, and show that _**getopt_long(3)'s**_
+_**optind**_ indicates where option processing ended.
 
 ```
 #include <stdio.h>
+#include <getopt.h>
 #include "clp.h"
 
 int verbosity;
@@ -227,7 +239,7 @@ struct clp_posparam posparamv[] = {
 
 struct clp_option optionv[] = {
     CLP_OPTION_VERBOSITY(verbosity),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
@@ -236,7 +248,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, posparamv);
     if (rc)
         return rc;
 
@@ -280,8 +292,6 @@ files[1] bar
 files[2] baz
 ```
 
-Note that we introduced the **-v** option, and that _**getopt_long(3)'s**_
-_**optind**_ indicates where option processing ended.
 
 ### Example 4 - Mutually Exclusive Options
 A typical tool might often have several options which are mutually exclusive.
@@ -299,7 +309,7 @@ struct clp_option optionv[] = {
     CLP_OPTION('y', bool, yflag, "xz", "enable feature y (excludes -xz)"),
     CLP_OPTION('z', int, zarg, "xy", "enable feature z (excludes -xy)"),
     CLP_OPTION_VERBOSITY(verbosity),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
@@ -308,7 +318,7 @@ main(int argc, char **argv)
 {
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, NULL);
     if (rc)
         return rc;
 
@@ -376,7 +386,7 @@ struct clp_posparam posparamv_r[] = {
 struct clp_option optionv[] = {
     CLP_XOPTION('r', bool, rflag, "^v", "remove files", NULL, NULL, posparamv_r),
     CLP_OPTION_VERBOSITY(verbosity),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
@@ -386,7 +396,7 @@ main(int argc, char **argv)
     struct clp_posparam *paramv = posparamv, *param;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, posparamv, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, posparamv);
     if (rc)
         return rc;
 
@@ -458,7 +468,7 @@ static __thread struct clp_option optionv[] = {
     CLP_OPTION_TLS('d', time_t, duration, NULL, NULL, "specify max duration (seconds)"),
     CLP_OPTION_TLS('j', int, jobs, NULL, NULL, "specify max number of jobs"),
     CLP_OPTION_TLS('C', fp, conf, NULL, NULL, "specify config file"),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
@@ -470,7 +480,7 @@ main(int argc, char **argv)
     FILE *fp;
     int rc;
 
-    rc = clp_parsev(argc, argv, optionv, NULL, NULL, 0);
+    rc = clp_parsev(argc, argv, optionv, NULL);
     if (rc)
         return rc;
 

@@ -125,7 +125,7 @@
 /* Use the HELP, VERSION, VERBOSITY, DRYRUN, and CONF templates to ensure
  * a consistent look-and-free across all tools built with clp.
  */
-#define CLP_OPTION_HELP()                                               \
+#define CLP_OPTION_HELP                                                 \
     {                                                                   \
         .optopt = 'h', .excludes = "*", .longopt = "help",              \
         .after = clp_help, .paramv = clp_posparam_none,                 \
@@ -147,6 +147,12 @@
 
 #define CLP_OPTION_CONF(_xconf)                                         \
     CLP_OPTION('C', fp, _xconf, NULL, "specify a config file")
+
+#define CLP_OPTION_STD(_xverbosity, _xversion, _xdryrun)        \
+    CLP_OPTION_VERBOSITY(verbosity),                            \
+    CLP_OPTION_VERSION(version),                                \
+    CLP_OPTION_DRYRUN(dryrun),                                  \
+    CLP_OPTION_HELP                                             \
 
 /* Use CLP_OPTION_TMPL() to generate options with custom optarg converters
  * and/or to specify callbacks to be called before/after option processing.
@@ -178,12 +184,6 @@
         .before = (_xppbefore),                                 \
         .after = (_xppafter),                                   \
     }
-
-#define CLP_OPTION_STD(_xverbosity, _xversion, _xdryrun)        \
-    CLP_OPTION_VERBOSITY(verbosity),                            \
-    CLP_OPTION_VERSION(version),                                \
-    CLP_OPTION_DRYRUN(dryrun),                                  \
-    CLP_OPTION_HELP()                                           \
 
 #define CLP_OPTION_END      { .optopt = 0 }
 #define CLP_POSPARAM_END    { .name = NULL }
@@ -315,13 +315,13 @@ clp_cvt_ ## _xsuffix(struct clp *clp, const char *optarg, int flags, void *parms
     const struct clp_suftab *suftab = &(_xsuftab);                      \
     CLP_VECTOR(vectorbuf, _xtype, 1, "");                               \
     clp_vector_t *vector;                                               \
+    int ndomain, nrange;                                                \
     char *str, *strbase;                                                \
     _xtype *result;                                                     \
     bool domainchk;                                                     \
-    int ndomain, nrange;                                                \
     int xerrno, n;                                                      \
                                                                         \
-    if (!optarg || !dst) {                                              \
+    if (!clp || !optarg || !dst) {                                      \
         errno = EINVAL;                                                 \
         return EX_DATAERR;                                              \
     }                                                                   \

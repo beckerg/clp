@@ -1,5 +1,5 @@
 + ./prog
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -h
 usage: prog [-nv] [-C cf] [leftmost [left]] src...
 usage: prog -h
@@ -31,15 +31,15 @@ argc=2 optind=2
 dryrun is 0 0
 cf is nil 0
 + ./prog -n
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -v
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -vvv
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
 + ./prog -C main.c
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 + ./prog a

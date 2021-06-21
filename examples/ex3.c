@@ -13,7 +13,7 @@ struct clp_posparam posparamv[] = {
 
 struct clp_option optionv[] = {
     CLP_OPTION_VERBOSITY(verbosity),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 

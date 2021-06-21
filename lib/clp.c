@@ -114,11 +114,11 @@ clp_dprint_impl(const char *file, int line, const char *func, const char *fmt, .
 #define clp_dprint(_lvl, ...)
 #endif /* CLP_DEBUG */
 
-/* Render an error message for retrieval by the caller of clp_parsev().
+/* Render an error message for emission at the end of clp_parsev().
  *
  * If on entry clp->errbuf[0] is a punctuation character (e.g., ",")
  * then clp->errbuf will be saved and then appended to the string
- * produced by the given format.  If on entry clp->errbuf[0] is nul
+ * produced by the given format.  If on entry clp->errbuf[0] is NUL
  * and errno is set then strerror() will be appended to the string
  * produced by the given format.
  */
@@ -128,21 +128,24 @@ clp_eprint(struct clp *clp, const char *fmt, ...)
     int xerrno = errno;
     char suffix[128];
     va_list ap;
+    int n;
 
     if (clp->errbuf[0] && !ispunct(clp->errbuf[0]))
         return;
 
-    strlcpy(suffix, clp->errbuf, sizeof(suffix));
+    strncpy(suffix, clp->errbuf, sizeof(suffix) - 1);
+    suffix[sizeof(suffix) - 1] = '\000';
 
     va_start(ap, fmt);
-    vsnprintf(clp->errbuf, sizeof(clp->errbuf), fmt, ap);
+    n = vsnprintf(clp->errbuf, sizeof(clp->errbuf), fmt, ap);
     va_end(ap);
 
-    if (xerrno && !*suffix) {
-        strcat(suffix, ": ");
-        strcat(suffix, strerror(xerrno));
+    if (n >= 0 && n < sizeof(clp->errbuf)) {
+        snprintf(clp->errbuf + n, sizeof(clp->errbuf) - n, "%s%s",
+                 xerrno && !suffix[0] ? ": " : "",
+                 xerrno && !suffix[0] ? strerror(xerrno) : suffix);
     }
-    strcat(clp->errbuf, suffix);
+
     errno = xerrno;
 }
 
@@ -157,7 +160,8 @@ clp_optopt_valid(int c)
  * require special handling, while those for simple integer types (int, long,
  * int64_t, ...) are handled by functions generated via CLP_CVT_TMPL().
  *
- * Note:  These functions are not type safe.
+ * Note:  These functions are not type safe, but are typically invoked by
+ * clp from a type-safe context.
  */
 int
 clp_cvt_bool(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
@@ -225,7 +229,7 @@ clp_cvt_incr(struct clp *clp, const char *optarg, int flags, void *parms, void *
         return EX_DATAERR;
     }
 
-    ++(*result);
+    *result += 1;
 
     return 0;
 }
@@ -422,18 +426,17 @@ clp_string_cmp(const void *lhs, const void *rhs)
  *   "usage: progname [options] args..."
  */
 void
-clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
+clp_usage(struct clp *clp, const struct clp_option *limit)
 {
     struct clp_posparam *paramv = clp->paramv;
     char excludes_buf[clp->optionc + 1];
     char optarg_buf[clp->optionc * 16];
     char opt_buf[clp->optionc + 1];
+    char *pc_optarg, *pc_opt, *pc;
     struct clp_posparam *param;
     struct clp_option *o;
     char *pc_excludes;
-    char *pc_optarg;
-    char *pc_opt;
-    char *pc;
+    FILE *fp = stdout;
 
     if (limit) {
         bool limit_excl_all = limit->excludes && strchr("*^", limit->excludes[0]);
@@ -666,7 +669,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit, FILE *fp)
         }
     }
 
-    fprintf(fp, "\n");
+    fprintf(fp, "%s\n", paramv ? "" : " [params...]");
 }
 
 /* Lexical option comparator for qsort (e.g., AaBbCcDd...)
@@ -737,7 +740,7 @@ clp_help(struct clp_option *opthelp)
     /* Print the default usage line.
      */
     fp = opthelp->priv ? opthelp->priv : stdout;
-    clp_usage(clp, NULL, fp);
+    clp_usage(clp, NULL);
 
     /* Print usage lines for each option that has positional parameters
      * different than the default usage.
@@ -756,7 +759,7 @@ clp_help(struct clp_option *opthelp)
             continue;
         }
 
-        clp_usage(clp, option, fp);
+        clp_usage(clp, option);
 
         if (option->argname) {
             len += strlen(option->argname) + 1;
@@ -809,9 +812,14 @@ clp_help(struct clp_option *opthelp)
                 width = namelen;
             }
         }
+    }
 
-        /* Print a line of help for each positional paramter.
-         */
+    if (!clp->paramv)
+        fprintf(fp, "%-*s  %s\n", width, "params...", "zero or more positional arguments");
+
+    /* Print a line of help for each positional paramter.
+     */
+    for (paramv = clp->params; paramv; paramv = paramv->next) {
         for (param = paramv; param->name; ++param) {
             char namebuf[32];
 
@@ -1051,10 +1059,20 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         clp_posparam_minmax(paramv, &posmin, &posmax);
 
         if (argc < posmin) {
-            clp_eprint(clp, "mandatory positional parameters required%s", usehelp);
+            const char *more = argc ? " more" : "";
+
+            clp_eprint(clp, "%d%s positional argument%s required%s",
+                       posmin - argc,
+                       (posmin - argc) > 0 ? more : "",
+                       (posmin - argc) > 1 ? "s" : "",
+                       usehelp);
             return EX_USAGE;
-        } else if (argc > posmax) {
-            clp_eprint(clp, "extraneous positional parameters detected%s", usehelp);
+        }
+        else if (argc > posmax) {
+            clp_eprint(clp, "%d extraneous positional argument%s detected%s",
+                       argc - posmax,
+                       argc - posmax > 1 ? "s" : "",
+                       usehelp);
             return EX_USAGE;
         }
     }

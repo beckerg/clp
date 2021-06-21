@@ -1,5 +1,5 @@
 + ./prog
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -h
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
@@ -378,15 +378,15 @@ version...
 version...
 version...
 + ./prog -n
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -v
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -vvv
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -C -
 prog: unable to convert '-C -': No such file or directory
 + ./prog -C main.c
-prog: mandatory positional parameters required, use -h for help
+prog: 1 positional argument required, use -h for help
 + ./prog -C file-that-does-not-exist
 prog: unable to convert '-C file-that-does-not-exist': No such file or directory
 + ./prog a

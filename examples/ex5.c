@@ -20,7 +20,7 @@ struct clp_posparam posparamv_r[] = {
 struct clp_option optionv[] = {
     CLP_XOPTION('r', bool, rflag, "^v", "remove files", NULL, NULL, posparamv_r),
     CLP_OPTION_VERBOSITY(verbosity),
-    CLP_OPTION_HELP(),
+    CLP_OPTION_HELP,
     CLP_OPTION_END
 };
 
