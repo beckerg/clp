@@ -5,9 +5,10 @@
 #include "clp.h"
 
 int verbosity;
+FILE *fp;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("files...", "one or more files", NULL, NULL),
+    CLP_POSPARAM("files...", fopen, fp, "one or more files"),
     CLP_POSPARAM_END
 };
 

@@ -1,7 +1,7 @@
 + ./prog
 
 + ./prog -h
-usage: prog [-nv] [-8 myint8] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z] [params...]
+usage: prog [-nv] [-8 myint8] [-C cf] [-d mydouble] [-f myfloat] [-I myuint] [-i myint] [-j intv] [-L myulong] [-l mylong] [-s mystring] [-t mytime] [-x | -y | -z] [args...]
 usage: prog -h
 usage: prog -V
 -8 myint8    specify an int8_t
@@ -22,7 +22,7 @@ usage: prog -V
 -x           specify x flag
 -y           specify y flag
 -z           specify z flag
-params...  zero or more positional arguments
+args...  zero or more positional arguments
 
 
 + ./prog -hv

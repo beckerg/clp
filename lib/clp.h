@@ -146,7 +146,7 @@
     CLP_OPTION('n', incr, _xdryrun, NULL, "dry run")
 
 #define CLP_OPTION_CONF(_xconf)                                         \
-    CLP_OPTION('C', fp, _xconf, NULL, "specify a config file")
+    CLP_OPTION('C', fopen, _xconf, NULL, "specify a config file")
 
 #define CLP_OPTION_STD(_xverbosity, _xversion, _xdryrun)        \
     CLP_OPTION_VERBOSITY(verbosity),                            \
@@ -177,12 +177,12 @@
     }
 
 
-#define CLP_POSPARAM(_xppname, _xpphelp, _xppbefore, _xppafter) \
-    {                                                           \
-        .name = (_xppname),                                     \
-        .help = (_xpphelp),                                     \
-        .before = (_xppbefore),                                 \
-        .after = (_xppafter),                                   \
+#define CLP_POSPARAM(_xname, _xtype, _xvarname, _xhelp)                 \
+    {                                                                   \
+        .name = (_xname),                                               \
+        .help = (_xhelp),                                               \
+        .cvtfunc = clp_cvt_ ## _xtype,                                  \
+        .cvtdst = &(_xvarname),                                         \
     }
 
 #define CLP_OPTION_END      { .optopt = 0 }
@@ -468,10 +468,10 @@ extern struct clp_suftab clp_suftab_combo;
 extern struct clp_suftab clp_suftab_none;
 extern struct clp_suftab clp_suftab_time;
 
-extern clp_cvt_cb clp_cvt_fp;
-extern clp_cvt_cb clp_cvt_fd;
 extern clp_cvt_cb clp_cvt_bool;
 extern clp_cvt_cb clp_cvt_incr;
+extern clp_cvt_cb clp_cvt_open;
+extern clp_cvt_cb clp_cvt_fopen;
 extern clp_cvt_cb clp_cvt_string;
 
 extern clp_cvt_cb clp_cvt_char, clp_cvt_u_char;
@@ -498,10 +498,10 @@ extern clp_cvt_cb clp_cvt_intptr_t, clp_cvt_uintptr_t;
 extern clp_cvt_cb clp_cvt_size_t;
 extern clp_cvt_cb clp_cvt_time_t;
 
-extern clp_get_cb clp_get_fp;
-extern clp_get_cb clp_get_fd;
 extern clp_get_cb clp_get_bool;
 extern clp_get_cb clp_get_incr;
+extern clp_get_cb clp_get_open;
+extern clp_get_cb clp_get_fopen;
 extern clp_get_cb clp_get_string;
 
 extern clp_get_cb clp_get_char, clp_get_u_char;

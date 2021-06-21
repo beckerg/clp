@@ -85,15 +85,6 @@ struct clp_posparam clp_posparam_none[] = {
 #ifdef CLP_DEBUG
 static int clp_debug;
 
-/* dprint() prints a debug message to stdout if (clp_debug >= lvl).
- */
-#define clp_dprint(_lvl, ...)                                           \
-do {                                                                    \
-    if (clp_debug >= (_lvl)) {                                          \
-        clp_dprint_impl(__FILE__, __LINE__, __func__, __VA_ARGS__);     \
-    }                                                                   \
-} while (0);
-
 /* Called via the dprint() macro..
  */
 static void
@@ -108,6 +99,15 @@ clp_dprint_impl(const char *file, int line, const char *func, const char *fmt, .
     vfprintf(stdout, fmt, ap);
     va_end(ap);
 }
+
+/* dprint() prints a debug message to stdout if (clp_debug >= lvl).
+ */
+#define clp_dprint(_lvl, ...)                                           \
+do {                                                                    \
+    if (clp_debug >= (_lvl)) {                                          \
+        clp_dprint_impl(__FILE__, __LINE__, __func__, __VA_ARGS__);     \
+    }                                                                   \
+} while (0)
 
 #else
 
@@ -125,8 +125,8 @@ clp_dprint_impl(const char *file, int line, const char *func, const char *fmt, .
 void
 clp_eprint(struct clp *clp, const char *fmt, ...)
 {
+    char suffix[sizeof(clp->errbuf) - 8];
     int xerrno = errno;
-    char suffix[128];
     va_list ap;
     int n;
 
@@ -155,13 +155,13 @@ clp_optopt_valid(int c)
     return isgraph(c) && !strchr(":?-", c);
 }
 
-/* An option's conversion procedure is called each time the option is seen
- * on the command line.  The conversions for bool, string, fd, fp, and incr
+/* An option's conversion procedure is called each time the option is seen on
+ * the command line.  The conversions for bool, string, open, fopen, and incr
  * require special handling, while those for simple integer types (int, long,
  * int64_t, ...) are handled by functions generated via CLP_CVT_TMPL().
  *
- * Note:  These functions are not type safe, but are typically invoked by
- * clp from a type-safe context.
+ * Note:  These functions are not type safe, but are typically invoked by clp
+ * from a type-safe context.
  */
 int
 clp_cvt_bool(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
@@ -189,7 +189,7 @@ clp_cvt_string(struct clp *clp, const char *optarg, int flags, void *parms, void
 }
 
 int
-clp_cvt_fd(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_open(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     int *result = dst;
 
@@ -204,7 +204,7 @@ clp_cvt_fd(struct clp *clp, const char *optarg, int flags, void *parms, void *ds
 }
 
 int
-clp_cvt_fp(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
+clp_cvt_fopen(struct clp *clp, const char *optarg, int flags, void *parms, void *dst)
 {
     const char *mode = parms ? parms : "r";
     FILE **result = dst;
@@ -274,10 +274,10 @@ CLP_CVT_TMPL(size_t,    size_t,     0,          SIZE_MAX,    clp_suftab_default)
 CLP_CVT_TMPL(time_t,    time_t,     0,          LONG_MAX,    clp_suftab_time);
 
 CLP_GET_TMPL(bool,      bool);
-CLP_GET_TMPL(string,    char *);
-CLP_GET_TMPL(fp,        FILE *);
-CLP_GET_TMPL(fd,        int);
 CLP_GET_TMPL(incr,      int);
+CLP_GET_TMPL(open,      int);
+CLP_GET_TMPL(fopen,     FILE *);
+CLP_GET_TMPL(string,    char *);
 
 
 struct clp_option *
@@ -669,7 +669,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
         }
     }
 
-    fprintf(fp, "%s\n", paramv ? "" : " [params...]");
+    fprintf(fp, "%s\n", paramv ? "" : " [args...]");
 }
 
 /* Lexical option comparator for qsort (e.g., AaBbCcDd...)
@@ -815,7 +815,7 @@ clp_help(struct clp_option *opthelp)
     }
 
     if (!clp->paramv)
-        fprintf(fp, "%-*s  %s\n", width, "params...", "zero or more positional arguments");
+        fprintf(fp, "%-*s  %s\n", width, "args...", "zero or more positional arguments");
 
     /* Print a line of help for each positional paramter.
      */

@@ -67,20 +67,20 @@ main(int argc, char **argv)
 
 ```
 $ ./ex1 -h
-usage: ex1 [-d duration] [-j jobs] [params...]
+usage: ex1 [-d duration] [-j jobs] [args...]
 usage: ex1 -h
 -d duration  specify max duration (seconds)
 -h           print this help list
 -j jobs      specify max number of jobs
-params...  zero or more positional arguments
+args...  zero or more positional arguments
 
 $ ./ex1 --help
-usage: ex1 [-d duration] [-j jobs] [params...]
+usage: ex1 [-d duration] [-j jobs] [args...]
 usage: ex1 -h
 -d, --duration duration  specify max duration (seconds)
 -h, --help               print this help list
 -j, --jobs jobs          specify max number of jobs
-params...  zero or more positional arguments
+args...  zero or more positional arguments
 
 $ ./ex1 -q
 ex1: invalid option -q, use -h for help
@@ -231,9 +231,10 @@ _**optind**_ indicates where option processing ended.
 #include "clp.h"
 
 int verbosity;
+FILE *fp;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("files...", "one or more files", NULL, NULL),
+    CLP_POSPARAM("files...", fopen, fp, "one or more files");
     CLP_POSPARAM_END
 };
 
@@ -368,18 +369,19 @@ with an option (-r) that has a different posparam syntax than the default.
 #include <stdio.h>
 #include "clp.h"
 
+int left, middle, right;
 int verbosity;
 bool rflag;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("[left]", "optional left justified positional parameter", NULL, NULL),
-    CLP_POSPARAM("[middle...]", "zero or more params", NULL, NULL),
-    CLP_POSPARAM("right", "right justified positional parameter", NULL, NULL),
+    CLP_POSPARAM("[left]", int, left, "optional left justified positional parameter"),
+    CLP_POSPARAM("[middle...]", int, middle, "zero or more params"),
+    CLP_POSPARAM("right", int, right, "right justified positional parameter"),
     CLP_POSPARAM_END
 };
 
 struct clp_posparam posparamv_r[] = {
-    CLP_POSPARAM("files...", "one or more files", NULL, NULL),
+    CLP_POSPARAM("files...", int, left, "one or more files"),
     CLP_POSPARAM_END
 };
 

@@ -2,18 +2,19 @@
 #include <stdio.h>
 #include "clp.h"
 
+int left, middle, right;
 int verbosity;
 bool rflag;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("[left]", "optional left justified positional parameter", NULL, NULL),
-    CLP_POSPARAM("[middle...]", "zero or more params", NULL, NULL),
-    CLP_POSPARAM("right", "right justified positional parameter", NULL, NULL),
+    CLP_POSPARAM("[left]", int, left, "optional left justified positional parameter"),
+    CLP_POSPARAM("[middle...]", int, middle, "zero or more params"),
+    CLP_POSPARAM("right", int, right, "right justified positional parameter"),
     CLP_POSPARAM_END
 };
 
 struct clp_posparam posparamv_r[] = {
-    CLP_POSPARAM("files...", "one or more files", NULL, NULL),
+    CLP_POSPARAM("files...", int, left, "one or more files"),
     CLP_POSPARAM_END
 };
 

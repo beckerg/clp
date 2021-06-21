@@ -11,7 +11,7 @@ static __thread time_t duration;
 static __thread struct clp_option optionv[] = {
     CLP_OPTION_TLS('d', time_t, duration, NULL, "specify max duration (seconds)"),
     CLP_OPTION_TLS('j', int, jobs, NULL, "specify max number of jobs"),
-    CLP_OPTION_TLS('C', fp, conf, NULL, "specify config file"),
+    CLP_OPTION_TLS('C', fopen, cf, NULL, "specify config file"),
     CLP_OPTION_HELP,
     CLP_OPTION_END
 };

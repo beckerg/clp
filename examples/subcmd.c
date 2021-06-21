@@ -9,6 +9,7 @@
 char version[] = "1.2.3";
 int verbosity, dryrun;
 int foo, bar, baz;
+FILE *fp;
 
 struct subcmd {
     const char *name;
@@ -31,7 +32,7 @@ struct clp_option optionv[] = {
 };
 
 struct clp_posparam posparamv_foo[] = {
-    CLP_POSPARAM("files...", "one or more files", NULL, NULL),
+    CLP_POSPARAM("files...", fopen, fp, "one or more files"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_foo[] = {
@@ -41,7 +42,7 @@ struct clp_option optionv_foo[] = {
 };
 
 struct clp_posparam posparamv_bar[] = {
-    CLP_POSPARAM("[files...]", "zero or more files", NULL, NULL),
+    CLP_POSPARAM("[files...]", fopen, fp, "zero or more files"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_bar[] = {
@@ -51,7 +52,7 @@ struct clp_option optionv_bar[] = {
 };
 
 struct clp_posparam posparamv_baz[] = {
-    CLP_POSPARAM("[file]", "zero or one file", NULL, NULL),
+    CLP_POSPARAM("[file]", fopen, fp, "zero or one file"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_baz[] = {
