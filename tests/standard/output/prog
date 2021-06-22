@@ -14,7 +14,6 @@ usage: prog -V
 -V     print version
 -v     increase verbosity
 args...  zero or more positional arguments
-
 progname is prog
 verbosity is 0 0
 argc=2 optind=2

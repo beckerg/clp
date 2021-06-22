@@ -122,15 +122,11 @@
         .help = (_xhelp),                                               \
     }
 
-/* Use the HELP, VERSION, VERBOSITY, DRYRUN, and CONF templates to ensure
+/* Use the VERBOSITY, VERSION, DRYRUN, HELP, and CONF templates to ensure
  * a consistent look-and-free across all tools built with clp.
  */
-#define CLP_OPTION_HELP                                                 \
-    {                                                                   \
-        .optopt = 'h', .excludes = "*", .longopt = "help",              \
-        .after = clp_help, .paramv = clp_posparam_none,                 \
-        .help = "print this help list",                                 \
-    }
+#define CLP_OPTION_VERBOSITY(_xverbosity)                               \
+    CLP_OPTION('v', incr, _xverbosity, NULL, "increase verbosity")
 
 #define CLP_OPTION_VERSION(_xversion)                                   \
     {                                                                   \
@@ -139,14 +135,15 @@
         .cvtdst = &(_xversion), .help = "print version",                \
     }
 
-#define CLP_OPTION_VERBOSITY(_xverbosity)                               \
-    CLP_OPTION('v', incr, _xverbosity, NULL, "increase verbosity")
-
 #define CLP_OPTION_DRYRUN(_xdryrun)                                     \
     CLP_OPTION('n', incr, _xdryrun, NULL, "dry run")
 
-#define CLP_OPTION_CONF(_xconf)                                         \
-    CLP_OPTION('C', fopen, _xconf, NULL, "specify a config file")
+#define CLP_OPTION_HELP                                                 \
+    {                                                                   \
+        .optopt = 'h', .excludes = "*", .longopt = "help",              \
+        .after = clp_help, .paramv = clp_posparam_none,                 \
+        .help = "print this help list",                                 \
+    }
 
 #define CLP_OPTION_STD(_xverbosity, _xversion, _xdryrun)        \
     CLP_OPTION_VERBOSITY(verbosity),                            \
@@ -154,13 +151,16 @@
     CLP_OPTION_DRYRUN(dryrun),                                  \
     CLP_OPTION_HELP                                             \
 
+#define CLP_OPTION_CONF(_xconf)                                         \
+    CLP_OPTION('C', fopen, _xconf, NULL, "specify a config file")
+
 /* Use CLP_OPTION_TMPL() to generate options with custom optarg converters
- * and/or to specify callbacks to be called before/after option processing.
+ * and/or to specify callbacks to be called after option processing.
  */
 #define CLP_OPTION_TMPL(_xoptopt, _xvarname, _xexcludes, _xhelp,        \
                         _xparamv, _xcvtfunc, _xcvtflags,                \
                         _xcvtparms, _xcvtdst,                           \
-                        _xbefore, _xafter, _xlongopt)                   \
+                        _xafter, _xlongopt)                             \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
         .argname = (_xvarname),                                         \
@@ -170,7 +170,6 @@
         .cvtflags = (_xcvtflags),                                       \
         .cvtparms = (_xcvtparms),                                       \
         .cvtdst = (_xcvtdst),                                           \
-        .before = (_xbefore),                                           \
         .after = (_xafter),                                             \
         .paramv = (_xparamv),                                           \
         .help = (_xhelp),                                               \
@@ -204,8 +203,8 @@ typedef int clp_cvt_cb(struct clp *clp, const char *str, int flags, void *parms,
 
 typedef void clp_get_cb(struct clp_option *option, void *dst);
 
-typedef void clp_option_cb(struct clp_option *option);
-typedef void clp_posparam_cb(struct clp_posparam *param);
+typedef int clp_option_cb(struct clp_option *option);
+typedef int clp_posparam_cb(struct clp_posparam *param);
 
 struct clp_posparam {
     const char          *name;          // Name shown by help for the parameter
@@ -214,7 +213,6 @@ struct clp_posparam {
     int                  cvtflags;      // Arg 2 to cvtfunc()
     void                *cvtparms;      // Arg 3 to cvtfunc()
     void                *cvtdst;        // Where cvtfunc() stores its output
-    clp_posparam_cb     *before;        // Called before positional argument distribution
     clp_posparam_cb     *after;         // Called after positional argument distribution
     void                *priv;          // Free for use by caller of clp_parse()
 
@@ -241,8 +239,7 @@ struct clp_option {
     int                  cvtflags;      // Arg 2 to cvtfunc()
     void                *cvtparms;      // Arg 3 to cvtfunc()
     void                *cvtdst;        // Where cvtfunc() stores its result
-    clp_option_cb       *before;        // Called before getopt processing
-    clp_option_cb       *after;         // Called after getopt processing
+    clp_option_cb       *after;         // Called after option conversion processing
     struct clp_posparam *paramv;        // Option specific positional parameters
     void                *priv;          // Free for use by caller of clp_parse()
 

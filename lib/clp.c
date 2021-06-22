@@ -367,42 +367,46 @@ clp_excludes(struct clp_option *first, const struct clp_option *option, int give
 /* Option after() procedures are called after option processing
  * for each option that was given on the command line.
  */
-void
+int
 clp_version(struct clp_option *option)
 {
     printf("%s\n", (char *)option->cvtdst);
+
+    return 0;
 }
 
-/* Return the count of leading open brackets, and the given
- * name stripped of white space and brackets in buf[].
+/* Return the count of leading open brackets, and the given name copied
+ * to buf[] and stripped of brackets and leading/trailing white space.
  */
 int
 clp_unbracket(const char *name, char *buf, size_t bufsz)
 {
-    int nbrackets = 0;
+    char *bufbase = buf;
+    int obrackets = 0;
 
     if (!name || !buf || bufsz < 1) {
         abort();
     }
 
-    // Eliminate white space around open brackets
+    // Count open brackets up to first non-space character.
     while (isspace(*name) || *name == '[') {
-        if (*name == '[') {
-            ++nbrackets;
-        }
+        obrackets += (*name == '[');
         ++name;
     }
 
     strncpy(buf, name, bufsz - 1);
     buf[bufsz - 1] = '\000';
 
-    // Terminate buf at first white space or bracket
-    while (*buf && !isspace(*buf) && *buf != ']' && *buf != '[') {
+    // Terminate buf at first bracket
+    while (*buf && *buf != ']' && *buf != '[')
         ++buf;
-    }
     *buf = '\000';
 
-    return nbrackets;
+    // Eliminate trailing white space
+    while (buf-- > bufbase && isspace(*buf))
+        *buf = '\000';
+
+    return obrackets;
 }
 
 /* Lexical string comparator for qsort (e.g., AaBbCcDd...)
@@ -702,7 +706,7 @@ clp_help_cmp(const void *lhs, const void *rhs)
  * src...  specify one or more source files
  * dst     specify destination directory
  */
-void
+int
 clp_help(struct clp_option *opthelp)
 {
     const struct clp_posparam *param;
@@ -718,7 +722,7 @@ clp_help(struct clp_option *opthelp)
      * Ususally -h, but the user could have changed it...
      */
     if (!opthelp) {
-        return;
+        return 0;
     }
 
     clp = opthelp->clp;
@@ -830,7 +834,7 @@ clp_help(struct clp_option *opthelp)
         }
     }
 
-    fprintf(fp, "\n");
+    return 0;
 }
 
 /* Determine the minimum and maximum number of arguments that the
@@ -933,12 +937,6 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
                 params_tail = &o->paramv->next;
                 *params_tail = NULL;
             }
-
-            if (o->before) {
-                *options_tail = o;
-                options_tail = &o->next;
-                *options_tail = NULL;
-            }
         }
 
         if (longopt > clp->longopts) {
@@ -946,13 +944,6 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
             *pc++ = 'W';
             *pc++ = ';';
             *pc = '\000';
-        }
-
-        /* Call each option's before() procedure prior to option processing.
-         */
-        while (options_head) {
-            options_head->before(options_head);
-            options_head = o->next;
         }
     }
 
@@ -1039,6 +1030,9 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         if (rc) {
             char optstr[] = { o->optopt, '\000' };
 
+            if (rc < 0)
+                return 0;
+
             clp_eprint(clp, "unable to convert '%s%s %s'",
                        (longidx >= 0) ? "--" : "-",
                        (longidx >= 0) ? o->longopt : optstr,
@@ -1081,21 +1075,16 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
      * been processed and the command line syntax has been verified.
      */
     while (options_head) {
-        options_head->after(options_head);
+        rc = options_head->after(options_head);
+        if (rc)
+            return (rc > 0) ? rc : 0;
+
         options_head = options_head->next;
     }
 
     if (paramv) {
         struct clp_posparam *param;
         int i;
-
-        /* Call each parameter's before() procedure before positional parameter processing.
-         */
-        for (param = paramv; param->name; ++param) {
-            if (param->before) {
-                param->before(param);
-            }
-        }
 
         /* Distribute the given positional arguments to the positional parameters
          * using a greedy approach.

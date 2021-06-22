@@ -9,6 +9,7 @@
 char version[] = "1.2.3";
 int verbosity, dryrun;
 int foo, bar, baz;
+char *nvpair;
 FILE *fp;
 
 struct subcmd {
@@ -22,8 +23,9 @@ clp_cvt_cb subcmd_cvt;
 struct subcmd *subcmd;
 
 struct clp_posparam posparamv[] = {
-    { .name = "cmd...", .help = "subcommand to run",
+    { .name = "cmd", .help = "subcommand to run",
       .cvtfunc = subcmd_cvt, .cvtdst = &subcmd },
+    { .name = "[args...]", .help = "subcommand arguments..." },
     CLP_POSPARAM_END
 };
 struct clp_option optionv[] = {
@@ -42,7 +44,7 @@ struct clp_option optionv_foo[] = {
 };
 
 struct clp_posparam posparamv_bar[] = {
-    CLP_POSPARAM("[files...]", fopen, fp, "zero or more files"),
+    CLP_POSPARAM("[name=value ...]", string, nvpair, "zero or more nv pairs"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_bar[] = {

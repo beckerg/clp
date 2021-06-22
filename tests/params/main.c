@@ -105,7 +105,7 @@ struct clp_option optionv[] = {
     CLP_OPTION_END
 };
 
-void
+int
 posparamv_default_after(struct clp_posparam *param)
 {
     int i;
@@ -119,9 +119,11 @@ posparamv_default_after(struct clp_posparam *param)
         printf("%s: name=%-12s  argv[%d]=%s\n",
                __func__, param->name, i, param->argv[i]);
     }
+
+    return 0;
 }
 
-void
+int
 posparamv_list_after(struct clp_posparam *param)
 {
     int i;
@@ -129,6 +131,8 @@ posparamv_list_after(struct clp_posparam *param)
     for (i = 0; i < param->argc; ++i) {
         printf("%s: %s\n", __func__, param->argv[i]);
     }
+
+    return 0;
 }
 
 static bool

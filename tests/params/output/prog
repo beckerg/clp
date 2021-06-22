@@ -15,7 +15,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 progname is prog
 verbosity is 0 0
 argc=2 optind=2

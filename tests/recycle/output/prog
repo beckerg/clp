@@ -18,7 +18,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -36,7 +35,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -54,7 +52,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -72,7 +69,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -90,7 +86,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -108,7 +103,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -126,7 +120,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -144,7 +137,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -162,7 +154,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -180,7 +171,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 + ./prog --help
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
@@ -199,7 +189,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -217,7 +206,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -235,7 +223,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -253,7 +240,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -271,7 +257,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -289,7 +274,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -307,7 +291,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -325,7 +308,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -343,7 +325,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 usage: prog [-GLnv] [-C cf] [-s mystring] [leftmost [left]] src...
 usage: prog -h
 usage: prog -l [-GLnv] [-C cf] [-s mystring] [file...]
@@ -361,7 +342,6 @@ leftmost  optional left-most parameter
 left      optional left parameter
 src...    one or more source files
 file...   zero or more files
-
 + ./prog -hv
 prog: option -h excludes -v, use -h for help
 + ./prog --help -v

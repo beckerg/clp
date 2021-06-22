@@ -24,7 +24,6 @@ usage: prog -V
 -z           specify z flag
 args...  zero or more positional arguments
 
-
 + ./prog -hv
 prog: option -h excludes -v, use -h for help
 + ./prog -V
