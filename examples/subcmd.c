@@ -34,7 +34,7 @@ struct clp_option optionv[] = {
 };
 
 struct clp_posparam posparamv_foo[] = {
-    CLP_POSPARAM("files...", fopen, fp, "one or more files"),
+    CLP_POSPARAM("files...", fopen, fp, NULL, "one or more files"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_foo[] = {
@@ -44,7 +44,7 @@ struct clp_option optionv_foo[] = {
 };
 
 struct clp_posparam posparamv_bar[] = {
-    CLP_POSPARAM("[name=value ...]", string, nvpair, "zero or more nv pairs"),
+    CLP_POSPARAM("[name=value ...]", string, nvpair, NULL, "zero or more nv pairs"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_bar[] = {
@@ -54,7 +54,7 @@ struct clp_option optionv_bar[] = {
 };
 
 struct clp_posparam posparamv_baz[] = {
-    CLP_POSPARAM("[file]", fopen, fp, "zero or one file"),
+    CLP_POSPARAM("[file]", fopen, fp, NULL, "zero or one file"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_baz[] = {

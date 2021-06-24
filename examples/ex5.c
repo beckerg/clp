@@ -7,19 +7,19 @@ int verbosity;
 bool rflag;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("[left]", int, left, "optional left justified positional parameter"),
-    CLP_POSPARAM("[middle...]", int, middle, "zero or more params"),
-    CLP_POSPARAM("right", int, right, "right justified positional parameter"),
+    CLP_POSPARAM("[left]", int, left, NULL, "optional left justified positional parameter"),
+    CLP_POSPARAM("[middle...]", int, middle, NULL, "zero or more params"),
+    CLP_POSPARAM("right", int, right, NULL, "right justified positional parameter"),
     CLP_POSPARAM_END
 };
 
 struct clp_posparam posparamv_r[] = {
-    CLP_POSPARAM("files...", int, left, "one or more files"),
+    CLP_POSPARAM("files...", int, left, NULL, "one or more files"),
     CLP_POSPARAM_END
 };
 
 struct clp_option optionv[] = {
-    CLP_XOPTION('r', bool, rflag, "^v", "remove files", NULL, NULL, posparamv_r),
+    CLP_XOPTION('r', bool, rflag, "^v", "remove files", NULL, NULL, NULL, posparamv_r),
     CLP_OPTION_VERBOSITY(verbosity),
     CLP_OPTION_HELP,
     CLP_OPTION_END

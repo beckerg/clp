@@ -91,8 +91,8 @@
         .cvtdst = &(_xvarname),                                         \
     }
 
-#define CLP_XOPTION(_xoptopt, _xtype, _xvarname, _xexcludes, _xhelp, \
-                    _xlongopt, _xafter, _xparamv)                       \
+#define CLP_XOPTION(_xoptopt, _xtype, _xvarname, _xexcludes, _xhelp,    \
+                    _xlongopt, _xaction, _xafter, _xparamv)             \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
         .argname = #_xvarname,                                          \
@@ -102,6 +102,7 @@
         .getfunc = clp_get_ ## _xtype,                                  \
         .cvtfunc = clp_cvt_ ## _xtype,                                  \
         .cvtdst = &(_xvarname),                                         \
+        .action = (_xaction),                                           \
         .after = (_xafter),                                             \
         .paramv = (_xparamv),                                           \
     }
@@ -160,7 +161,7 @@
 #define CLP_OPTION_TMPL(_xoptopt, _xvarname, _xexcludes, _xhelp,        \
                         _xparamv, _xcvtfunc, _xcvtflags,                \
                         _xcvtparms, _xcvtdst,                           \
-                        _xafter, _xlongopt)                             \
+                        _xaction, _xafter, _xlongopt)                   \
     {                                                                   \
         .optopt = (_xoptopt),                                           \
         .argname = (_xvarname),                                         \
@@ -170,18 +171,20 @@
         .cvtflags = (_xcvtflags),                                       \
         .cvtparms = (_xcvtparms),                                       \
         .cvtdst = (_xcvtdst),                                           \
+        .action = (_xaction),                                           \
         .after = (_xafter),                                             \
         .paramv = (_xparamv),                                           \
         .help = (_xhelp),                                               \
     }
 
 
-#define CLP_POSPARAM(_xname, _xtype, _xvarname, _xhelp)                 \
+#define CLP_POSPARAM(_xname, _xtype, _xvarname, _xaction, _xhelp)       \
     {                                                                   \
         .name = (_xname),                                               \
         .help = (_xhelp),                                               \
         .cvtfunc = clp_cvt_ ## _xtype,                                  \
         .cvtdst = &(_xvarname),                                         \
+        .action = (_xaction),                                           \
     }
 
 #define CLP_OPTION_END      { .optopt = 0 }
@@ -213,7 +216,8 @@ struct clp_posparam {
     int                  cvtflags;      // Arg 2 to cvtfunc()
     void                *cvtparms;      // Arg 3 to cvtfunc()
     void                *cvtdst;        // Where cvtfunc() stores its output
-    clp_posparam_cb     *after;         // Called after positional argument distribution
+    clp_posparam_cb     *action;        // Called for each given positional argument
+    clp_posparam_cb     *after;         // Called after all posparam processing
     void                *priv;          // Free for use by caller of clp_parse()
 
     /* The following fields are used by the option parser, whereas the above
@@ -239,7 +243,8 @@ struct clp_option {
     int                  cvtflags;      // Arg 2 to cvtfunc()
     void                *cvtparms;      // Arg 3 to cvtfunc()
     void                *cvtdst;        // Where cvtfunc() stores its result
-    clp_option_cb       *after;         // Called after option conversion processing
+    clp_option_cb       *action;        // Called each time an option is given
+    clp_option_cb       *after;         // Called after all option processing
     struct clp_posparam *paramv;        // Option specific positional parameters
     void                *priv;          // Free for use by caller of clp_parse()
 

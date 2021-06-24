@@ -364,17 +364,6 @@ clp_excludes(struct clp_option *first, const struct clp_option *option, int give
     return NULL;
 }
 
-/* Option after() procedures are called after option processing
- * for each option that was given on the command line.
- */
-int
-clp_version(struct clp_option *option)
-{
-    printf("%s\n", (char *)option->cvtdst);
-
-    return 0;
-}
-
 /* Return the count of leading open brackets, and the given name copied
  * to buf[] and stripped of brackets and leading/trailing white space.
  */
@@ -674,6 +663,14 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
     }
 
     fprintf(fp, "%s\n", paramv ? "" : " [args...]");
+}
+
+int
+clp_version(struct clp_option *option)
+{
+    printf("%s\n", (char *)option->cvtdst);
+
+    return 0;
 }
 
 /* Lexical option comparator for qsort (e.g., AaBbCcDd...)
@@ -1003,6 +1000,8 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
             return EX_USAGE;
         }
 
+        /* Build a list of after procs to run after option processing
+         */
         if (o->after && !o->given) {
             o->next = NULL;
             *options_tail = o;
@@ -1016,28 +1015,33 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         if (o->paramv)
             paramv = o->paramv;
 
-        if (!o->cvtfunc)
-            continue;
+        if (o->cvtfunc) {
+            if (o->given > 1 && o->cvtdst) {
+                if (o->cvtfunc == clp_cvt_string) {
+                    free(*(void **)o->cvtdst);
+                    *(void **)o->cvtdst = NULL;
+                }
+            }
 
-        if (o->given > 1 && o->cvtdst) {
-            if (o->cvtfunc == clp_cvt_string) {
-                free(*(void **)o->cvtdst);
-                *(void **)o->cvtdst = NULL;
+            rc = o->cvtfunc(clp, optarg, o->cvtflags, o->cvtparms, o->cvtdst);
+            if (rc) {
+                if (rc > 0) {
+                    char optstr[] = { o->optopt, '\000' };
+
+                    clp_eprint(clp, "unable to convert '%s%s %s'",
+                               (longidx >= 0) ? "--" : "-",
+                               (longidx >= 0) ? o->longopt : optstr,
+                               optarg);
+                }
+
+                return (rc > 0) ? rc : 0;
             }
         }
 
-        rc = o->cvtfunc(clp, optarg, o->cvtflags, o->cvtparms, o->cvtdst);
-        if (rc) {
-            char optstr[] = { o->optopt, '\000' };
-
-            if (rc < 0)
-                return 0;
-
-            clp_eprint(clp, "unable to convert '%s%s %s'",
-                       (longidx >= 0) ? "--" : "-",
-                       (longidx >= 0) ? o->longopt : optstr,
-                       optarg);
-            return rc;
+        if (o->action) {
+            rc = o->action(o);
+            if (rc)
+                return (rc > 0) ? rc : 0;
         }
     }
 
@@ -1124,18 +1128,21 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         /* Call each parameter's convert() procedure for each given argument.
          */
         for (param = paramv; param->name; ++param) {
-            if (!param->cvtfunc)
-                continue;
-
             for (i = 0; i < param->argc; ++i) {
-                rc = param->cvtfunc(clp, param->argv[i], param->cvtflags,
-                                    param->cvtparms, param->cvtdst);
-                if (rc < 0)
-                    break;
+                if (param->cvtfunc) {
+                    rc = param->cvtfunc(clp, param->argv[i], param->cvtflags,
+                                        param->cvtparms, param->cvtdst);
+                    if (rc) {
+                        if (rc > 0)
+                            clp_eprint(clp, "unable to convert '%s'", param->argv[i]);
+                        return (rc > 0) ? rc : 0;
+                    }
+                }
 
-                if (rc) {
-                    clp_eprint(clp, "unable to convert '%s'", param->argv[i]);
-                    return rc;
+                if (param->action) {
+                    rc = param->action(param);
+                    if (rc)
+                        return (rc > 0) ? rc : 0;
                 }
             }
         }
@@ -1144,7 +1151,9 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
          */
         for (param = paramv; param->name; ++param) {
             if (param->after && param->argc > 0) {
-                param->after(param);
+                rc = param->after(param);
+                if (rc)
+                    return (rc > 0) ? rc : 0;
             }
         }
     }
@@ -1175,19 +1184,22 @@ clp_parsel(const char *line, const char *delim,
     return rc;
 }
 
+/* Trim leading white space from given string.  Returns NULL
+ * if resulting string is zero length.  Typically, str is
+ * either NULL or a zero length string on entry.
+ */
 static const char *
 clp_trim(const char *str)
 {
-    while (str && isspace(str[0])) {
+    while (str && isspace(str[0]))
         ++str;
-    }
 
     return (str && !str[0] ? NULL : str);
 }
 
 
-/* Parse a vector of strings as specified by the given option and
- * param vectors (either or both which may be nil).
+/* Parse a vector of strings as specified by the given option
+ * and parameter vectors (either or both of which may be nil).
  *
  * On error, returns a suggested exit code from sysexits.h.
  */
@@ -1197,19 +1209,19 @@ clp_parsev(int argc, char **argv,
            struct clp_posparam *paramv)
 {
     struct clp clp;
-    char *env;
     size_t sz;
     int rc;
 
+#ifdef CLP_DEBUG
+    char *env = getenv("CLP_DEBUG");
+
+    if (env) {
+        clp_debug = strtol(env, NULL, 0);
+    }
+#endif
+
     if (argc < 1 || !argv)
         return 0;
-
-    env = getenv("CLP_DEBUG");
-    if (env) {
-#ifdef CLP_DEBUG
-        clp_debug = strtol(env, NULL, 0);
-#endif
-    }
 
     memset(&clp, 0, sizeof(clp));
 
