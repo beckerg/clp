@@ -1308,7 +1308,7 @@ clp_parsev(int argc, char **argv,
 
     rc = clp_parsev_impl(&clp, argc, argv);
 
-    if (rc)
+    if (rc && clp.errbuf[0])
         fprintf(stderr, "%s: %s\n", clp.basename, clp.errbuf);
 
     free(clp.longopts);

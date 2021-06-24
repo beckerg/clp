@@ -8,7 +8,7 @@ int verbosity;
 FILE *fp;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("files...", fopen, fp, NULL, "one or more files"),
+    CLP_POSPARAM("files...", fopen, fp, NULL, NULL, "one or more files"),
     CLP_POSPARAM_END
 };
 

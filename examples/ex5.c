@@ -7,14 +7,15 @@ int verbosity;
 bool rflag;
 
 struct clp_posparam posparamv[] = {
-    CLP_POSPARAM("[left]", int, left, NULL, "optional left justified positional parameter"),
-    CLP_POSPARAM("[middle...]", int, middle, NULL, "zero or more params"),
-    CLP_POSPARAM("right", int, right, NULL, "right justified positional parameter"),
+    CLP_POSPARAM("[left]", int, left, NULL, NULL,
+                 "optional left justified positional parameter"),
+    CLP_POSPARAM("[middle...]", int, middle, NULL, NULL, "zero or more params"),
+    CLP_POSPARAM("right", int, right, NULL, NULL, "right justified positional parameter"),
     CLP_POSPARAM_END
 };
 
 struct clp_posparam posparamv_r[] = {
-    CLP_POSPARAM("files...", int, left, NULL, "one or more files"),
+    CLP_POSPARAM("files...", int, left, NULL, NULL, "one or more files"),
     CLP_POSPARAM_END
 };
 

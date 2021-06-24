@@ -178,13 +178,14 @@
     }
 
 
-#define CLP_POSPARAM(_xname, _xtype, _xvarname, _xaction, _xhelp)       \
+#define CLP_POSPARAM(_xname, _xtype, _xvarname, _xaction, _xafter, _xhelp) \
     {                                                                   \
         .name = (_xname),                                               \
         .help = (_xhelp),                                               \
         .cvtfunc = clp_cvt_ ## _xtype,                                  \
         .cvtdst = &(_xvarname),                                         \
         .action = (_xaction),                                           \
+        .after = (_xafter),                                             \
     }
 
 #define CLP_OPTION_END      { .optopt = 0 }

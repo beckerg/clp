@@ -6,11 +6,8 @@
 
 #include "clp.h"
 
-char version[] = "1.2.3";
-int verbosity, dryrun;
-int foo, bar, baz;
-char *nvpair;
-FILE *fp;
+#define SUBCMD(_xname, _xoptionv, _xparamv, _xhelp) \
+    { .name = (_xname), .help = (_xhelp), .optionv = (_xoptionv), .posparamv = (_xparamv) }
 
 struct subcmd {
     const char *name;
@@ -19,13 +16,22 @@ struct subcmd {
     struct clp_posparam *posparamv;
 };
 
-clp_cvt_cb subcmd_cvt;
+struct subcmd subcmdv[];
 struct subcmd *subcmd;
+clp_cvt_cb subcmd_cvt;
+
+clp_posparam_cb subcmd_action;
+clp_posparam_cb subcmd_after;
+
+char version[] = "1.2.3";
+int verbosity, dryrun;
+int foo, bar, baz;
+char *nvpair;
+FILE *fp;
 
 struct clp_posparam posparamv[] = {
-    { .name = "cmd", .help = "subcommand to run",
-      .cvtfunc = subcmd_cvt, .cvtdst = &subcmd },
-    { .name = "[args...]", .help = "subcommand arguments..." },
+    { .name = "cmd...", .help = "subcommand to run",
+      .cvtfunc = subcmd_cvt, .cvtparms = subcmdv, .cvtdst = &subcmd, .action = subcmd_action },
     CLP_POSPARAM_END
 };
 struct clp_option optionv[] = {
@@ -34,7 +40,7 @@ struct clp_option optionv[] = {
 };
 
 struct clp_posparam posparamv_foo[] = {
-    CLP_POSPARAM("files...", fopen, fp, NULL, "one or more files"),
+    CLP_POSPARAM("files...", fopen, fp, NULL, subcmd_after, "one or more files"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_foo[] = {
@@ -44,7 +50,8 @@ struct clp_option optionv_foo[] = {
 };
 
 struct clp_posparam posparamv_bar[] = {
-    CLP_POSPARAM("[name=value ...]", string, nvpair, NULL, "zero or more nv pairs"),
+    CLP_POSPARAM("[name=value ...]", string, nvpair, NULL, subcmd_after,
+                 "zero or more nv pairs"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_bar[] = {
@@ -54,7 +61,7 @@ struct clp_option optionv_bar[] = {
 };
 
 struct clp_posparam posparamv_baz[] = {
-    CLP_POSPARAM("[file]", fopen, fp, NULL, "zero or one file"),
+    CLP_POSPARAM("[file]", fopen, fp, NULL, subcmd_after, "zero or one file"),
     CLP_POSPARAM_END
 };
 struct clp_option optionv_baz[] = {
@@ -64,32 +71,48 @@ struct clp_option optionv_baz[] = {
 };
 
 struct subcmd subcmdv[] = {
-    { .name = "foo", .help = "do foo action...",
-      .optionv = optionv_foo, .posparamv = posparamv_foo },
-    { .name = "bar", .help = "do bar action...",
-      .optionv = optionv_bar, .posparamv = posparamv_bar },
-    { .name = "baz", .help = "do baz action...",
-      .optionv = optionv_baz, .posparamv = posparamv_baz },
+    SUBCMD("foo", optionv_foo, posparamv_foo, "do foo stuff"),
+    SUBCMD("bar", optionv_bar, posparamv_bar, "do bar stuff"),
+    SUBCMD("baz", optionv_baz, posparamv_baz, "do baz stuff"),
     { .name = NULL }
 };
 
 int
 subcmd_cvt(struct clp *clp, const char *str, int flags, void *parms, void *dst)
 {
-    int i;
+    struct subcmd *subcmd = parms;
 
-    for (i = 0; subcmdv[i].name; ++i) {
-        if (0 == strcasecmp(str, subcmdv[i].name))
+    for (subcmd = parms; subcmd && subcmd->name; ++subcmd) {
+        if (0 == strcasecmp(str, subcmd->name))
             break;
     }
 
-    if (!subcmdv[i].name) {
+    if (!subcmd || !subcmd->name) {
         clp_eprint(clp, "invalid subcommand '%s', use -h for help", str);
         errno = EINVAL;
         return EX_USAGE;
     }
 
-    *(void **)dst = subcmdv + i;
+    *(void **)dst = subcmd;
+
+    return 0;
+}
+
+int
+subcmd_action(struct clp_posparam *param)
+{
+    int rc;
+
+    rc = clp_parsev(param->argc, param->argv, subcmd->optionv, subcmd->posparamv);
+
+    return rc ?: -1;
+}
+
+int
+subcmd_after(struct clp_posparam *param)
+{
+    for (int i = 0; i < param->argc; ++i)
+        printf("%s: %s argv[%d] %s\n", __func__, subcmd->name, i, param->argv[i]);
 
     return -1;
 }
@@ -113,19 +136,6 @@ main(int argc, char **argv)
         printf("\n");
         return 0;
     }
-
-    argc -= optind;
-    argv += optind;
-
-    rc = clp_parsev(argc, argv, subcmd->optionv, subcmd->posparamv);
-    if (rc)
-        return rc;
-
-    argc -= optind;
-    argv += optind;
-
-    for (int i = 0; i < argc; ++i)
-        printf("argv[%d] %s\n", i, argv[i]);
 
     /* do something... */
 
