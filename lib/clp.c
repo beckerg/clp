@@ -280,6 +280,51 @@ CLP_GET_TMPL(fopen,     FILE *);
 CLP_GET_TMPL(string,    char *);
 
 
+int
+clp_cvt_subcmd(struct clp *clp, const char *str, int flags, void *parms, void *dst)
+{
+    struct clp_subcmd *subcmd = parms;
+    struct clp_subcmd *match = NULL;
+
+    if (subcmd) {
+        for (; subcmd->name; ++subcmd) {
+            char *pc = strstr(subcmd->name, str);
+
+            if (!pc || pc != subcmd->name)
+                continue;
+
+            if (match) {
+                clp_eprint(clp, "ambiguous subcommand '%s', use -h for help", str);
+                errno = EINVAL;
+                return EX_USAGE;
+            }
+
+            match = subcmd; // found a full or partial match
+        }
+    }
+
+    if (!match) {
+        clp_eprint(clp, "invalid subcommand '%s', use -h for help", str);
+        errno = EINVAL;
+        return EX_USAGE;
+    }
+
+    *(void **)dst = match;
+
+    return 0;
+}
+
+int
+clp_action_subcmd(struct clp_posparam *param)
+{
+    struct clp_subcmd *subcmd = *(void **)param->cvtdst;
+    int rc;
+
+    rc = clp_parsev(param->argc, param->argv, subcmd->optionv, subcmd->posparamv);
+
+    return rc ?: -1;
+}
+
 struct clp_option *
 clp_find(int c, struct clp_option *optionv)
 {
@@ -294,6 +339,7 @@ clp_find(int c, struct clp_option *optionv)
 
     return NULL;
 }
+
 
 struct clp_option *
 clp_given(int c, struct clp_option *optionv, void *dst)
@@ -364,6 +410,19 @@ clp_excludes(struct clp_option *first, const struct clp_option *option, int give
     return NULL;
 }
 
+/* Trim leading white space from given string.  Returns NULL
+ * if resulting string is zero length.  Typically, str is
+ * either NULL or a zero length string on entry.
+ */
+static const char *
+clp_trim(const char *str)
+{
+    while (str && isspace(str[0]))
+        ++str;
+
+    return (str && !str[0] ? NULL : str);
+}
+
 /* Return the count of leading open brackets, and the given name copied
  * to buf[] and stripped of brackets and leading/trailing white space.
  */
@@ -396,6 +455,17 @@ clp_unbracket(const char *name, char *buf, size_t bufsz)
         *buf = '\000';
 
     return obrackets;
+}
+
+static struct clp_subcmd *
+clp_subcmd(const struct clp_posparam *param)
+{
+    struct clp_subcmd *subcmd = NULL;
+
+    if (param && param->cvtsubcmd)
+        subcmd = param->cvtparms;
+
+    return (subcmd && subcmd->name) ? subcmd : NULL;
 }
 
 /* Lexical string comparator for qsort (e.g., AaBbCcDd...)
@@ -464,6 +534,8 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
     for (o = clp->optionv; o->optopt > 0; ++o) {
         if (!clp_optopt_valid(o->optopt))
             continue;
+
+        o->help = clp_trim(o->help);
 
         if (limit) {
             if (clp_excludes2(limit, o)) {
@@ -706,13 +778,11 @@ clp_help_cmp(const void *lhs, const void *rhs)
 int
 clp_help(struct clp_option *opthelp)
 {
-    const struct clp_posparam *param;
-    const struct clp_option *option;
-    struct clp_posparam *paramv;
+    struct clp_posparam *paramv, *param;
+    struct clp_option *option;
+    int subcmd_width, width;
+    int longhelp, optionc;
     struct clp *clp;
-    int longhelp;
-    int optionc;
-    int width;
     FILE *fp;
 
     /* opthelp is the option that triggered clp into calling clp_help().
@@ -780,9 +850,8 @@ clp_help(struct clp_option *opthelp)
 
         option = optionv[i];
 
-        if (!option->help) {
+        if (!option->help)
             continue;
-        }
 
         buf[0] = '\000';
 
@@ -800,11 +869,28 @@ clp_help(struct clp_option *opthelp)
 
     /* Determine the width of the longest positional parameter name.
      */
+    subcmd_width = 0;
     width = 0;
+
     for (paramv = clp->params; paramv; paramv = paramv->next) {
         for (param = paramv; param->name; ++param) {
-            char namebuf[32];
+            struct clp_subcmd *subcmd = clp_subcmd(param);
+            char namebuf[width + 128];
             int namelen;
+
+            for (; subcmd && subcmd->name; ++subcmd) {
+                subcmd->help = clp_trim(subcmd->help);
+                if (subcmd->help) {
+                    namelen = strlen(namebuf);
+                    if (namelen > subcmd_width) {
+                        subcmd_width = namelen;
+                    }
+                }
+            }
+
+            param->help = clp_trim(param->help);
+            if (!param->help)
+                continue;
 
             clp_unbracket(param->name, namebuf, sizeof(namebuf));
             namelen = strlen(namebuf);
@@ -822,12 +908,44 @@ clp_help(struct clp_option *opthelp)
      */
     for (paramv = clp->params; paramv; paramv = paramv->next) {
         for (param = paramv; param->name; ++param) {
-            char namebuf[32];
+            struct clp_subcmd *subcmd;
+            char namebuf[width + 1];
+            char *comma = "";
 
             clp_unbracket(param->name, namebuf, sizeof(namebuf));
 
-            fprintf(fp, "%-*s  %s\n",
-                    width, namebuf, param->help ? param->help : "");
+            param->help = clp_trim(param->help);
+
+            subcmd = clp_subcmd(param);
+            if (!subcmd) {
+                if (param->help)
+                    fprintf(fp, "%-*s  %s\n", width, namebuf, param->help);
+                continue;
+            }
+
+            /* Print subcommand help.  If caller didn't provide a help
+             * string for the subcommand posparam then we build one
+             * from the list of subcommands.
+             */
+            if (param->help) {
+                fprintf(fp, "%s  %s\n", namebuf, param->help);
+            } else {
+                fprintf(fp, "%s  one of {", namebuf);
+
+                for (subcmd = param->cvtparms; subcmd->name; ++subcmd) {
+                    subcmd->help = clp_trim(subcmd->help);
+                    if (subcmd->help) {
+                        fprintf(fp, "%s%s", comma, subcmd->name);
+                        comma = ", ";
+                    }
+                }
+                fprintf(fp, "}\n");
+            }
+
+            for (subcmd = param->cvtparms; subcmd->name; ++subcmd) {
+                if (subcmd->help)
+                    fprintf(fp, "  %-*s  %s\n", subcmd_width, subcmd->name, subcmd->help);
+            }
         }
     }
 
@@ -843,14 +961,14 @@ clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
     struct clp_posparam *param;
 
     if (!paramv || !posminp || !posmaxp) {
-        assert(0);
-        return;
+        abort();
     }
 
     *posminp = 0;
     *posmaxp = 0;
 
     for (param = paramv; param->name; ++param) {
+        struct clp_subcmd *subcmd = clp_subcmd(param);
         char namebuf[128];
         int isoptional;
         int len;
@@ -863,11 +981,14 @@ clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
         if (len >= 3 && 0 == strncmp(namebuf + len - 3, "...", 3)) {
             param->posmax = 1024;
         } else {
-            param->posmax = 1;
+            param->posmax = subcmd ? 1024 : 1;
         }
 
         *posminp += param->posmin;
         *posmaxp += param->posmax;
+
+        if (subcmd)
+            break;
     }
 }
 
@@ -1090,7 +1211,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         struct clp_posparam *param;
         int i;
 
-        /* Distribute the given positional arguments to the positional parameters
+        /* Distribute the remaining arguments to the positional parameters
          * using a greedy approach.
          */
         for (param = paramv; param->name && argc > 0; ++param) {
@@ -1118,6 +1239,9 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
 
             argv += param->argc;
             argc -= param->argc;
+
+            if (clp_subcmd(param))
+                break;
         }
 
         if (argc > 0) {
@@ -1183,20 +1307,6 @@ clp_parsel(const char *line, const char *delim,
 
     return rc;
 }
-
-/* Trim leading white space from given string.  Returns NULL
- * if resulting string is zero length.  Typically, str is
- * either NULL or a zero length string on entry.
- */
-static const char *
-clp_trim(const char *str)
-{
-    while (str && isspace(str[0]))
-        ++str;
-
-    return (str && !str[0] ? NULL : str);
-}
-
 
 /* Parse a vector of strings as specified by the given option
  * and parameter vectors (either or both of which may be nil).

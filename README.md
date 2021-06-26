@@ -509,9 +509,98 @@ main(int argc, char **argv)
 }
 ```
 
+### Example 7 - Subcommands
+_**clp**_ makes it easy to build a parser that supports one or more
+subcommands.  See examples/subcmd.c for the full example, but here
+are required bits:
+
+```
+struct clp_posparam posparamv_foo[] = {
+    CLP_POSPARAM("files...", fopen, fp, NULL, do_foo, "one or more files"),
+    CLP_POSPARAM_END
+};
+
+struct clp_subcmd subcmdv[] = {
+    CLP_SUBCMD("foo", optionv_foo, posparamv_foo, "do foo stuff"),
+    CLP_SUBCMD("bar", optionv_bar, posparamv_bar, "do bar stuff"),
+    CLP_SUBCMD("baz", optionv_baz, posparamv_baz, "do baz stuff"),
+    CLP_SUBCMD("hidden", optionv, clp_posparam_none, NULL),
+    CLP_SUBCMD_END
+};
+
+struct clp_posparam posparamv[] = {
+    CLP_POSPARAM_SUBCMD("cmd", subcmdv, &subcmd, NULL),
+    { .name = "[args...]", .help = "subcommand arguments" },
+    CLP_POSPARAM_END
+};
+
+struct clp_option optionv[] = {
+    CLP_OPTION_STD(verbosity, version, dryrun),
+    CLP_OPTION_END
+};
+
+int
+do_foo(struct clp_posparam *param)
+{
+    if (clp_given('v', subcmd->optionv, NULL))
+        printf("%s: verbosity is %d\n", subcmd->name, verbosity);
+
+    for (int i = 0; i < param->argc; ++i)
+        printf("%s: argv[%d] %s\n", subcmd->name, i, param->argv[i]);
+
+    return 0;
+}
+
+int
+main(int argc, char **argv)
+{
+    return clp_parsev(argc, argv, optionv, posparamv);
+}
+```
+
+
+$ ./examples/subcmd
+subcmd: 1 positional argument required, use -h for help
+
+$ ./examples/subcmd -h
+usage: subcmd [-nv] cmd [args...]
+usage: subcmd -h
+usage: subcmd -V
+-h  print this help list
+-n  dry run
+-V  print version
+-v  increase verbosity
+cmd  one of {foo, bar, baz}
+  foo  do foo stuff
+  bar  do bar stuff
+  baz  do baz stuff
+args...  subcommand arguments
+
+$ ./examples/subcmd foo
+foo: 1 positional argument required, use -h for help
+
+$ ./examples/subcmd foo -h
+usage: foo [-nv] [-c foo] files...
+usage: foo -h
+usage: foo -V
+-c foo  specify foo count
+-h      print this help list
+-n      dry run
+-V      print version
+-v      increase verbosity
+files...  one or more files
+
+$ ./examples/subcmd foo -vvv LICENSE
+foo: verbosity is 3
+foo: argv[0] LICENSE
+
+$ ./examples/subcmd ba
+subcmd: ambiguous subcommand 'ba', use -h for help
+
+
 ## Developer Notes
 _**clp**_ always builds a "posixly correct" parser, and requires that all options
-have a single-letter option allowed by _**isgraph(3)**_ and excludes the **':'**
+have a single-letter option allowed by _**isgraph(3)**_ excluding the **':'**
 and **'?'** characters as the latter are produced by _**getopt_long(3)**_.
 
 ## TODO

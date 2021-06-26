@@ -188,8 +188,24 @@
         .after = (_xafter),                                             \
     }
 
+#define CLP_POSPARAM_SUBCMD(_xname, _xsubcmdv, _xcvtdst, _xhelp)        \
+    {                                                                   \
+        .name = (_xname),                                               \
+        .help = (_xhelp),                                               \
+        .cvtfunc = clp_cvt_subcmd,                                      \
+        .cvtdst = (_xcvtdst),                                           \
+        .cvtsubcmd = true,                                              \
+        .cvtparms = (_xsubcmdv),                                        \
+        .action = clp_action_subcmd,                                    \
+    }
+
+#define CLP_SUBCMD(_xname, _xoptionv, _xparamv, _xhelp) \
+    { .name = (_xname), .help = (_xhelp), .optionv = (_xoptionv), .posparamv = (_xparamv) }
+
 #define CLP_OPTION_END      { .optopt = 0 }
 #define CLP_POSPARAM_END    { .name = NULL }
+#define CLP_SUBCMD_END      { .name = NULL }
+
 
 struct clp;
 struct clp_option;
@@ -215,6 +231,7 @@ struct clp_posparam {
     const char          *help;          // One line that descibes this parameter
     clp_cvt_cb          *cvtfunc;       // Called for each positional argument
     int                  cvtflags;      // Arg 2 to cvtfunc()
+    bool                 cvtsubcmd;     // if true cvtparms is a struct clp_subcmd *
     void                *cvtparms;      // Arg 3 to cvtfunc()
     void                *cvtdst;        // Where cvtfunc() stores its output
     clp_posparam_cb     *action;        // Called for each given positional argument
@@ -258,6 +275,13 @@ struct clp_option {
     int                  given;         // Count of times this option was given
     int                  longidx;       // Index into cli->longopts[]
     unsigned char        cvtdstbuf[16] __attribute__((__aligned__(16)));
+};
+
+struct clp_subcmd {
+    const char *name;
+    const char *help;
+    struct clp_option *optionv;
+    struct clp_posparam *posparamv;
 };
 
 struct clp {
@@ -500,6 +524,9 @@ extern clp_cvt_cb clp_cvt_intptr_t, clp_cvt_uintptr_t;
 
 extern clp_cvt_cb clp_cvt_size_t;
 extern clp_cvt_cb clp_cvt_time_t;
+
+extern clp_cvt_cb clp_cvt_subcmd;
+extern clp_posparam_cb clp_action_subcmd;
 
 extern clp_get_cb clp_get_bool;
 extern clp_get_cb clp_get_incr;
