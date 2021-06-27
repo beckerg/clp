@@ -346,7 +346,8 @@ clp_cvt_ ## _xsuffix(struct clp *clp, const char *optarg, int flags, void *parms
     char *str, *strbase;                                                \
     _xtype *result;                                                     \
     bool domainchk;                                                     \
-    int xerrno, n;                                                      \
+    int xerrno;                                                         \
+    u_int n;                                                            \
                                                                         \
     if (!clp || !optarg || !dst) {                                      \
         errno = EINVAL;                                                 \

@@ -128,7 +128,7 @@ clp_eprint(struct clp *clp, const char *fmt, ...)
     char suffix[sizeof(clp->errbuf) - 8];
     int xerrno = errno;
     va_list ap;
-    int n;
+    size_t n;
 
     if (clp->errbuf[0] && !ispunct(clp->errbuf[0]))
         return;
@@ -140,7 +140,7 @@ clp_eprint(struct clp *clp, const char *fmt, ...)
     n = vsnprintf(clp->errbuf, sizeof(clp->errbuf), fmt, ap);
     va_end(ap);
 
-    if (n >= 0 && n < sizeof(clp->errbuf)) {
+    if (n < sizeof(clp->errbuf)) {
         snprintf(clp->errbuf + n, sizeof(clp->errbuf) - n, "%s%s",
                  xerrno && !suffix[0] ? ": " : "",
                  xerrno && !suffix[0] ? strerror(xerrno) : suffix);
@@ -154,6 +154,9 @@ clp_optopt_valid(int c)
 {
     return isgraph(c) && !strchr(":?-", c);
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 /* An option's conversion procedure is called each time the option is seen on
  * the command line.  The conversions for bool, string, open, fopen, and incr
@@ -324,6 +327,8 @@ clp_action_subcmd(struct clp_posparam *param)
 
     return rc ?: -1;
 }
+
+#pragma GCC diagnostic pop
 
 struct clp_option *
 clp_find(int c, struct clp_option *optionv)

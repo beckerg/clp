@@ -133,9 +133,11 @@ main(int argc, char **argv)
         printf("d is %.*lf\n", DBL_DECIMAL_DIG, mydouble);
 
     if (given('j')) {
+        u_int n;
+
         printf("intv is: ");
-        for (i = 0; i < intv.len; ++i) {
-            printf(" %d", intv.data[i]);
+        for (n = 0; n < intv.len; ++n) {
+            printf(" %d", intv.data[n]);
         }
         printf("\n");
     }

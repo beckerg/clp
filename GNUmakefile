@@ -1,8 +1,8 @@
-SUBDIRS = lib tests examples
+SUBDIRS = tests examples
 
-.PHONY: all check ${SUBDIRS} ${MAKECMDGOALS}
+.PHONY: all ${MAKECMDGOALS} ${SUBDIRS}
 
-all asan check clean clobber cscope debug output tags test ${MAKECMDGOALS}: ${SUBDIRS}
+all ${MAKECMDGOALS}: ${SUBDIRS}
 
 ${SUBDIRS}:
 	${MAKE} -C $@ ${MAKECMDGOALS}

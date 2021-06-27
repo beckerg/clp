@@ -2,19 +2,16 @@
 
 PROGS := ex1 ex2 ex3 ex4 ex5 ex6 subcmd
 
-SRC := ${patsubst %,%.c,${PROGS}} clp.c
+SRC := clp.c ${patsubst %,%.c,${PROGS}}
 OBJ := ${SRC:.c=.o}
 
 PROG_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
 
-INCLUDE  := -I. -I../lib
-CFLAGS   += -std=c11 -Wall -O2 -g ${INCLUDE}
-CFLAGS   += -march=native
+INCLUDE  := -I. -I../src
+CFLAGS   += -Wall -O2 -g ${INCLUDE}
 CPPFLAGS += -DPROG_VERSION=\"${PROG_VERSION}\" -DNDEBUG
-VPATH    := ../lib
+VPATH    := ../src
 
-# Always delete partially built targets.
-#
 .DELETE_ON_ERROR:
 .NOTPARALLEL:
 
@@ -31,7 +28,7 @@ asan: ${PROGS}
 
 clean:
 	rm -f ${PROGS} ${OBJ} *.core
-	rm -f $(patsubst %.c,.%.d,${SRC})
+	rm -f $(patsubst %.c,.%.d*,${SRC})
 
 cleandir clobber distclean maintainer-clean: clean
 
@@ -42,19 +39,11 @@ debug: ${PROGS}
 test: ${PROGS}
 	for p in $^ ; do ./$$p -h; done
 
-# Use gmake's link rule to produce the target.
-#
 %: %.o clp.o
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
-
-# We make ${OBJ} depend on the makefile so that all objects are rebuilt
-# if the makefile changes.
-#
 ${OBJ}: GNUmakefile
 
-# Automatically generate/maintain dependency files.
-#
 .%.d: %.c
 	@set -e; rm -f $@; \
 	$(CC) -M $(CPPFLAGS) ${INCLUDE} $< > $@.$$$$; \
