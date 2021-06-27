@@ -111,7 +111,7 @@ do {                                                                    \
 
 #else
 
-#define clp_dprint(_lvl, ...)
+#define clp_dprint(_lvl, ...) do { } while (0)
 #endif /* CLP_DEBUG */
 
 /* Render an error message for emission at the end of clp_parsev().
@@ -1391,7 +1391,7 @@ clp_parsev(int argc, char **argv,
         clp.paramv = paramv;
         clp.params = paramv;
 
-        for (param = paramv; param->name > 0; ++param) {
+        for (param = paramv; param->name; ++param) {
             param->clp = &clp;
             param->posmin = 0;
             param->posmax = 0;
