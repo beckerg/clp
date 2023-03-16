@@ -558,7 +558,7 @@ main(int argc, char **argv)
 }
 ```
 
-
+```
 $ ./examples/subcmd
 subcmd: 1 positional argument required, use -h for help
 
@@ -596,7 +596,7 @@ foo: argv[0] LICENSE
 
 $ ./examples/subcmd ba
 subcmd: ambiguous subcommand 'ba', use -h for help
-
+```
 
 ## Developer Notes
 _**clp**_ always builds a "posixly correct" parser, and requires that all options
