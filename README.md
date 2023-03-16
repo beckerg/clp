@@ -599,10 +599,13 @@ subcmd: ambiguous subcommand 'ba', use -h for help
 ```
 
 ## Developer Notes
-_**clp**_ always builds a "posixly correct" parser, and requires that all options
-have a single-letter option allowed by _**isgraph(3)**_ excluding the **':'**
-and **'?'** characters as the latter are produced by _**getopt_long(3)**_.
+_**clp**_ always builds a "posixly correct" parser, and requires that options
+have any single-letter allowed by _**isgraph(3)**_, excluding the **':'**
+and **'?'** characters as the latter are produced by _**getopt_long(3)**_ to
+indicate parse errors.
 
 ## TODO
-* _**clp**_ leverages _**getopt_long(3)**_ and hence is inherently not thread-safe
-nor re-entrant.
+* _**clp**_ leverages _**getopt_long(3)**_ and hence is inherently not
+[thread-safe](https://en.wikipedia.org/wiki/Thread_safety)
+nor
+[re-entrant](https://en.wikipedia.org/wiki/Reentrancy_(computing)).
