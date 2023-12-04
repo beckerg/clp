@@ -37,7 +37,7 @@ debug: CFLAGS += -O0 -fno-omit-frame-pointer
 debug: ${PROGS}
 
 test: ${PROGS}
-	for p in $^ ; do ./$$p -h; done
+	for p in $^ ; do ./$$p -h > /dev/null; done
 
 %: %.o clp.o
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@

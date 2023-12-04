@@ -1440,8 +1440,8 @@ clp_parsev(int argc, char **argv,
  *
  * If delim is nil, then all whitespace between words is elided, which is
  * to say that zero-length strings between delimiters are always elided.
- * If delim is not nil, then zero-length strings between delimiters are
- * always preserved.
+ * If delim is not nil, then zero-length strings between non-whitespace
+ * delimiters are always preserved.
  *
  * For example:
  *
@@ -1458,7 +1458,7 @@ clp_parsev(int argc, char **argv,
  *    argv[6] = NULL
  *
  * On success, argc and argv are returned via *argcp and *argvp respectively
- * 9if not nil), and argv[argc] is always set to NULL.  If argvp is not nil
+ * (if not nil), and argv[argc] is always set to NULL.  If argvp is not nil
  * then *argvp must always be freed by the caller, even if *argcp is zero.
  *
  * On failure, errno is set and an exit code from sysexits.h is returned.
@@ -1470,6 +1470,7 @@ clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp)
     int argcmax, argc, srclen;
     char **argv, *prev, *dst;
     size_t argvsz;
+    char *pc;
 
     if (argvp)
         *argvp = NULL;
@@ -1554,10 +1555,12 @@ clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp)
                 prev = dst;
             }
             // else elides leading whitespace and NUL characters...
-        } else if (delim && strchr(delim, *src)) {
-            argv[argc++] = prev;
-            *dst++ = '\000';
-            prev = dst;
+        } else if (delim && (pc = strchr(delim, *src))) {
+            if (dst > prev || !isspace(*pc)) {
+                argv[argc++] = prev;
+                *dst++ = '\000';
+                prev = dst;
+            }
         } else {
             *dst++ = *src;
         }
