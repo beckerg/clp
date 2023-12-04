@@ -1,17 +1,17 @@
 # clp
 Command Line Processor
 
-_**clp**_ is command line processor which aims to bring simple consistency
+_**clp**_ is a command line processor which aims to bring simple consistency
 to command line processing.  It is a one-pass parser/processor, in the sense
-that you need only call _**clp_parsev()**_ or _**clp_parsel()**_ to process
-a given argument vector or argument string, respectively.
+that you need only call _**clp_parsev()**_ or _**clp_parsel()**_ once to
+process a given argument vector or argument string, respectively.
 
 Other than compiling _**clp.c**_, there are no other external programs
 required to generate the parser, nor is there any run-time initialization
 needed to "set things up".
 
 _**clp**_ was designed to be embedded directly into an application, but there
-should be nothing that prevents one from building it into a shared or static
+is nothing that prevents one from building it into a shared or static
 library.
 
 ## Examples
