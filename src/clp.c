@@ -1097,6 +1097,7 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
         int c;
 
         c = getopt_long(argc, argv, clp->optstring, clp->longopts, &longidx);
+        errno = 0;
 
         if (-1 == c) {
             break;
