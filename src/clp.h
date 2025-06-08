@@ -124,7 +124,7 @@
     }
 
 /* Use the VERBOSITY, VERSION, DRYRUN, HELP, and CONF templates to ensure
- * a consistent look-and-free across all tools built with clp.
+ * a consistent look-and-feel across all tools built with clp.
  */
 #define CLP_OPTION_VERBOSITY(_xverbosity)                               \
     CLP_OPTION('v', incr, _xverbosity, NULL, "increase verbosity")
@@ -147,9 +147,9 @@
     }
 
 #define CLP_OPTION_STD(_xverbosity, _xversion, _xdryrun)        \
-    CLP_OPTION_VERBOSITY(verbosity),                            \
-    CLP_OPTION_VERSION(version),                                \
-    CLP_OPTION_DRYRUN(dryrun),                                  \
+    CLP_OPTION_VERBOSITY(_xverbosity),                          \
+    CLP_OPTION_VERSION(_xversion),                              \
+    CLP_OPTION_DRYRUN(_xdryrun),                                \
     CLP_OPTION_HELP                                             \
 
 #define CLP_OPTION_CONF(_xconf)                                         \
