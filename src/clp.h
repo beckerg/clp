@@ -27,6 +27,9 @@
 #ifndef CLP_H
 #define CLP_H
 
+#define CLP_ERRBUF_MAX      (128)
+#define CLP_POSPARAM_MAX    (4096)
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -293,7 +296,7 @@ struct clp {
     char                *optstring;     // The optstring for getopt
     struct option       *longopts;      // Table of long options for getopt_long()
     struct clp_posparam *params;        // posparam list head
-    char                 errbuf[128];
+    char                 errbuf[CLP_ERRBUF_MAX];
 };
 
 struct clp_suftab {

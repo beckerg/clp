@@ -984,9 +984,9 @@ clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
 
         len = strlen(namebuf);
         if (len >= 3 && 0 == strncmp(namebuf + len - 3, "...", 3)) {
-            param->posmax = 1024;
+            param->posmax = CLP_POSPARAM_MAX;
         } else {
-            param->posmax = subcmd ? 1024 : 1;
+            param->posmax = subcmd ? CLP_POSPARAM_MAX : 1;
         }
 
         *posminp += param->posmin;
@@ -1015,8 +1015,6 @@ clp_parsev_impl(struct clp *clp, int argc, char **argv)
 
     options_tail = &options_head;
     *options_tail = NULL;
-
-    memset(clp->longopts, 0, sizeof(*clp->longopts));
 
     pc = clp->optstring;
     *pc++ = '+';    // Enable POSIXLY_CORRECT semantics
@@ -1413,7 +1411,7 @@ clp_parsev(int argc, char **argv,
     sz = (clp.optionc + 1) * sizeof(*clp.longopts);
     sz += clp.optionc * 2 + 8;
 
-    clp.longopts = malloc(sz);
+    clp.longopts = calloc(sz, 1);
     if (!clp.longopts) {
         clp_eprint(&clp, "+%d %s: malloc(%zu) longopts failed",
                    __LINE__, __FILE__, sz);
@@ -1429,6 +1427,8 @@ clp_parsev(int argc, char **argv,
         fprintf(stderr, "%s: %s\n", clp.basename, clp.errbuf);
 
     free(clp.longopts);
+    clp.optstring = NULL;
+    clp.longopts = NULL;
 
     return rc;
 }
