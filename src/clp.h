@@ -576,6 +576,7 @@ extern int clp_parsel(const char *line, const char *delim,
                       struct clp_option *optionv,
                       struct clp_posparam *paramv);
 
-extern void clp_eprint(struct clp *clp, const char *fmt, ...);
+extern void clp_eprint(struct clp *clp, const char *fmt, ...)
+    __printflike(2, 3);
 
 #endif /* CLP_H */

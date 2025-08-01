@@ -87,7 +87,7 @@ static int clp_debug;
 
 /* Called via the dprint() macro..
  */
-static void
+static void __printflike(4, 5)
 clp_dprint_impl(const char *file, int line, const char *func, const char *fmt, ...)
 {
     va_list ap;
@@ -497,9 +497,6 @@ void
 clp_usage(struct clp *clp, const struct clp_option *limit)
 {
     struct clp_posparam *paramv = clp->paramv;
-    char excludes_buf[clp->optionc + 1];
-    char optarg_buf[clp->optionc * 16];
-    char opt_buf[clp->optionc + 1];
     char *pc_optarg, *pc_opt, *pc;
     struct clp_posparam *param;
     struct clp_option *o;
@@ -517,6 +514,15 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
             paramv = limit->paramv;
         }
     }
+
+    if (clp->optionc > 1024) {
+        fprintf(stderr, "%s: invalid optionc %d\n", clp->basename, clp->optionc);
+        abort();
+    }
+
+    char excludes_buf[clp->optionc + 1];
+    char optarg_buf[clp->optionc * 1];
+    char opt_buf[clp->optionc + 1];
 
     pc_excludes = excludes_buf;
     pc_optarg = optarg_buf;
