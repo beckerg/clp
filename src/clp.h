@@ -28,6 +28,7 @@
 #define CLP_H
 
 #define CLP_ERRBUF_MAX      (256)
+#define CLP_OPTION_MAX      (256)
 #define CLP_POSPARAM_MAX    (4096)
 
 #include <stdlib.h>
@@ -292,7 +293,7 @@ struct clp {
     struct clp_option   *optionv;       // Argument from clp_parsev()
     struct clp_posparam *paramv;        // Argument from clp_parsev()
     int                  opthelp;       // The option tied to opt_help()
-    int                  optionc;       // Count of elements in optionv[]
+    size_t               optionc;       // Count of elements in optionv[]
     char                *optstring;     // The optstring for getopt
     struct option       *longopts;      // Table of long options for getopt_long()
     struct clp_posparam *params;        // posparam list head

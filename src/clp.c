@@ -493,7 +493,7 @@ clp_string_cmp(const void *lhs, const void *rhs)
 /* Print just the usage line, i.e., lines of the general form
  *   "usage: progname [options] args..."
  */
-void
+static void  __attribute__((__nonnull__(1)))
 clp_usage(struct clp *clp, const struct clp_option *limit)
 {
     struct clp_posparam *paramv = clp->paramv;
@@ -502,6 +502,10 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
     struct clp_option *o;
     char *pc_excludes;
     FILE *fp = stdout;
+
+    if (clp->optionc > CLP_OPTION_MAX) {
+        abort();
+    }
 
     if (limit) {
         bool limit_excl_all = limit->excludes && strchr("*^", limit->excludes[0]);
@@ -513,11 +517,6 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
         if (limit->paramv) {
             paramv = limit->paramv;
         }
-    }
-
-    if (clp->optionc < 0 || clp->optionc > 256) {
-        fprintf(stderr, "%s: invalid optionc %d\n", clp->basename, clp->optionc);
-        abort();
     }
 
     char excludes_buf[clp->optionc + 1];
@@ -792,7 +791,8 @@ clp_help(struct clp_option *opthelp)
     struct clp_posparam *paramv, *param;
     struct clp_option *option;
     int subcmd_width, width;
-    int longhelp, optionc;
+    size_t optionc;
+    bool longhelp;
     struct clp *clp;
     FILE *fp;
 
@@ -808,9 +808,8 @@ clp_help(struct clp_option *opthelp)
     /* Create an array of pointers to options and sort it.
      */
     struct clp_option *optionv[clp->optionc];
-    int i;
 
-    for (i = optionc = 0; i < clp->optionc; ++i) {
+    for (size_t i = optionc = 0; i < clp->optionc; ++i) {
         struct clp_option *o = clp->optionv + i;
 
         if (clp_optopt_valid(o->optopt))
@@ -832,7 +831,7 @@ clp_help(struct clp_option *opthelp)
     longhelp = (opthelp->longidx >= 0);
     width = 0;
 
-    for (i = 0; i < optionc; ++i) {
+    for (size_t i = 0; i < optionc; ++i) {
         int len = 0;
 
         option = optionv[i];
@@ -856,7 +855,7 @@ clp_help(struct clp_option *opthelp)
 
     /* Print a line of help for each option.
      */
-    for (i = 0; i < optionc; ++i) {
+    for (size_t i = 0; i < optionc; ++i) {
         char buf[width + 8];
 
         option = optionv[i];
@@ -1387,6 +1386,11 @@ clp_parsev(int argc, char **argv,
 
             ++clp.optionc;
         }
+
+        if (clp.optionc > CLP_OPTION_MAX) {
+            fprintf(stderr, "%s: invalid optionc %zu\n", clp.basename, clp.optionc);
+            abort();
+        }
     }
 
     /* Validate positional parameters and initialize/reset from previous run.
@@ -1480,6 +1484,8 @@ clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp)
     const char *pc;
     size_t argvsz;
 
+    if (argcp)
+        *argcp = 0;
     if (argvp)
         *argvp = NULL;
 
