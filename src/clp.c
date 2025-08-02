@@ -102,9 +102,9 @@ clp_dprint_impl(const char *file, int line, const char *func, const char *fmt, .
 
 /* dprint() prints a debug message to stdout if (clp_debug >= lvl).
  */
-#define clp_dprint(_lvl, ...)                                           \
+#define clp_dprint(_level, ...)                                         \
 do {                                                                    \
-    if (clp_debug >= (_lvl)) {                                          \
+    if (clp_debug >= (_level)) {                                        \
         clp_dprint_impl(__FILE__, __LINE__, __func__, __VA_ARGS__);     \
     }                                                                   \
 } while (0)
@@ -125,10 +125,10 @@ do {                                                                    \
 void
 clp_eprint(struct clp *clp, const char *fmt, ...)
 {
-    char suffix[sizeof(clp->errbuf) - 8];
+    char suffix[sizeof(clp->errbuf)];
     int xerrno = errno;
     va_list ap;
-    size_t n;
+    int n;
 
     if (clp->errbuf[0] && !ispunct(clp->errbuf[0]))
         return;
@@ -140,10 +140,10 @@ clp_eprint(struct clp *clp, const char *fmt, ...)
     n = vsnprintf(clp->errbuf, sizeof(clp->errbuf), fmt, ap);
     va_end(ap);
 
-    if (n < sizeof(clp->errbuf)) {
+    if (n > 0 && (size_t)n < sizeof(clp->errbuf)) {
         snprintf(clp->errbuf + n, sizeof(clp->errbuf) - n, "%s%s",
-                 xerrno && !suffix[0] ? ": " : "",
-                 xerrno && !suffix[0] ? strerror(xerrno) : suffix);
+                 (xerrno && !suffix[0]) ? ": " : "",
+                 (xerrno && !suffix[0]) ? strerror(xerrno) : suffix);
     }
 
     errno = xerrno;
@@ -363,7 +363,7 @@ clp_given(int c, struct clp_option *optionv, void *dst)
 
 /* Return true if the two specified options are mutually exclusive.
  */
-int
+static int
 clp_excludes2(const struct clp_option *l, const struct clp_option *r)
 {
     if (l && r && l != r) {
@@ -515,13 +515,13 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
         }
     }
 
-    if (clp->optionc > 1024) {
+    if (clp->optionc < 0 || clp->optionc > 256) {
         fprintf(stderr, "%s: invalid optionc %d\n", clp->basename, clp->optionc);
         abort();
     }
 
     char excludes_buf[clp->optionc + 1];
-    char optarg_buf[clp->optionc * 1];
+    char optarg_buf[clp->optionc + 1];
     char opt_buf[clp->optionc + 1];
 
     pc_excludes = excludes_buf;
@@ -966,7 +966,7 @@ clp_help(struct clp_option *opthelp)
 /* Determine the minimum and maximum number of arguments that the
  * given posparam vector could consume.
  */
-void
+static void
 clp_posparam_minmax(struct clp_posparam *paramv, int *posminp, int *posmaxp)
 {
     struct clp_posparam *param;
@@ -1475,26 +1475,28 @@ int
 clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp)
 {
     bool backslash, dquote, squote;
-    int argcmax, argc, srclen;
     char **argv, *prev, *dst;
+    int argcmax, argc;
+    const char *pc;
     size_t argvsz;
-    char *pc;
 
     if (argvp)
         *argvp = NULL;
 
     if (!src) {
         errno = EINVAL;
-        return EX_SOFTWARE;
+        return EX_DATAERR;
     }
 
-    /* Allocate enough space to hold the maximum needed pointers plus
-     * a copy of the entire source string.  This will generally waste
-     * a bit of space, but it greatly simplifies cleanup.
+    /* Allocate enough space to hold a pointer for every non-alpha
+     * character in src[] plus a copy of the entire source string.
+     * This will generally waste a bit of space, but it greatly
+     * simplifies cleanup.
      */
-    srclen = strlen(src);
-    argcmax = srclen + 2;
-    argvsz = sizeof(*argv) * argcmax + (srclen + 1);
+    argcmax = 4;
+    for (pc = src; *pc; ++pc)
+        argcmax += !isalpha(*pc);
+    argvsz = sizeof(*argv) * argcmax + (pc - src + 1);
 
     argv = malloc(argvsz);
     if (!argv) {
@@ -1588,6 +1590,7 @@ clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp)
         *dst++ = '\000';
     }
 
+    assert(argc < argcmax);
     argv[argc] = NULL;
 
     if (argcp) {

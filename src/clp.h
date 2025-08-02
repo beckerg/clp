@@ -27,7 +27,7 @@
 #ifndef CLP_H
 #define CLP_H
 
-#define CLP_ERRBUF_MAX      (128)
+#define CLP_ERRBUF_MAX      (256)
 #define CLP_POSPARAM_MAX    (4096)
 
 #include <stdlib.h>
@@ -566,7 +566,8 @@ extern clp_get_cb clp_get_time_t;
 extern clp_option_cb clp_help;
 extern clp_option_cb clp_version;
 
-extern int clp_breakargs(const char *src, const char *delim, int *argcp, char ***argvp);
+extern int clp_breakargs(const char *src, const char *delim,
+                         int *argcp, char ***argvp);
 
 extern int clp_parsev(int argc, char **argv,
                       struct clp_option *optionv,

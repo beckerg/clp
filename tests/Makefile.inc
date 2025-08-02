@@ -21,6 +21,7 @@ RESULT := $(patsubst output/%, result/%, ${OUTPUT})
 
 .PHONY:	all asan check clean clobber debug distclean maintainer-clean output test
 
+.PRECIOUS: result/%
 
 all: ${PROG}
 
@@ -53,7 +54,7 @@ result/%: input/% ${PROG}
 	mkdir -p ${@D}
 	env -i PATH=${PATH} bash -x input/${@F} > $@ 2>&1 || true
 	@echo "checking $(abspath result/${@F})"
-	diff output/${@F} result/${@F}
+	diff -I '^\+\+' output/${@F} result/${@F}
 
 ${PROG}: ${OBJ}
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
