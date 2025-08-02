@@ -125,7 +125,7 @@ do {                                                                    \
 void
 clp_eprint(struct clp *clp, const char *fmt, ...)
 {
-    char suffix[sizeof(clp->errbuf)];
+    char suffix[sizeof(clp->errbuf) / 2];
     int xerrno = errno;
     va_list ap;
     int n;
@@ -628,6 +628,7 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
         for (cur = excludes_buf; *cur; ++cur) {
             struct clp_option *l = clp_find(*cur, clp->optionv);
             char buf[1024], *pc_buf;
+            char *tmp;
 
             pc_buf = buf;
 
@@ -645,7 +646,11 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
 
             *pc_buf = '\000';
 
-            listv[listc++] = strdup(buf);
+            tmp = strdup(buf);
+            if (!tmp)
+                abort();
+
+            listv[listc++] = tmp;
         }
 
         /* Eliminate duplicate strings.
@@ -707,6 +712,8 @@ clp_usage(struct clp *clp, const struct clp_option *limit)
                 }
 
                 fprintf(fp, "]");
+
+                free(listv[i]);
             }
         }
     }

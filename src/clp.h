@@ -39,6 +39,10 @@
 #include <sysexits.h>
 #include <sys/types.h>
 
+#ifndef __printflike
+#define __printflike(_x, _y)    __attribute__((__format__ (__printf__, _x, _y)))
+#endif
+
 /* List of conversion routines provided by clp.  The name from the "_xtype"
  * column can be given as the fifth argument to CLP_OPTION(), or appended
  * to "clp_cvt_" and either assigned to .cvtfunc or given as the fifth
